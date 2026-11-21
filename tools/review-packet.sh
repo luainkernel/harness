@@ -1,0 +1,48 @@
+#!/bin/bash
+#
+# SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
+# SPDX-License-Identifier: MIT OR GPL-2.0-only
+#
+# What a review reads before it judges a change, gathered once by the machine: the commits with
+# their bodies, the files they touch, the diff with every function it touches whole, and what the
+# checks say about it, the harness's and the project's, the rev-range ones the range key of its
+# .agents/harness.conf names (checks/project.sh). A reviewer that gathers the same with its own reads
+# pays for each of them on every turn after.
+#
+# Usage: bash tools/review-packet.sh <base> <head>   (in a worktree checked out at <head>)
+
+base=$1
+head=$2
+[ -n "$base" ] && [ -n "$head" ] || { echo "usage: review-packet.sh <base> <head>" >&2; exit 2; }
+# a base past the fork point, master's tip once it moved, would show its later commits reversed
+base=$(git merge-base "$base" "$head") || exit 2
+dir=$(dirname "$0")
+. "$(dirname "$(readlink -f "$0")")/checks/project.sh"
+own=$(project_root)/tools/checks
+
+echo "# Commits"
+git log --reverse --format='## %h %s%n%n%b' "$base..$head"
+
+echo "# Files"
+git diff --stat=120 "$base" "$head"
+
+echo "# Checks"
+bash "$dir/checks/advisory.sh" "$base" "$head"
+for check in author-email body-identifiers $(project_conf range); do
+	script=$dir/checks/$check.sh
+	[ -f "$script" ] || script=$own/$check.sh
+	out=$(bash "$script" "$base..$head" 2>&1)
+	[ -n "$out" ] && printf '== %s\n%s\n' "$check" "$out"
+done
+
+# the submodules are gitlinks here, and their diff is each one's own history
+submodules=$(git config -f .gitmodules --get-regexp '\.path$' 2> /dev/null | cut -d' ' -f2)
+excluded=()
+for path in $submodules; do
+	excluded+=(":!$path")
+done
+echo "# Diff"
+git diff --function-context "$base" "$head" -- . "${excluded[@]}"
+# shellcheck disable=SC2086 # one path per word, as .gitmodules spells them
+[ -z "$submodules" ] || git diff --submodule=log "$base" "$head" -- $submodules
+

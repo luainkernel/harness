@@ -1,0 +1,44 @@
+#
+# SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
+# SPDX-License-Identifier: MIT OR GPL-2.0-only
+#
+
+name: Checks
+on:
+  pull_request:
+  # a project's bump of the mount merges on the checks of the commit it points at
+  push:
+    branches: [master]
+jobs:
+  checks:
+    name: Convention checks
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    - name: Install dependencies
+      run: bash tools/retry.sh 5 90 sudo apt-get install -yq gawk jq
+    - name: Stage the pull request's diff
+      # pre-commit reads the index, so the diff against the base is staged as a commit would be
+      if: github.event_name == 'pull_request'
+      run: git reset -q --soft "origin/${{ github.base_ref }}"
+    - name: Machine paths and credentials
+      run: bash tools/checks/machine-leak.sh $(git ls-files)
+    - name: Trailing blank line
+      if: github.event_name == 'pull_request'
+      run: bash tools/checks/pre-commit
+    - name: Fixups pending
+      # a fixup! waits for the squash, and each round of a review pushes one, so the run warns of it and stays green
+      if: github.event_name == 'pull_request'
+      run: |
+        bash tools/checks/fixups.sh "origin/${{ github.base_ref }}..${{ github.event.pull_request.head.sha }}" ||
+          echo "::warning title=Fixups pending::fold the fixup!, amend! and squash! commits before the merge"
+    - name: Guard cases
+      # each command guard read again against the cases it was proved on, its own change or one beneath it
+      run: bash tools/checks/cases.sh
+    - name: Advisory checks
+      # heuristics that nudge a review; they annotate the run and do not fail it
+      if: github.event_name == 'pull_request'
+      run: bash tools/checks/advisory.sh --github "origin/${{ github.base_ref }}" "${{ github.event.pull_request.head.sha }}"

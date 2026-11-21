@@ -1,0 +1,24 @@
+# SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
+# SPDX-License-Identifier: MIT OR GPL-2.0-only
+
+# The copyright and license of the files that cannot carry a header of their own:
+# Markdown and configuration files.
+version = 1
+
+[[annotations]]
+path = "**/*.md"
+SPDX-FileCopyrightText = "(c) 2026 Ring Zero Desenvolvimento de Software LTDA"
+SPDX-License-Identifier = "MIT OR GPL-2.0-only"
+
+[[annotations]]
+path = "tools/Readme.md"
+SPDX-FileCopyrightText = "(c) 2024-2026 jperon <cataclop@hotmail.com>"
+SPDX-License-Identifier = "MIT OR GPL-2.0-only"
+
+[[annotations]]
+path = [
+	".claude/.gitignore",
+	".claude/settings.json",
+]
+SPDX-FileCopyrightText = "(c) 2026 Ring Zero Desenvolvimento de Software LTDA"
+SPDX-License-Identifier = "MIT OR GPL-2.0-only"
