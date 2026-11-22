@@ -11,7 +11,9 @@
 # #11 and #12 bump the mount, harness, their heads carrying no agent-review status, to a commit of
 # luainkernel/harness: #10's on its trunk and carrying the status, #11's on its trunk and carrying none,
 # #12's carrying it and not on its trunk. #13 is a pull request of luainkernel/harness that changes its
-# README and a license with a check.
+# README and a license with a check. #14, #15 and #16 change a check, their heads carrying no
+# agent-review status: #14 adds 12 lines and a comment of the posting account names its head, #15 adds
+# 12 and no comment names it, #16 adds 90 and a comment names it.
 #
 # Usage: bash tools/checks/cases/merge-guard.fixture.sh <dir>
 
@@ -22,6 +24,17 @@ cat > stub/gh <<'STUB'
 #!/bin/sh
 [ "$GH_TOKEN" = cases ] || exit 1
 case "$*" in
+	*/pulls/1[45]\ -q\ .additions) echo 12 ;;
+	*/pulls/16\ -q\ .additions) echo 90 ;;
+	*/pulls/14\ *) printf 'open\tmaster\tcases\t1414141414141414141414141414141414141414\n' ;;
+	*/pulls/15\ *) printf 'open\tmaster\tcases\t1515151515151515151515151515151515151515\n' ;;
+	*/pulls/16\ *) printf 'open\tmaster\tcases\t1616161616161616161616161616161616161616\n' ;;
+	*/pulls/1[456]/files*) echo tools/checks/cases.sh ;;
+	*/pulls/1[456]/commits*) echo 'checks: name a case' ;;
+	*/issues/14/comments*) echo 'The defect before and the case after, on 141414141' ;;
+	*/issues/15/comments*) echo 'The defect before and the case after' ;;
+	*/issues/16/comments*) echo 'The defect before and the case after, on 161616161' ;;
+	*/commits/1[456]1[456]*/status\ *) ;;
 	*/pulls/[78]\ *) printf 'open\tmaster\tcases\t0123456789abcdef0123456789abcdef01234567\n' ;;
 	*/pulls/9\ *) printf 'open\tbump\tcases\t0123456789abcdef0123456789abcdef01234567\n' ;;
 	*/pulls/10\ *) printf 'open\tmaster\tcases\t1010101010101010101010101010101010101010\n' ;;

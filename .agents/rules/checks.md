@@ -222,7 +222,9 @@ that it is a harness pull request an agent's review passed: opened by the postin
 repository's default branch, as GitHub names it,
 every file the harness as `harness-mixed.sh --outside` reads it, the mount a bump moves among them, or
 any file of the harness's own repository, and a head that carries the
-`agent-review` status, which the merged skill sets once `review.js` returned that head ready, and
+`agent-review` status, which the merged skill sets once `review.js` returned that head ready, or, on a
+pull request `complexity.sh` calls small, a comment of the posting account that names that head, the
+proof a mechanical change merges on (AGENTS.md, *Patches and commits*), and
 passed every check run, and commits none of which is a `fixup!`, `amend!` or `squash!`, which the
 `Checks` run warns of without failing. A bump of the mount, a pull request whose one file is the
 submodule, carries no status of its own: the commit it pins does, on the harness's trunk, where the

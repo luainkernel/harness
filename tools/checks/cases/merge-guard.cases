@@ -31,3 +31,7 @@ block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pull
 block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/12/merge -f merge_method=rebase
 # a pull request of the harness's own repository is the harness whole, its README and its licenses too
 pass	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/harness/pulls/13/merge -f merge_method=rebase
+# a small pull request merges on a proof that names its head, posted by the account that opened it
+pass	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/14/merge -f merge_method=rebase
+block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/15/merge -f merge_method=rebase
+block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/16/merge -f merge_method=rebase
