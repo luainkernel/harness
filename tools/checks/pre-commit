@@ -20,7 +20,7 @@ if [ -n "$conflicted" ]; then
 	exit 1
 fi
 
-staged=$(git diff --cached --name-only --diff-filter=ACM)
+staged=$(git diff --cached --name-only --diff-filter=ACM --ignore-submodules=all)
 
 leaked=$(CHECK_STAGED=1 bash "$(dirname "$(readlink -f "$0")")/machine-leak.sh" $staged)
 if [ -n "$leaked" ]; then
