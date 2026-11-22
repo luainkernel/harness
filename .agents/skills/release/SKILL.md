@@ -1,6 +1,6 @@
 ---
 name: release
-description: Cut a release: confirm its milestone, the suite and the CI on the cut commit, write the notes from the commits, draft the release, and once the maintainer publishes it rebuild the site and close the milestone. Use when asked to cut, draft or publish a release, or for its notes or its announcement.
+description: Cut a release: confirm its milestone, the suite and the CI on the cut commit, write the notes from the commits, draft and publish the release, rebuild the site and close the milestone. Use when asked to cut, draft or publish a release, or for its notes or its announcement.
 ---
 
 AGENTS.md is the authority, *Patches and commits* for a summary derived from commits and *Comments
@@ -74,10 +74,12 @@ A draft rewritten after the cut or the notes moved is patched with the whole obj
 `tag_name` included: v5.1's draft, patched with its new `target_commitish` and body alone, came back
 named `untagged-…`.
 
-The notes go to the maintainer whole, in the message that hands the draft over. Publishing is his
-imperative, and then:
+The session publishes the draft once the suite and the CI on the cut passed:
 
     gh api -X PATCH repos/<owner>/<repo>/releases/<id> -f tag_name=<tag> -F draft=false -f make_latest=true
+
+The notes go to the maintainer whole, in the message that reports the release. On 2026-11-22 a session
+handed him the draft to publish, and he answered "correcao, vc que publica, nao eu".
 
 # 6. The site
 
