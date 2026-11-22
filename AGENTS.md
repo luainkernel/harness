@@ -364,7 +364,13 @@ named, not one discovered at that consumer's build.
 * A harness pull request the session opened, one whose every file `harness-mixed.sh` reads as the
   harness, merges without waiting for the maintainer once `review.js` ran over its head at `high`
   and returned it ready and its CI passed: what a correction teaches binds the next session that
-  day, and the maintainer reads it on master, in the report the merged skill hands him.
+  day, and the maintainer reads it on master, in the report the merged skill hands him. One that
+  `tools/complexity.sh` calls small merges on its CI and a proof instead, a comment of the session on
+  it that names its head beside the command that shows the defect before, its result after and the
+  case still refused, or, for text no command reads, the passage it replaces beside the new one: a
+  mechanical change spends no agent on a review, as the maintainer asked on
+  2026-11-22, "devemos atualizar o harness tb para contemplar mudancas mecanicas como essa sem
+  queimar token".
   `tools/checks/merge-guard.sh` refuses any other merge the session runs; `MERGE_OK=1` merges one he
   ordered merged in his own words.
 * A mechanism of the harness that rests on a command an agent runs, a guard's record among them, is

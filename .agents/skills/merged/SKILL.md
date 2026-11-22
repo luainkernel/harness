@@ -18,7 +18,11 @@ refused, by `merge-guard.sh` and by GitHub:
     gh api -X PUT repos/<owner>/<repo>/pulls/<N>/merge -f merge_method=rebase -f sha=<head>
 
 A fold moves the head and not the tree: the status goes on the folded head when its tree is the one
-the review returned, `git rev-parse <tip>^{tree}` against `<head>^{tree}`. What the review left as
+the review returned, `git rev-parse <tip>^{tree}` against `<head>^{tree}`. One that
+`tools/complexity.sh <N> <owner>/<repo>` calls small merges on a proof in place of the review: a
+comment on it, opened by GitHub's note that an LLM wrote it, naming its head beside the command that
+shows the defect before, its result after and the case still refused, or, for text no command reads,
+the passage it replaces beside the new one, and the merge names that head. What the review left as
 issues is filed before the merge, as implement-issue's last stage files it. A pull request the
 maintainer orders merged in his own words takes `MERGE_OK=1`. The steps below follow either merge,
 and the report reaches him as it does for his own.
@@ -102,7 +106,7 @@ that runs it (AGENTS.md, *Deciding what to change*).
 A pull request of the harness's own repository reaches a project only through the commit its mount
 points at. Once one merges, its `agent-review` status goes on the commit the merge put on the harness's
 trunk, the `sha` the merge answered: the rebase gave the reviewed head a new SHA, and a bump is read on
-that one.
+that one. A small one merged on its proof takes the status too, its description naming the proof.
 
     gh api -X POST repos/<owner>/<harness>/statuses/<merged commit> -f state=success -f context=agent-review -f description='review.js: ready'
 

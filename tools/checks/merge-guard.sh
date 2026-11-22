@@ -5,7 +5,8 @@
 #
 # PreToolUse (Bash) hook: the session merges a pull request without the maintainer only when the
 # posting account opened it on the repository's default branch, it changes the harness alone, its head carries the
-# agent-review status and passed every check run, and none of its commits waits for a squash, which
+# agent-review status, or the pull request is small by complexity.sh and a comment of the posting account
+# on it names the head, and passed every check run, and none of its commits waits for a squash, which
 # the Checks run warns of without failing (AGENTS.md, "Patches and commits"). A bump of the mount, whose
 # one file is the submodule, carries the agent-review status of the harness commit it pins instead, a
 # commit on the harness's trunk that passed every check run of its own (the merged skill, section 5).
@@ -58,6 +59,14 @@ passed() {
 	[ -n "$checks" ] && ! printf '%s\n' "$checks" | grep -vqxE 'success|skipped|neutral'
 }
 
+# whether the pull request <number> of the repository <repo> adds what complexity.sh calls small, and a
+# comment of the account <login> on it names its head <sha>, the proof a mechanical change merges on
+proved() {
+	[ "$(GH_TOKEN=$token bash "$checks/../complexity.sh" "$2" "$1" 2>/dev/null)" = "complexity: small" ] &&
+		github "repos/$1/issues/$2/comments?per_page=100" --paginate --jq ".[] | select(.user.login == \"$3\") | .body" |
+		grep -qF "${4:0:9}"
+}
+
 # the repository and the commit, "<owner>/<name> <sha>", the pull request of the repository <repo> whose head
 # is <head> pins when its one file, <path>, is a submodule; nothing for any other
 pinned() {
@@ -91,7 +100,8 @@ while IFS= read -r merge; do
 	[ -n "$head" ] || refuse "GitHub did not answer for #$number"
 	trunk=$(github "repos/$repo" --jq .default_branch)
 	[ "$state" = open ] && [ -n "$trunk" ] && [ "$base" = "$trunk" ] || refuse "#$number is not open on the default branch, ${trunk:-which GitHub did not answer}"
-	[ "$author" = "$(github user --jq .login)" ] || refuse "#$number was not opened by the posting account"
+	login=$(github user --jq .login)
+	[ "$author" = "$login" ] || refuse "#$number was not opened by the posting account"
 
 	paths=$(github "repos/$repo/pulls/$number/files?per_page=100" --paginate --jq '.[] | .filename, .previous_filename // empty')
 	[ -n "$paths" ] || refuse "GitHub did not answer for the files of #$number"
@@ -112,7 +122,8 @@ while IFS= read -r merge; do
 		reviewed "$upstream" "$pin" || refuse "${pin:0:9}, which #$number pins, carries no agent-review status"
 		passed "$upstream" "$pin" || refuse "the CI of ${pin:0:9}, which #$number pins, has not passed"
 	else
-		reviewed "$repo" "$head" || refuse "the head of #$number, ${head:0:9}, carries no agent-review status"
+		reviewed "$repo" "$head" || proved "$repo" "$number" "$login" "$head" ||
+			refuse "the head of #$number, ${head:0:9}, carries no agent-review status, nor a proof that names it"
 	fi
 	passed "$repo" "$head" || refuse "the CI of ${head:0:9} has not passed"
 	subjects=$(github "repos/$repo/pulls/$number/commits?per_page=100" --paginate --jq '.[].commit.message | split("\n")[0]')
