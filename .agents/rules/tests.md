@@ -8,6 +8,9 @@ paths:
 Tests are shell scripts emitting KTAP plus a kernel side Lua script.
 
 * the description of what a test does goes in the `.sh`. The `.lua` gets one line pointing back at it;
+* the code of another language a test runs or writes, what an interpreter runs from its `-e`, its `-c`
+  or a heredoc and a program file a heredoc writes, is a file of its own beside the `.sh`
+  (`inline-code.sh`); awk and sed one-liners stay;
 * skip, do not fail, when the kernel lacks a required config, read from the kernel's configuration and
   not from the binding answering nil: a binding that did not build answers nil too, and its skip then
   reads as the kernel's, as an earlier push of #2360 read a `crypto.kpp` that had not built as a

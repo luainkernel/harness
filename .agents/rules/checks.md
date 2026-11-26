@@ -19,16 +19,17 @@ whose others carry none (`comment-siblings.sh`), the branches, argument tables, 
 aliases and repeated blocks the Lua style rules settle (`lua-style.sh`), the shapes of a function that
 is more than one job (`function-shape.sh`), a store that terminates an array no reader takes
 (`terminator.sh`), a typedef renamed against a sibling the change removed (`rename-orphaned.sh`), a
-local, a function or a global lua-language-server reads as a slip (`luals.sh`), a commit that carries
+local, a function or a global lua-language-server reads as a slip (`luals.sh`), the code of another
+language a shell script carries inline (`inline-code.sh`), a commit that carries
 a rule or a check inside a change of its own (`harness-mixed.sh`), the machine a tracked file carries
 and a generated artifact forced past `.gitignore` (`machine-leak.sh`), and the trailing blank line
 rule, the refusal of a staged conflict marker and of a source file without its copyright and license
 header (`pre-commit`). Each takes file paths and skips what does not apply, so any editor, assistant,
 or CI can run them. `comment-style.sh`, `comment-siblings.sh`, `lua-style.sh`, `function-shape.sh` and
 `luals.sh` read nothing the `generated` key of the project's `.agents/harness.conf` names, and the last
-three nothing its `vendored` key names. `comment-style.sh`, `comment-siblings.sh` and
-`lua-style.sh` know a file's language by its extension, and a script with none, as `bin/lunatik` is, by
-the interpreter its shebang names. The `Checks` workflow runs them over a pull request's diff:
+three nothing its `vendored` key names. `comment-style.sh`, `comment-siblings.sh`, `lua-style.sh`
+and `inline-code.sh` know a file's language by its extension, and a script with none, as `bin/lunatik`
+is, by the interpreter its shebang names. The `Checks` workflow runs them over a pull request's diff:
 `pre-commit` and `machine-leak.sh` fail the run, the heuristic checks annotate it. Install the commit
 gate with:
 
@@ -97,6 +98,15 @@ local or a function declared and never read and a global assigned where a local 
 it there for the runtime's life. The configuration turns off what the server infers about types the
 bindings' C never declares to it, and says why beside each. It runs at edit time and over a pull
 request's diff, and says so where the server is absent.
+
+`inline-code.sh` reads the lines a change adds to a shell script, against `CHECK_BASE`, for the code of
+another language it carries: an interpreter of Lua, Python, Perl, Ruby or Node that runs code from its
+`-e`, Python's `-c`, or from a heredoc when it is given `-` or no script, and a heredoc a command writes into a
+file named `.lua`, `.py`, `.pl`, `.rb`, `.js` or `.c`. That code is a file of its own beside the script,
+as the maintainer decided in the review of luainkernel/lunatik#2724, "isso eh sujo e deveriamos ter
+regras contra isso no harness.. claro que tem que ir prum arquivo proprio"; awk and sed one-liners stay.
+It runs at edit time and over a pull request's diff and annotates, since it reads lines and not the
+shell's grammar: a `|` inside a quoted message opens a command there that the shell never runs.
 
 `author-email.sh` reads a rev-range and names a commit whose author email is not the one the base
 uses most for that author's name: a rebase or a squash done from another checkout signs the result
