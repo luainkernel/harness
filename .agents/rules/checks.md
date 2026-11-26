@@ -171,7 +171,20 @@ reader had passed. A subagent's post waits for the same pass: its hook input car
 opening posts the file its last reader left, the sentences its build adds read with the rest (#2543).
 `BODY_OK=1` posts a body whose text the maintainer read and approved in his own words: on 2026-11-19 the
 reader failed five texts in a row of the pull request split out of #2630, each time on points the last
-one had not raised, and the maintainer approved the sixth.
+one had not raised, and the maintainer approved the sixth. The reader's verdict fails on a closed list,
+a title or a body it cannot restate without guessing and a rule the pr-prep skill states of either,
+quoted from the skill, and what else it would rather not read comes back as remarks that fail nothing:
+in eight days it had passed 20 of 94 bodies on the first read (luainkernel/harness#6). It is proved as a
+check is, on the cases in `.agents/agents/cases/lunatik-reader/`, a file each, its verdict, the title
+where it has one and its source in a front matter over the body: the bodies the maintainer took pass,
+the sixth text of #2686 among them, and those he refused fail, #2527's first among them, beside the one
+he took in its place. A change to `lunatik-reader.md` or to the pr-prep skill runs them again before it
+merges, each through `review.js` with neither phase, as the pr-prep skill runs it, with `branch` a
+name that says neither the case's number nor its verdict, since the reader's prompt carries it,
+`body` the text under its front matter, `title` its title and `repo` a checkout of the change, and a
+case whose verdict differs is the change's to fix. The agent type is the definition the
+session's checkout links under `.claude/agents/`, the one in its mount, so a change to the definition is
+read with that mount at the change.
 
 `title.sh` holds a pull request title or a commit subject to the shape AGENTS.md, *Patches and
 commits*, gives a subject, `<area>: <what changes for whoever uses it>` in one plain clause, which the
