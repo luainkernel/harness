@@ -307,14 +307,23 @@ write to the memory names where. A `#N` is no such path: the append that prompte
 to a memory that named `AGENTS.md` already, and the lesson it carried was in no file of the tree. A
 lesson that belongs to no place of the public tree, the language of the conversation, the tone, a
 private consumer, is a memory of type `user`, and naming `CLAUDE.local.md` does not pass it as a
-`feedback` one. The other types pass. The index, `MEMORY.md`, carries none, and a call that adds to it a
-link the index does not hold yet is refused when the directory holds no such file, or holds a lesson
-whose own text names no path of the tree: a session wrote a lesson the guard refused and, in the same
-turn, a `sed -i` that added its line to the index, which then pointed at a memory that did not exist,
-and the maintainer asked "pq colocou no MEMORY.md? deveria ter guards contra isso". A link to a `user`,
+`feedback` one. The other types pass. The index, `MEMORY.md`, carries none, and a Write or an Edit that
+adds to it a link the index does not hold yet is refused when the directory holds no such file, or
+holds a lesson whose own text names no path of the tree: a session wrote a lesson the guard refused
+and, in the same turn, a `sed -i` that added its line to the index, which then pointed at a memory that
+did not exist, and the maintainer asked "pq colocou no MEMORY.md? deveria ter guards contra isso".
+A link to a `user`,
 `project` or `reference` memory passes, and so does one the index holds already, so a line reworded
 keeps its link; the index lists a memory once the call that writes it has landed, so a call that writes
-both is refused, and the memory goes first, in a call of its own. What a call adds is what Write
+both is refused, and the memory goes first, in a call of its own. The index is held to a ceiling
+of 8192 bytes too, since every session and every workflow agent loads it before its first turn: on the
+maintainer's machine it had grown to 18 KB, 37% of it the lines of notes whose lesson the tree held
+already, and he asked for the "otimizacao da memoria" (luainkernel/harness#6, D178 B). A Write or an Edit
+that leaves it past the ceiling and past what it holds is refused, so a new line displaces one and a line
+still leaves an index past the ceiling; a shell write into the index is refused whatever it writes,
+since its result is not read. What makes room is the merged skill: a `feedback` note is a lesson on its
+way to the tree, deleted with its line once the pull request that carries the lesson merges, and a
+`project` note is archived once its issue or its pull request closes. What a call adds is what Write
 writes, the `new_string` of an Edit and the whole command of a shell write, a
 redirection, a `tee` or a `sed -i` into a memory read through `commands.sh`, its path spelled whole,
 through a variable the command assigns or under a directory it changes to, as
@@ -325,7 +334,8 @@ as it stands with the command beside it, so an Edit that makes a memory a `feedb
 and one that makes it a `user` one passes where a `sed -i` of the same line is refused.
 Every later write to such a memory, a typo fixed included, names a path in its own text, and a Write of
 a whole memory that names one passes whatever else it adds. Its cases give Write and Edit their whole
-input as JSON, beside a fixture that holds the memories an edit and an append read.
+input as JSON, beside a fixture that holds the memories an edit and an append read, and two
+indexes, one 75 bytes under the ceiling and one past it.
 
 `question.sh` reads a message the maintainer sends for a question, a question mark or an opening
 interrogative, and `.claude/hooks/on-prompt.sh`, run as the message arrives (`UserPromptSubmit`), tells

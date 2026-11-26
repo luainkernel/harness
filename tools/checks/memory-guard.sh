@@ -7,14 +7,15 @@
 # contributor pays for again, and a session wrote one into its Claude Code memory, a file under
 # .claude/projects/<project>/memory/, and not into the tree. This blocks (exit 2) a call that leaves
 # there a memory of type feedback when what the call adds names no path of the repository where the
-# lesson lives, AGENTS.md or a path under .agents/, tools/ or doc/, and a call that adds to the index,
-# MEMORY.md, a link it does not hold yet to a file the directory does not hold or to a lesson whose
-# own text names no such path; silent (exit 0) on the other types, on the links the index holds
-# already and on every other file. What a call adds is what Write writes, the new_string of an Edit
-# and the whole command of a shell write, a redirection, a tee or a sed -i into a memory read through
-# commands.sh, its path spelled whole, through a variable the command assigns or under a directory it
-# changes to; the type is read in the memory as the call leaves it, for a shell write the file as it
-# stands with the command beside it.
+# lesson lives, AGENTS.md or a path under .agents/, tools/ or doc/; a Write or an Edit of the index,
+# MEMORY.md, that adds a link it does not hold yet to a file the directory does not hold or to a
+# lesson whose own text names no such path, or that leaves it past its ceiling and past what it
+# holds; and a shell write into the index, whose result it cannot read. Silent (exit 0) on the other
+# types, on the links the index holds already and on every other file. What a call adds is what
+# Write writes, the new_string of an Edit and the whole command of a shell write, a redirection, a tee
+# or a sed -i into a memory read through commands.sh, its path spelled whole, through a variable the
+# command assigns or under a directory it changes to; the type is read in the memory as the call
+# leaves it, for a shell write the file as it stands with the command beside it.
 
 input=$(cat)
 
@@ -24,6 +25,9 @@ case "$input" in
 esac
 
 MEMORY='(^|/)\.claude/projects/[^/]+/memory/[^/]+\.md$'
+
+# every session and every workflow agent loads the index before its first turn
+CEILING=8192
 
 # the path <path> as the shell reads it, ~ or a variable at its head expanded: $HOME to this shell's,
 # another to the value the command assigns it
@@ -75,8 +79,18 @@ unlisted() {
 		done
 }
 
+# the bytes the call leaves in the index <target>, when they are past the ceiling and past what it holds
+grown() {
+	local size
+	[ "${1##*/}" = MEMORY.md ] || return 0
+	size=$(printf '%s' "$input" | jq --rawfile file "$file" "$after | utf8bytelength")
+	[ "$size" -gt "$CEILING" ] && [ "$size" -gt "$(wc -c < "$file")" ] && printf '%s' "$size"
+}
+
 found=
 links=
+grown=
+shell=
 case "$(printf '%s' "$input" | jq -r '.tool_name')" in
 	Write|Edit)
 		target=$(printf '%s' "$input" | jq -r '.tool_input.file_path // empty')
@@ -84,11 +98,13 @@ case "$(printf '%s' "$input" | jq -r '.tool_name')" in
 		file=$target
 		[ -f "$file" ] || file=/dev/null
 		# an empty old_string creates the file; another is unique unless replace_all is set, so each is replaced
-		text=$(printf '%s' "$input" | jq -r --rawfile file "$file" '.tool_input as $t | $t.content //
-			if $t.old_string == "" then $t.new_string else $file | split($t.old_string) | join($t.new_string) end')
+		after='.tool_input as $t | $t.content //
+			if $t.old_string == "" then $t.new_string else $file | split($t.old_string) | join($t.new_string) end'
+		text=$(printf '%s' "$input" | jq -r --rawfile file "$file" "$after")
 		added=$(printf '%s' "$input" | jq -r '.tool_input | .content // .new_string')
 		unplaced "$text" "$added" && found=" ${target##*/}"
 		links=$(unlisted "$target" "$added")
+		grown=$(grown "$target")
 		;;
 	Bash)
 		. "$(dirname "$0")/commands.sh"
@@ -98,7 +114,7 @@ case "$(printf '%s' "$input" | jq -r '.tool_name')" in
 			file=$target
 			[ -f "$file" ] || file=/dev/null
 			unplaced "$(cat "$file")"$'\n'"$command" "$command" && found="$found ${target##*/}"
-			links="$links$(unlisted "$target" "$command")"
+			[ "${target##*/}" != MEMORY.md ] || shell=1
 		done <<< "$({
 			redirections "$input"
 			commands "$input" | awk '
@@ -114,7 +130,7 @@ case "$(printf '%s' "$input" | jq -r '.tool_name')" in
 		} | landings "$(commands "$input" | awk '$1 == "cd" { print $2 }')" | grep -E "$MEMORY" | sort -u)"
 		;;
 esac
-[ -n "$found$links" ] || exit 0
+[ -n "$found$links$grown$shell" ] || exit 0
 
 [ -z "$found" ] || {
 	echo "memory-guard:$found: a write to a lesson, a memory of type feedback, whose own text names"
@@ -128,6 +144,16 @@ esac
 	echo "memory-guard: MEMORY.md:$links: an index line that links a memory its directory does not hold, or a"
 	echo "lesson whose own text names no path of the repository. The index lists a memory once the call that"
 	echo "writes it has landed, in a call of its own, and a lesson once its text names where the tree holds it."
+} >&2
+[ -z "$grown" ] || {
+	echo "memory-guard: MEMORY.md: a write that leaves the index $grown bytes, past its ceiling of $CEILING and"
+	echo "past what it holds, which every session and every workflow agent loads before its first turn. A new"
+	echo "line displaces one: a lesson the tree now holds leaves with its note, and a project note whose issue"
+	echo "or pull request closed leaves for the archive, as the merged skill says."
+} >&2
+[ -z "$shell" ] || {
+	echo "memory-guard: MEMORY.md: a shell write into the index, whose size this guard cannot read. The index"
+	echo "is written with Write or Edit, which the guard holds to its ceiling of $CEILING bytes."
 } >&2
 exit 2
 
