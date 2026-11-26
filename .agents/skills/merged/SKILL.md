@@ -1,6 +1,6 @@
 ---
 name: merged
-description: After a pull request merges, the maintainer's or a harness one the session merged once an agent's review passed it, retarget the pull requests stacked on its branch to the default branch, restack them onto it, delete the merged branch, open the bump of each project's mount after a merge of the harness, and report the queue and the issues the merge closed. Use when told a pull request was merged, to merge a harness pull request review.js returned ready, or to merge one the maintainer approved in his own words.
+description: After a pull request merges, the maintainer's or a harness one the session merged once an agent's review passed it, retarget the pull requests stacked on its branch to the default branch, restack them onto it, delete the merged branch, open the bump of each project's mount after a merge of the harness, retire the memory's notes the merge settled, and report the queue and the issues the merge closed. Use when told a pull request was merged, to merge a harness pull request review.js returned ready, or to merge one the maintainer approved in his own words.
 ---
 
 AGENTS.md, "Patches and commits", and the review-pr skill's process.md, "Comments and the verdict", are the authority; this card orders
@@ -121,10 +121,29 @@ checks from the new mount over it, and on the review and the CI of the commit it
 D102 B): `merge-guard.sh` reads that commit on the harness's trunk, carrying the `agent-review` status and
 passing the check runs its push to the trunk started, and asks no status of the bump's own head.
 
-# 6. Report
+# 6. Retire the memory's notes
+
+The session's Claude Code memory, `~/.claude/projects/<project>/memory/`, keeps what the tree does not
+hold yet, and its index, `MEMORY.md`, loads in every session and every workflow agent, which is why
+`memory-guard.sh` holds it to 8192 bytes. A note of type `feedback` is a lesson on its way to the tree:
+each one that names a file the merged pull request changed is read against that file on master, and one
+whose lesson the file now holds is deleted, its line taken out of the index. A note of type `project` is
+work in flight: one that names an issue or the pull request the merge closed, and whose work is done
+with it, is archived, its line moved from the index to `project_archive.md`, the note the index links
+for them, and so is every other `project` note whose cited issues and pull requests are all closed,
+whatever closed them. Notes of type `user` and `reference` stay.
+
+    gh api --paginate repos/<owner>/<repo>/pulls/<N>/files --jq '.[].filename'
+    grep -lF -e <file> -e '#<N>' -e '#<closed issue>' <memory>/*.md
+    gh api repos/<owner>/<repo>/issues/<n> --jq .state    # each number a project note cites
+
+The index is edited with Edit, which the guard measures; a shell write into it is refused.
+
+# 7. Report
 
 The new master tip; for each stacked pull request, retargeted, restacked, the patch verdict and the
 push; the branches deleted, and a branch a worktree kept with whose it is; `bash tools/pr-status.sh`
 for the queue that follows; the issues the merge closed, with any it names only as "Part of" that
-it finished; and, after a merge of the harness, each project's bump with its number.
+it finished; the memory's notes retired and archived; and, after a merge of the harness, each
+project's bump with its number.
 
