@@ -3,7 +3,7 @@
 # SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
 # SPDX-License-Identifier: MIT OR GPL-2.0-only
 #
-# Checks a pull request body against AGENTS.md, "Patches and commits": at most four
+# Checks a pull request body against the pr-prep skill: at most four
 # paragraphs outside its fenced examples, the first one the failure or the need in one plain sentence, no em dash, no "Test plan" section,
 # no failure named as a flake (untraced.sh), and a body tied to an issue in words GitHub
 # does not act on (Part of, Top of, Bottom of, Answers, reported as) closes one or names

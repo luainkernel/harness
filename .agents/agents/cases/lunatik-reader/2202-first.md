@@ -4,7 +4,7 @@ source: >-
   luainkernel/lunatik#2202, the body it opened with on 2026-10-25, on the kfuncs reachable from
   hand-written C stubs alone and a paragraph on how the call lowers into the frame: the maintainer
   could not tell what it was for until a program file handing UDP frames to a kernel script showed
-  it (harness/AGENTS.md, *Patches and commits*).
+  it (harness/.agents/skills/pr-prep/SKILL.md).
 ---
 A compiled program cannot defer a packet to Lua: `bpf_luaxdp_run` and `bpf_luatc_run`, the kfuncs that run a kernel Lua runtime's callback, are reachable from hand-written C stubs alone.
 

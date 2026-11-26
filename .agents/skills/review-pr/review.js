@@ -185,7 +185,8 @@ answered removed.${a.smallest ? `
 The implementer's own reading, which yours is not bound by: ${JSON.stringify(a.smallest)}` : ''}${a.body && !a.pr ? `
 The pull request opens with this body once the build passes; read it with the commit bodies, and your answer's
 body is this text with what the final diff, your fixups included, makes untrue, or ${H}tools/checks/pr-body.sh names
-over it and the files the change carries, corrected, the rest as it stands:
+over it and the files the change carries, corrected as ${H}.agents/skills/pr-prep/SKILL.md says a body is written, the
+rest as it stands:
 ${JSON.stringify(a.body)}` : ''}${a.title && !a.pr ? `
 It opens with the title ${JSON.stringify(a.title)}, and your answer's title is that one with what the final diff
 makes untrue, or ${H}tools/checks/title.sh names, rewritten.` : ''}
@@ -289,8 +290,8 @@ const READ = (title, text) => `
 The body of ${a.pr ? `pull request #${a.pr}` : `the pull request the branch \`${a.branch}\` opens`} on ${github} is
 the file ${bodyFile}, which you write first with your Write tool, exactly as this text: ${JSON.stringify(text)}.${title ? `
 Its title is ${JSON.stringify(title)}.` : ''}
-The checkout is at \`${repo}\`; the rules a title and a body are held to are \`${repo}/${H}AGENTS.md\`, "Patches and
-commits", and \`${repo}/${H}.agents/skills/pr-prep/SKILL.md\`.
+The checkout is at \`${repo}\`; the rules a title and a body are held to are
+\`${repo}/${H}.agents/skills/pr-prep/SKILL.md\`.
 `
 
 const READ_OUT = { type: 'object', properties: {
@@ -311,8 +312,7 @@ body below, and a reader with none of the change's history failed them on the pr
 it could not follow and the rule it holds them to. The change is the branch \`${a.branch}\` at \`${tip}\` over
 \`${a.base}\`, in the checkout at \`${repo}\`: read its commits, \`git -C ${repo} log ${a.base}..${tip}\`, and the files
 of its diff, \`git -C ${repo} diff --name-only ${a.base}...${tip}\`, each as \`git -C ${repo} show ${tip}:<file>\`, and the
-rules a title and a body are held to, \`${repo}/${H}.agents/skills/pr-prep/SKILL.md\` and \`${repo}/${H}AGENTS.md\`, "Patches
-and commits".
+rules a title and a body are held to, \`${repo}/${H}.agents/skills/pr-prep/SKILL.md\`.
 
 Rewrite what each problem quotes so that the reader can follow it and its rule holds, true to the change as its commits
 and its diff show it, and keep the rest as it stands, the issues it closes and what it says of each example among it.
