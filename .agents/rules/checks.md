@@ -379,8 +379,9 @@ indexes, one 75 bytes under the ceiling and one past it.
 
 `question.sh` reads a message the maintainer sends for a question, a question mark or an opening
 interrogative, and `.claude/hooks/on-prompt.sh`, run as the message arrives (`UserPromptSubmit`), tells
-the turn that it answers and changes nothing, and reads no background task's notification, which reaches
-the turn as a prompt the maintainer did not write: "what is left?" drew seven implement-issue workflows that
+the turn that it answers and changes nothing, and reads no background task's notification and no
+subagent's hand-back, `<agent-message from=...>`, which reach the turn as prompts the maintainer did not
+write: "what is left?" drew seven implement-issue workflows that
 had to be stopped, when it asked for the list. An order closed by a confirmation tag, "...; entendido?", is a
 question too, and the check reads it as one: #1865 asked it to read such a message as an order, and the
 maintainer closed it, since the tag asks whether the order was understood.

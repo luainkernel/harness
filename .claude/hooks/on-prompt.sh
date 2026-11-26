@@ -17,8 +17,8 @@ command -v jq > /dev/null || exit 0
 prompt=$(mktemp) || exit 0
 trap 'rm -f "$prompt"' EXIT
 printf '%s' "$input" | jq -r '.prompt // empty' > "$prompt"
-# a background task's notification reaches the turn as a prompt, and the maintainer wrote none of it
-grep -q '^<task-notification>' "$prompt" && exit 0
+# a background task's notification and a subagent's hand-back reach the turn as a prompt, and the maintainer wrote neither
+grep -qE '^<(task-notification>|agent-message )' "$prompt" && exit 0
 
 checks="$(dirname "$0")/../../tools/checks"
 ctx=
