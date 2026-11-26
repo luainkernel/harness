@@ -33,6 +33,22 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
 - `agents` gives each agent its own model and effort, `{model, effort}` under `groom`, `implement`, `fix`,
   `review`, `build` and `github`. What it leaves out takes `model` and `effort`, the fix the implementer's,
   and the host's and GitHub's agents their definitions, sonnet, since they run and post and judge nothing.
+  The verifier runs on opus at high, whatever the launch names.
+- A launch that names no profile takes the row of its change as `effort` and `agents`, the groomer's cell
+  where the launch runs one: a change to a binding, the core or the compiler takes the second row, its
+  tests and documents included, unless its issue is labelled `severity: low`. xhigh is what a launch
+  names for one issue:
+
+  | The change | groom | implement | review |
+  |---|---|---|---|
+  | tests, documents, the harness, or an issue labelled `severity: low` | opus, high | opus, high | opus, high |
+  | a binding, the core, the compiler | fable, high | opus, high | fable, high |
+
+  An implementer on opus at xhigh averaged 109 requests over a mean context of 232k tokens, one at high
+  34 over 115k, in the four weeks luainkernel/harness#6 measured, where the launches took xhigh for the
+  harder issues: the table stands once the first ten runs under it are read with `tools/usage.sh`
+  against those figures, beside the pull requests merged, the maintainer's comments on each and the
+  review's fixups.
 - A groomer runs only when `agents.groom` names one. An issue is a request, and the groomer asks whether it
   should be done before anyone builds it: it weighs the issue's merit and its approach against the smallest
   shape and the kernel's own answer, and its verdict either settles the API in the issue under `Update:`
@@ -117,7 +133,7 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
 - Where gh is absent (`gh: false`), the agents read GitHub through curl and write nothing to it, since no
   guard reads a write through curl: the implementer opens no pull request, and the filing stage leaves
   every entry `unfiled` for the session.
-- Before the filing, an agent of the review's model and effort reads the premise of each entry of
+- Before the filing, the verifier reads the premise of each entry of
   `findings_left` in the tree the run leaves, as the project builds it and as the project's AGENTS.md asks:
   one the tree shows false is filed nowhere and comes back as `refuted`, with the line that refutes it,
   which the hand-back carries. #2556 was filed on how upstream Lua converts a float, a value the kernel's
