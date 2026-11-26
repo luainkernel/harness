@@ -118,7 +118,7 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   and on a review that kept no mechanism
   past the smallest shape without its source, and takes the `workflow-reviewed` label from the session. Its title and
   its body are the implementer's as the reviewer corrected them against the final diff and a reader with none of the
-  change's history passed them, the body saying of what it claims of the
+  change's history passed them, rewritten on its problems where it failed them, the body saying of what it claims of the
   examples and the host did not show, an example only loaded, a mode or a query not run, what the build
   said: each build reads that body against what it ran and answers each such claim as `unmet`. The body
   is drafted before either reads the branch, and #1948 and #1958 opened claiming what the review and the

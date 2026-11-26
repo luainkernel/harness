@@ -9,7 +9,8 @@
 // runs the host only when tools/checks/functional.sh names a file it reads past the validated head, or
 // past the base where none was, or an example the change touches was not run on the validated head.
 // Between them a reader with none of the change's history, the lunatik-reader agent, reads the title
-// and the body the run returns.
+// and the body the run returns, and a writer rewrites the ones it fails on its problems before it reads
+// them again.
 //
 // Every phase appends what it finds to a checkpoint file the moment it finds it, so a phase that
 // dies leaves its findings on disk and its successor continues from them instead of reading the
@@ -46,6 +47,8 @@
 //               build reads for what it claims of the examples
 //   title       the title it opens with, which the reviewer answers corrected as the body, and the
 //               reader reads in its prompt, before the body
+//   reads       how many times the reader reads the title and the body, a writer rewriting them between two reads,
+//               default 3; 1 for a case of the reader, whose verdict is the first read's
 //   reviewer    false to run the build phase alone, as implement-issue does after a fix, and with build
 //               false too the reader of body alone, as the pr-prep skill runs it on a body the session posts
 //   effort      the reviewer's reasoning effort, default "high"
@@ -70,8 +73,8 @@
 //               carries no harness, or false where nothing runs on the host
 //
 // It returns each phase's answer and findings_left, every finding a phase leaves as an issue,
-// with a title and a body that can be filed as they stand, and read, the reader's answer, with the
-// file that holds the body it read, the title it read and whether it passed.
+// with a title and a body that can be filed as they stand, and read, the reader's last answer, with the
+// file that holds the body it read, the title and the body it read and whether it passed.
 
 export const meta = {
   name: 'review-pr',
@@ -301,6 +304,30 @@ const READ_OUT = { type: 'object', properties: {
   verdict: { type: 'string', enum: ['pass', 'fail'] },
 }, required: ['title', 'restated', 'problems', 'remarks', 'verdict'] }
 
+const WRITE = (tip, title, text, problems) => `
+The pull request ${a.pr ? `#${a.pr}` : `the branch \`${a.branch}\` opens`} on ${github} goes out with the title and the
+body below, and a reader with none of the change's history failed them on the problems below, each quoting the words
+it could not follow and the rule it holds them to. The change is the branch \`${a.branch}\` at \`${tip}\` over
+\`${a.base}\`, in the checkout at \`${repo}\`: read its commits, \`git -C ${repo} log ${a.base}..${tip}\`, and the files
+of its diff, \`git -C ${repo} diff --name-only ${a.base}...${tip}\`, each as \`git -C ${repo} show ${tip}:<file>\`, and the
+rules a title and a body are held to, \`${repo}/${H}.agents/skills/pr-prep/SKILL.md\` and \`${repo}/${H}AGENTS.md\`, "Patches
+and commits".
+
+Rewrite what each problem quotes so that the reader can follow it and its rule holds, true to the change as its commits
+and its diff show it, and keep the rest as it stands, the issues it closes and what it says of each example among it.
+Write the body to a file of your own under ${a.scratch}/ and run, in \`${repo}\`, \`bash ${H}tools/checks/pr-body.sh <file>
+<the files that diff lists>\`${title ? ` and \`bash ${H}tools/checks/title.sh '<title>'\`` : ''}, and rewrite what they name.
+Change nothing in the checkout and write nothing to GitHub. Your answer is the title, empty where none is given, and the
+body.
+${title ? `Title: ${JSON.stringify(title)}
+` : ''}Body: ${JSON.stringify(text)}
+Problems: ${JSON.stringify(problems, null, 2)}
+`
+
+const WRITE_OUT = { type: 'object', properties: {
+  title: { type: 'string' }, body: { type: 'string' },
+}, required: ['title', 'body'] }
+
 const LEFT = { type: 'array', items: { type: 'object', properties: {
   title: { type: 'string' }, body: { type: 'string' }, severity: { type: 'string', enum: ['high', 'medium', 'low'] },
   contract: { type: 'string', description: 'what the documentation promises for the stimulus, quoted with its file, or "undocumented"; the severity is read against it' },
@@ -376,20 +403,33 @@ if (a.reviewer !== false) {
 }
 
 // the title and the body the run returns, the ones the reviewer corrected or, in a run of neither phase, the ones
-// handed, are read by a reader with none of the change's history
+// handed, are read by a reader with none of the change's history, and rewritten on what it fails them for
 const handed = a.reviewer !== false ? !a.pr && (reviewer?.body || a.body) : a.build === false && a.body
 const titled = a.reviewer !== false ? !a.pr && (reviewer?.title || a.title) : a.build === false && a.title
+const tip = reviewer?.tip || a.head
 let read = null
 if (handed) {
   phase('Read')
-  const answer = await agent(READ(titled, handed), {
-    label: `read:${a.pr || a.branch}`, phase: 'Read', agentType: 'lunatik-reader', effort: 'high', schema: READ_OUT,
-  })
-  read = { passed: answer?.verdict === 'pass', file: bodyFile, title: titled || '', answer }
+  let title = titled || '', text = handed
+  for (let n = 1; ; n++) {
+    const answer = await agent(READ(title, text), {
+      label: `read:${a.pr || a.branch}:${n}`, phase: 'Read', agentType: 'lunatik-reader', effort: 'high', schema: READ_OUT,
+    })
+    read = { passed: answer?.verdict === 'pass', file: bodyFile, title, body: text, answer }
+    if (read.passed || !answer || n >= (a.reads || 3))
+      break
+    const written = await agent(WRITE(tip, title, text, answer.problems), {
+      label: `write:${a.pr || a.branch}:${n}`, phase: 'Read', effort, schema: WRITE_OUT, ...model,
+    })
+    if (!written)
+      break
+    title = title && (written.title || title)
+    text = written.body
+  }
   if (!read.passed) {
     if (reviewer)
       reviewer.ready = false
-    log(`not ready: the reader of the body names ${(answer?.problems || []).map(p => JSON.stringify(p.quote)).join(', ') || 'nothing it answered'}`)
+    log(`not ready: the reader of the body names ${(read.answer?.problems || []).map(p => JSON.stringify(p.quote)).join(', ') || 'nothing it answered'}`)
   }
 }
 
@@ -399,7 +439,7 @@ if (a.build === false)
   log('build skipped: nothing runs on the host for this tree')
 else if (!a.validated || changed || unrun.length) {
   phase('Build')
-  build = await agent(BUILD(reviewer?.tip || a.head, !a.pr && (reviewer?.body || a.body)), { label: `build:${a.pr || a.branch}`, phase: 'Build', agentType: 'lunatik-host', schema: BUILD_OUT, ...builder })
+  build = await agent(BUILD(tip, !a.pr && (read?.body || reviewer?.body || a.body)), { label: `build:${a.pr || a.branch}`, phase: 'Build', agentType: 'lunatik-host', schema: BUILD_OUT, ...builder })
   if (build?.skipped)
     log(`build skipped: the branch moved past ${a.validated ? `${a.head}, validated,` : `its base ${a.base}`} only in what the build does not read`)
 } else {
