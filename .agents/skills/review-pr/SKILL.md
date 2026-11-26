@@ -62,6 +62,29 @@ comments, after a round. Follow it whole; this card is only the GitHub mechanics
 - Answer a maintainer's comment in its thread, `gh api -X POST repos/.../pulls/<N>/comments -F
   in_reply_to=<comment id> -F body=@file`, quoting the line it answers.
 
+# After the maintainer's review
+
+A branch the maintainer read is verified, after a round of his remarks, a rebase or a split, one of
+three ways, and none by a script written for the case. The head he read is the `commit_id` of the last
+review he wrote, not of one the session posted from his account under the LLM note, a reply among them,
+and the base he read is `git merge-base <head he read> <new base>`, where the new base is the one the
+branch sits on now.
+
+- A round of his remarks is `review.js` with `focus`, in his words, at the model and the effort an
+  implement-issue run gives the review of that change.
+- A rebase that means to change no content is proven by git,
+  `git range-diff <base he read>..<head he read> <new base>..<new head>`, and then built and run on the
+  host, `review.js` with `reviewed`, the head he read, and no `validated`. Its reviewer reads the hunks
+  range-diff marks changed and the files both the branch and the base's new commits touch, `comm -12`
+  of the sorted `git diff --name-only <base he read> <new base>` and
+  `git diff --name-only <new base> <new head>`, and nothing else; where both are empty,
+  `reviewer: false` runs the build alone.
+- A split that means to change no content, made on the base he read, is proven by an empty
+  `git diff <head he read> <top of the split>`, and then each of its branches, which merges on its
+  own, is built and run on the host: the top through `review.js` with `reviewed` and the base he read as
+  `base`, whose reviewer reads the commits range-diff marks changed in every branch of the split, and
+  each branch below it with `reviewer: false`.
+
 # Reviewing as an agent that can die
 
 A review that lives only in one agent's context is lost the moment the provider drops that agent,
