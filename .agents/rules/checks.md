@@ -189,7 +189,8 @@ check is, on the cases in `.agents/agents/cases/lunatik-reader/`, a file each, i
 where it has one and its source in a front matter over the body: the bodies the maintainer took pass,
 the sixth text of #2686 among them, and those he refused fail, #2527's first among them, beside the one
 he took in its place. A change to `lunatik-reader.md` or to the pr-prep skill runs them again before it
-merges, each through `review.js` with neither phase, as the pr-prep skill runs it, with `branch` a
+merges, each through `review.js` with neither phase, as the pr-prep skill runs it, with `reads` 1, so
+that no writer rewrites a body the case fails, `branch` a
 name that says neither the case's number nor its verdict, since the reader's prompt carries it,
 `body` the text under its front matter, `title` its title and `repo` a checkout of the change, and a
 case whose verdict differs is the change's to fix. The agent type is the definition the

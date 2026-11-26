@@ -103,7 +103,9 @@ card is the workflow that follows them (`Workflow({scriptPath: '.agents/skills/r
   diff with each function it touches whole, and answers each check's line; the build runs in the
   `lunatik-host` agent, which loads no CLAUDE.md, so `args.machine` says how this machine gets root.
   Between them the `lunatik-reader` agent reads the title and the body the run returns, with none of
-  the change's history, and the run is ready only on the ones it passed.
+  the change's history, and the run is ready only on the ones it passed. Those it fails go with its
+  problems to a writer that reads the branch's commits and the files of its diff, and the reader reads
+  what it writes, three reads at most (`args.reads`).
   Each phase returns a `schema`, so a crash loses one phase and the cache replays the ones that
   completed under `resumeFromRunId`.
 - A head the suite already passed is not built again by the review: the totals, the core

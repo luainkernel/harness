@@ -459,8 +459,8 @@ if (implemented?.branch && a.push !== false) {
     log(`the review of ${implemented.branch} did not run: ${e.message}`)
   }
   build = review?.build
-  // a rerun runs no reviewer, so its build is handed the body the reviewer corrected
-  const body = review?.reviewer?.body || implemented.body
+  // a rerun runs no reviewer, so its build is handed the body the reader last read, the reviewer's or a writer's
+  const body = review?.read?.body || review?.reviewer?.body || implemented.body
   head = build?.head || review?.reviewer?.tip || implemented.head
   while (review && !passed(build) && fixes.length < FIXES) {
     phase('Fix')
@@ -482,7 +482,7 @@ if (implemented?.branch && a.push !== false) {
   if (passed(build) && !missing.length && !unsourced.length && !unread && a.gh !== false) {
     phase('Open')
     const unrelated = fixes.filter(f => f && !f.caused).map(f => f.notes)
-    const title = review?.reviewer?.title || implemented.title
+    const title = review?.read?.title || review?.reviewer?.title || implemented.title
     const added = ADDED(implemented, unrelated, build?.loaded || [], build?.skipped, build?.unmet || [], unproved(build), build?.kernel)
     let read = review.read
     if (added) {
@@ -493,7 +493,7 @@ if (implemented?.branch && a.push !== false) {
         reviewArgs(implemented, { head, reviewer: false, build: false, body: composed.body, title })))?.read
     }
     if (read?.passed) {
-      const opened = await agent(OPEN({ ...implemented, title }, head, read.file), {
+      const opened = await agent(OPEN({ ...implemented, title: read.title || title }, head, read.file), {
         label: `open:${a.issue}`, phase: 'Open', agentType: 'lunatik-github', schema: OPENED, ...githubber,
       })
       pr = opened?.pr || 0
