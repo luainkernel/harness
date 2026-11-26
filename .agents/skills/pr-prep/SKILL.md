@@ -64,7 +64,8 @@ On top of it:
   `read.title` holds, and the hand-back carries both restatements. `pr-body-guard.sh` refuses the session's
   post of a body no reader of its workflow runs passed, read from the reader's own transcript, the text
   as it stands, so a body edited after the read is read again; one `review.js` returned ready was read
-  already.
+  already. A change to this skill or to `.agents/agents/lunatik-reader.md` runs the reader's cases
+  again before it merges, as `.agents/rules/checks.md` says of the reader.
 - The title and every subject of the branch are one plain clause of about 60 characters at most,
   with no subordinate clause, "where", "so", "whose", "as ...", the why left to the body:
   `bash tools/checks/title.sh '<title>'` and

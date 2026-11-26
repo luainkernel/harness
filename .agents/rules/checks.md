@@ -1,10 +1,12 @@
 ---
 paths:
   - "**/tools/**"
-  - "**/.agents/**"
   - "**/.claude/**"
   - "**/.github/**"
-  - "**/AGENTS.md"
+  - "**/.agents/harness.conf"
+  - "**/.agents/rules/**"
+  - "**/.agents/agents/lunatik-reader.md"
+  - "**/.agents/agents/cases/**"
 ---
 
 # Checks
