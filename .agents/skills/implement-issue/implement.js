@@ -16,16 +16,17 @@
 //   issue       the issue to implement
 //   github      the repository on GitHub, owner/name, where the issue is and the pull request opens;
 //               required, since a run on one project's issue writes to that project alone
-//   effort      the reasoning effort of every agent agents does not name, the GitHub's and the host's
-//               aside; required, since an agent that names none runs at the session's default
+//   effort      the reasoning effort of every agent agents does not name, the GitHub's, the host's and
+//               the verifier's aside; required, since an agent that names none runs at the session's
+//               default
 //   scratch     an absolute directory for worktrees and the checkpoints
 //   trunk       the branch the repository merges into, default master
 //   base        the branch the work starts from and the pull request targets, default trunk
 //   branch      the branch the implementer creates, default one it names for the change
 //   notes       what the launching session adds for the implementer, in its own words
 //   focus       what the review is for, default notes
-//   model       the model of every agent agents does not name, the GitHub's and the host's aside,
-//               default the session's
+//   model       the model of every agent agents does not name, the GitHub's, the host's and the
+//               verifier's aside, which runs on opus at high; default the session's
 //   agents      {model, effort} per agent, under groom, implement, fix, review, build and github, over
 //               model and effort; fix defaults to implement's, and build and github to their agents'
 //               definitions, sonnet. groom runs a groomer before the implementer, only when named
@@ -517,7 +518,7 @@ let refuted = []
 if (findings_left.length) {
   phase('Verify')
   const verified = await agent(VERIFY(findings_left, head, implemented.base), {
-    label: `verify:${a.issue}`, phase: 'Verify', schema: VERIFIED, ...reviewer,
+    label: `verify:${a.issue}`, phase: 'Verify', schema: VERIFIED, model: 'opus', effort: 'high',
   })
   const refutation = index => (verified?.verdicts || []).find(v => v.index === index && v.verdict === 'refuted')
   refuted = findings_left.flatMap((f, index) => refutation(index) ? [{ ...f, trace: refutation(index).trace }] : [])
