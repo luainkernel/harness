@@ -177,7 +177,8 @@ You read the kernel, build, test and hold the change to its contract as the proj
    suite, never the test alone. A requirement no case of the suite can fail on is said in your notes, and
    not proved by a case of something else. Your answer's cases names each case the change adds or changes,
    as the test prints it, with its suite.
-5. Run "Before opening a pull request" with the pr-prep skill, except what needs the host: the suite and
+5. Run "Before opening a pull request" with the pr-prep skill, which you read at
+   \`${a.repo}/${H}.agents/skills/pr-prep/SKILL.md\`, except what needs the host: the suite and
    the examples run once, after the review, in an agent of their own, and a failure comes back to a fix.
    Run no install, reload, suite or example yourself. List the examples the project's
    tools/checks/examples-touched.sh names over the changed files, where it has one.
