@@ -33,7 +33,7 @@ report() {
 	fi
 }
 
-for check in comment-style comment-siblings lua-style function-shape terminator rename-orphaned luals; do
+for check in comment-style comment-siblings lua-style function-shape terminator rename-orphaned luals inline-code; do
 	report "$check" "$(CHECK_BASE=$base bash "$dir/$check.sh" $files 2>&1)"
 done
 for check in $(project_conf advisory); do

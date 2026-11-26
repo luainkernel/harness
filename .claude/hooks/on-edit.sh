@@ -33,7 +33,7 @@ own=$dir/tools/checks
 git -C "$dir" check-ignore -q "$file" && exit 0
 
 # a tree older than a check lacks it, and runs the checks it has
-findings=$(for check in machine-leak comment-style comment-siblings lua-style luals; do
+findings=$(for check in machine-leak comment-style comment-siblings lua-style luals inline-code; do
 	[ -f "$shared/$check.sh" ] && bash "$shared/$check.sh" "$file" 2>&1
 done
 for check in $(project_conf edit "$dir"); do
