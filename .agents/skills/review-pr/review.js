@@ -5,10 +5,11 @@
 
 // A review as a workflow in two phases, each short enough to survive a provider error and resumable
 // from the cache when one does not: a reviewer that reads the change once, through the packet the
-// machine gathers for it, and a build that runs the host only when tools/checks/functional.sh names a
-// file it reads past the validated head, or past the base where none was, or an example the change
-// touches was not run on the validated head. Between them a reader with none of the change's history,
-// the lunatik-reader agent, reads the title and the body the run returns.
+// machine gathers for it or, past a head the maintainer read, what git shows moved, and a build that
+// runs the host only when tools/checks/functional.sh names a file it reads past the validated head, or
+// past the base where none was, or an example the change touches was not run on the validated head.
+// Between them a reader with none of the change's history, the lunatik-reader agent, reads the title
+// and the body the run returns.
 //
 // Every phase appends what it finds to a checkpoint file the moment it finds it, so a phase that
 // dies leaves its findings on disk and its successor continues from them instead of reading the
@@ -30,6 +31,9 @@
 //               of the issue, as implement-issue's implementer writes them; the build plants each once
 //               the suite passed
 //   focus       what this round is for, in the maintainer's words
+//   reviewed    the head the maintainer read, when head is a rebase or a split of it meant to change no
+//               content: the reviewer reads the range-diff of that head against head and the files both
+//               the branch and the base's new commits touch, in place of the packet, and nothing else
 //   issue       the issue the change answers, whose requirements the review holds the final diff to;
 //               a pull request's are the issues its body closes
 //   update      the Update: a groomer settled for that issue, which binds as the issue does and
@@ -210,6 +214,24 @@ each one written again in the checkpoint.
 ${JSON.stringify(a.defects, null, 2)}` : ''}
 `
 
+// a head the maintainer read was reviewed whole, so a rebase or a split of it is read where it moved
+const REREAD = COMMON + `
+PHASE: REVIEW of a rebase or a split of \`${a.reviewed}\`, the head the maintainer read, which was reviewed
+whole. In your worktree at \`${a.head}\`, where <old> is the base he read, \`git merge-base ${a.reviewed} ${a.base}\`,
+read what moved, whole: \`git range-diff <old>..${a.reviewed} ${a.base}..${a.head}\`, and the files both the
+branch and the base's new commits touch,
+\`comm -12 <(git diff --name-only <old> ${a.base} | sort) <(git diff --name-only ${a.base} ${a.head} | sort)\`.
+Read the hunks range-diff marks changed and, in each of
+those files, where the branch's hunks meet the base's new code, \`git diff ${a.base} ${a.head} -- <file>\`, and
+nothing else: no packet, no thread, no issue. Your answer's smallest, coverage and requirements answer what
+those show alone, and its findings what they show wrong, a conflict resolved into other code, a commit that no
+longer stands alone, a message the move made untrue. A commit range-diff marks \`<\` and pairs with none left
+the branch: the new base carries it when a pull request below merged, as \`git log --oneline <old>..${a.base}\`
+shows, and the move dropped it otherwise.
+
+${FIXUP} Its SHA goes in the checkpoint line.
+`
+
 const unrun = (a.examples || []).filter(e => !(a.validated?.examples || []).includes(e))
 const since = a.validated ? a.head : a.base
 // functional.sh says what this tree's suite reads, not what a build of another tree or of a tool does
@@ -347,7 +369,7 @@ const BUILD_OUT = {
 let reviewer = null
 if (a.reviewer !== false) {
   phase('Review')
-  reviewer = await agent(REVIEW, { label: `review:${a.pr || a.branch}`, phase: 'Review', effort, schema: FINDINGS, ...model })
+  reviewer = await agent(a.reviewed ? REREAD : REVIEW, { label: `review:${a.pr || a.branch}`, phase: 'Review', effort, schema: FINDINGS, ...model })
 }
 
 // the title and the body the run returns, the ones the reviewer corrected or, in a run of neither phase, the ones
