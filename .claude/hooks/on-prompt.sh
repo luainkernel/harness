@@ -7,9 +7,9 @@
 # it asks rather than directs, adds to the turn that it answers and changes nothing, and through
 # tools/checks/table.sh and, when it asks for a table, how much a cell holds for the table to be drawn,
 # and reads the session's transcript through tools/checks/context.sh and, when its last request carried
-# more than 300k tokens of context, that the session writes a hand-off at the next boundary and says it
-# can be cleared; the checks are plain path-taking scripts (.agents/rules/checks.md), this only
-# translates.
+# more than 300k tokens of context, that the session writes a hand-off at the next boundary and ends
+# the reply on the clear notice tools/checks/clear-notice.sh prints; the checks are plain path-taking
+# scripts (.agents/rules/checks.md), this only translates.
 
 input=$(cat)
 command -v jq > /dev/null || exit 0
@@ -27,8 +27,12 @@ ctx=
 [ -n "$(bash "$checks/table.sh" "$prompt")" ] &&
 	ctx="${ctx:+$ctx }"'[table] A table in the reply is drawn as one only while it fits: Claude Code wraps each cell to the width its column gets, and when a cell runs past four lines, or the table past the terminal, it prints every row as "Header: value" lines instead, which is not the table asked for. Each cell holds a few words, under 40 characters, in five columns at most; what does not fit goes in a list below the table, keyed by the first column.'
 context=$(bash "$checks/context.sh" "$(printf '%s' "$input" | jq -r '.transcript_path // empty')")
-[ -n "$context" ] &&
-	ctx="${ctx:+$ctx }[handoff] This session's last request carried $((context / 1000))k tokens of context, and every request after it carries them again. At the next boundary, a run returned or a pull request merged, write the hand-off to ${CLAUDE_PROJECT_DIR:-.}/scratch/handoff/${CLAUDE_PID:+$CLAUDE_PID-}$(printf '%s' "$input" | jq -r '.session_id').md: the open decisions by their IDs, the runs in flight with their scratch directories and the pull requests that wait; then say in the reply that the session can be cleared. The session started after the clear is shown the hand-offs there."
+if [ -n "$context" ]; then
+	handoff=${CLAUDE_PROJECT_DIR:-.}/scratch/handoff/${CLAUDE_PID:+$CLAUDE_PID-}$(printf '%s' "$input" | jq -r '.session_id').md
+	ctx="${ctx:+$ctx }[handoff] This session's last request carried $((context / 1000))k tokens of context, and every request after it carries them again. At the next boundary, a run returned or a pull request merged, write the hand-off to $handoff: the open decisions by their IDs, the runs in flight with their scratch directories and the pull requests that wait; then end the reply on these lines, the clear notice, exactly, a blank line above them, and say nowhere else that the session can be cleared:
+$(bash "$checks/clear-notice.sh" --block "$handoff")
+The session started after the clear is shown the hand-offs there."
+fi
 [ -n "$ctx" ] || exit 0
 
 jq -cn --arg ctx "$ctx" \

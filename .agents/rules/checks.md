@@ -379,8 +379,8 @@ all, in four sessions.
 request carried, what it read from the cache, wrote to it and sent uncached, and `on-prompt.sh` tells a
 turn past 300k tokens to write a hand-off at the next boundary, a run returned or a pull request merged,
 to the project's `scratch/handoff/` under its process and the session's id: the open decisions by their IDs, the runs in
-flight with their scratch directories and the pull requests that wait, and then to say the session can
-be cleared. Each request carries the whole thread again: from 2026-10-28 to 2026-11-25 the sessions' own
+flight with their scratch directories and the pull requests that wait, and then to end the reply on the
+clear notice `clear-notice.sh` prints. Each request carries the whole thread again: from 2026-10-28 to 2026-11-25 the sessions' own
 thread weighed 33.8% of all the project's requests, 77% of its requests past 300k tokens, and the
 maintainer chose the hand-off over a compaction at the boundary, whose summary is all that survives of
 what the session corrected (luainkernel/harness#6, D175). A compaction's boundary stands for the
@@ -550,6 +550,18 @@ does not open with a TL;DR of five lines at most, since the maintainer asked for
 the conventions settle: the finding is filed and the reply says its number. It names one that asks
 whether to post the label, the `Update:` or an issue an implement-issue run returned too, which the
 maintainer ordered posted always.
+
+`clear-notice.sh` reads the same reply in the same hook, with the session's hand-off, the path
+`on-prompt.sh` names for its process and its session, and its transcript: a reply that says the
+session can be cleared, "a sessão pode ser limpa", "can be cleared", or that ends the turn which wrote
+the hand-off, written since the transcript's last prompt, ends on the clear notice, a rule, the heading
+`# 🧹🧹🧹 PODE LIMPAR A SESSÃO 🧹🧹🧹`, the steps `/clear` and `continue`, the hand-off's path and a
+rule, the block its `--block` prints and `on-prompt.sh`'s `[handoff]` hands the session to copy. The
+maintainer asked for the notice to be "algo mais visual", and then read it in bold inside a reply, "a
+comunicacao visual do pedido de clear nao foi respeitada". It names a reply that says so of a hand-off
+never written too, since the session the clear starts has nothing to continue. Of the 3456 replies the
+sessions of the week to 2026-11-26 ended on, the phrase reads 13: eleven that announced the clear, none
+of them on the block, and two decisions that described the mechanism.
 
 `.claude/hooks/on-compact.sh`, run as a session starts again after a compaction (`SessionStart`, matcher
 `compact`), prints into its context the rules a compacted session broke, each read from AGENTS.md or
