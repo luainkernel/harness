@@ -194,8 +194,10 @@ that no writer rewrites a body the case fails, `branch` a
 name that says neither the case's number nor its verdict, since the reader's prompt carries it,
 `body` the text under its front matter, `title` its title and `repo` a checkout of the change, and a
 case whose verdict differs is the change's to fix. The agent type is the definition the
-session's checkout links under `.claude/agents/`, the one in its mount, so a change to the definition is
-read with that mount at the change.
+session's checkout links under `.claude/agents/`, the one in its mount, so the cases of a change to the
+definition run from a session started for them in a worktree of the project whose mount is at the change:
+the checkout the sessions start in follows master, and its mount moved to the change would hand every
+session opened on it a reader no review passed.
 
 `title.sh` holds a pull request title or a commit subject to the shape AGENTS.md, *Patches and
 commits*, gives a subject, `<area>: <what changes for whoever uses it>` in one plain clause, which the
