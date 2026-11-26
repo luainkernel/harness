@@ -184,7 +184,8 @@ maintainer stated, quoted (AGENTS.md, "Deciding what to change"), and one withou
 answered removed.${a.smallest ? `
 The implementer's own reading, which yours is not bound by: ${JSON.stringify(a.smallest)}` : ''}${a.body && !a.pr ? `
 The pull request opens with this body once the build passes; read it with the commit bodies, and your answer's
-body is this text with what the final diff, your fixups included, makes untrue corrected, the rest as it stands:
+body is this text with what the final diff, your fixups included, makes untrue, or ${H}tools/checks/pr-body.sh names
+over it and the files the change carries, corrected, the rest as it stands:
 ${JSON.stringify(a.body)}` : ''}${a.title && !a.pr ? `
 It opens with the title ${JSON.stringify(a.title)}, and your answer's title is that one with what the final diff
 makes untrue, or ${H}tools/checks/title.sh names, rewritten.` : ''}
