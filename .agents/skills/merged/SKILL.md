@@ -14,11 +14,15 @@ ready, its fixups folded and pushed, and the CI passed on the head that carries 
 pass goes on that head as a commit status, and the merge names the head, so a push after either is
 refused, by `merge-guard.sh` and by GitHub:
 
-    gh api -X POST repos/<owner>/<repo>/statuses/<head> -f state=success -f context=agent-review -f description='review.js: ready'
+    bash tools/agent-review.sh <owner>/<repo> <head> <file that holds the token>
     gh api -X PUT repos/<owner>/<repo>/pulls/<N>/merge -f merge_method=rebase -f sha=<head>
 
-A fold moves the head and not the tree: the status goes on the folded head when its tree is the one
-the review returned, `git rev-parse <tip>^{tree}` against `<head>^{tree}`. One that
+`tools/agent-review.sh` sets the status only on the review's own record, the newest reviewer at `high`
+effort or above of a tip whose tree is the head's, when it returned ready, so a fold, which moves the
+head and not the tree, keeps it, and a later review that returns it not ready withdraws it. It runs as a command of its own, spelled as the `permissions.allow` rule that
+allows it spells it, with no `GH_TOKEN=` before it, which no rule matches past:
+the auto mode classifier refuses the session's own write of the status where the conversation holds
+no order of the maintainer's, as after a `/clear`. One that
 `tools/complexity.sh <N> <owner>/<repo>` calls small merges on a proof in place of the review: a
 comment on it, opened by GitHub's note that an LLM wrote it, naming its head beside the command that
 shows the defect before, its result after and the case still refused, or, for text no command reads,
@@ -107,8 +111,10 @@ A pull request of the harness's own repository reaches a project only through th
 points at. Once one merges, its `agent-review` status goes on the commit the merge put on the harness's
 trunk, the `sha` the merge answered: the rebase gave the reviewed head a new SHA, and a bump is read on
 that one. A small one merged on its proof takes the status too, its description naming the proof.
+`tools/agent-review.sh` reads which of the two the merged pull request was, through the record of the
+review of its head or the comment that proves it, and refuses a commit that merged on neither:
 
-    gh api -X POST repos/<owner>/<harness>/statuses/<merged commit> -f state=success -f context=agent-review -f description='review.js: ready'
+    bash tools/agent-review.sh <owner>/<harness> <merged commit> <file that holds the token>
 
 Each project that mounts the harness then takes a pull request of its own that moves the mount to the
 merged commit, its trunk's tip, and nothing else, a harness pull request of that project:

@@ -59,14 +59,6 @@ passed() {
 	[ -n "$checks" ] && ! printf '%s\n' "$checks" | grep -vqxE 'success|skipped|neutral'
 }
 
-# whether the pull request <number> of the repository <repo> adds what complexity.sh calls small, and a
-# comment of the account <login> on it names its head <sha>, the proof a mechanical change merges on
-proved() {
-	[ "$(GH_TOKEN=$token bash "$checks/../complexity.sh" "$2" "$1" 2>/dev/null)" = "complexity: small" ] &&
-		github "repos/$1/issues/$2/comments?per_page=100" --paginate --jq ".[] | select(.user.login == \"$3\") | .body" |
-		grep -qF "${4:0:9}"
-}
-
 # the repository and the commit, "<owner>/<name> <sha>", the pull request of the repository <repo> whose head
 # is <head> pins when its one file, <path>, is a submodule; nothing for any other
 pinned() {
@@ -122,7 +114,7 @@ while IFS= read -r merge; do
 		reviewed "$upstream" "$pin" || refuse "${pin:0:9}, which #$number pins, carries no agent-review status"
 		passed "$upstream" "$pin" || refuse "the CI of ${pin:0:9}, which #$number pins, has not passed"
 	else
-		reviewed "$repo" "$head" || proved "$repo" "$number" "$login" "$head" ||
+		reviewed "$repo" "$head" || GH_TOKEN=$token gh_proved "$repo" "$number" "$login" "$head" ||
 			refuse "the head of #$number, ${head:0:9}, carries no agent-review status, nor a proof that names it"
 	fi
 	passed "$repo" "$head" || refuse "the CI of ${head:0:9} has not passed"

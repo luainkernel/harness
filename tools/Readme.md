@@ -3,6 +3,17 @@
 Each GitHub tool here reads the repository the checkout's `origin` names, and `issues.sh`,
 `issue-since.sh` and `pr-status.sh` another one `LUNATIK_REPO` names.
 
+## agent-review.sh
+
+Sets the `agent-review` status `checks/merge-guard.sh` reads on a commit, and only where the record
+of a review passed it: the newest review of it, or of a commit of its tree, that `review.js` ran at
+`high` effort or above returned it ready, or, for a commit a merge put on the trunk, the pull request it
+merged was reviewed so or merged on its proof (the merged skill, sections 0 and 5).
+
+```sh
+bash tools/agent-review.sh luainkernel/harness 1fdae56 <token file>    # agent-review: 1fdae56ae: review.js: ready, wf_1a941637-11a at high
+```
+
 ## complexity.sh
 
 Prints the `complexity:` label each pull request carries, by the lines it adds: up to 40 `small`, up to
