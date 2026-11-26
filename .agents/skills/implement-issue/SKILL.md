@@ -146,4 +146,8 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   the agent a quiet run waits on and the last entry of its log. A dead run is resumed as the review-pr
   card says, from `journal.jsonl` and `resumeFromRunId`; the implementer's checkpoint is
   `<scratch>/issue-<name>-<N>/IMPLEMENT.md`, and the review's its own.
+- As the run returns, the session runs `tools/usage.sh` in the directory it started in, over the run's id
+  and those of the runs it resumed, and the hand-back carries the lines the tool prints first, one a run,
+  its agents, requests and tokens by kind and the pull request it opened: what a change of the harness
+  saves is read in those lines.
 
