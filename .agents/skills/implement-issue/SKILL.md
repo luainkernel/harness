@@ -60,7 +60,9 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   the requirement met.
 - The groomer judges merit before it builds or measures anything: who has the need, read in the tree and in
   the clones `LUNATIK_CONSUMERS` lists, and whether that consumer's own code, over the API it already holds,
-  meets it, which is a `decline` (AGENTS.md, *Deciding what to change*); its answer's `consumer` says so. The
+  meets it, which is a `decline` (AGENTS.md, *Deciding what to change*); its answer's `consumer` says so.
+  That nobody uses the route is no `decline` of a limit whose premise stands: it sets the issue's
+  priority, and the clause that documents the limit is among the groomer's shapes (the same section). The
   session brings a `reshape` with the merit first and, among the options of its decision, the shape that
   changes nothing in this tree whenever the groomer weighed one. #2442's groomer measured the VM for three
   hours, the session brought two decisions on how to build the bound, and the maintainer asked twice what

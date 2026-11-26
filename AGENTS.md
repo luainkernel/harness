@@ -231,8 +231,9 @@ named, not one discovered at that consumer's build.
   he takes in one read: `Decision:` and the question in a line, the options lettered `A)`, `B)`, each
   with what it changes, and `Recommendation:` with the option and its reason; "the maintainer's call"
   names who decides and not what. The options include the smallest change that makes the defect
-  unreachable, or, for a need a consumer states, the one that changes nothing in this tree, and each
-  larger one says what it buys over it. Each decision carries an ID, `D1`, `D2`,
+  unreachable, or, for a need a consumer states, the one that changes nothing in this tree, or, for a
+  limit nobody reaches, the clause that documents it, its issue kept open, and each larger one says
+  what it buys over it. Each decision carries an ID, `D1`, `D2`,
   kept until it is answered, so the answer is `D3 B`; a text that brings two or more opens with a table
   of them, the ID, the question, the options and the recommendation in a few words each, and gives below
   each ID what its options change. `tools/checks/decision.sh` names a decision without its ID, and two
@@ -287,6 +288,14 @@ named, not one discovered at that consumer's build.
   escape the core would have closed has a fix over the Lua that embedding holds; its groomer spent
   three hours and 337k tokens measuring the VM, proposed two lines of the fork that gave it new
   behaviour, and the maintainer had to ask twice what the core bought before the issue closed.
+* That nobody uses a route sets the priority of a limit it carries, never whether the limit is
+  documented or whether its issue stays open: "nao usarmos nao eh merito para nao documentar ou nao
+  manter em backlog, eh merito apenas para nao priorizarmos". A limit whose premise stands is written
+  where the API states its contract, and its issue waits in the backlog; a close is for a premise that
+  does not stand. The groomer of luainkernel/luaebpf#8, a `__le16`, `__le32` or `__le64` member read in
+  kernel order on a big-endian kernel, found it standing and recommended a close, since no host, test
+  or consumer reads such a member, and the maintainer had the limit written in `bpf.vmlinux.layout`'s
+  doc instead.
 
 ## Patches and commits
 
