@@ -495,6 +495,15 @@ gh_trunk() {
 	printf '%s\n' "${trunk:-$(project_trunk "$(input_cwd "$1")")}"
 }
 
+# whether the pull request <number> of the repository <repo> adds what complexity.sh calls small, and a
+# comment of the account <login> on it names its head <sha>, the proof a mechanical change merges on,
+# asked with GH_TOKEN
+gh_proved() {
+	[ "$(bash "$(harness_root)/tools/complexity.sh" "$2" "$1" 2> /dev/null)" = "complexity: small" ] &&
+		gh api "repos/$1/issues/$2/comments?per_page=100" --paginate --jq ".[] | select(.user.login == \"$3\") | .body" 2> /dev/null |
+		grep -qF "${4:0:9}"
+}
+
 # whether the gh write <post> publishes to one of the repositories <repos>, owner/name a line, as gh_self
 # names the checkout's, or to a fork of one, as one that names no other does
 gh_ours() {
