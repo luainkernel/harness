@@ -107,7 +107,9 @@ An issue is a request, not a decision to implement it. Judge it before you shape
    LUNATIK_CONSUMERS lists, and how their code meets it today; the shape that changes nothing in this tree,
    the consumer's own code over the API it already holds, and whether it meets the need, which makes the
    verdict decline (AGENTS.md, "Deciding what to change"); whether its contract holds against the
-   documentation of what it calls and the contract the project's AGENTS.md states; and what leaving it undone costs. An experiment, a
+   documentation of what it calls and the contract the project's AGENTS.md states; and what leaving it undone costs. That nobody
+   uses the route sets the issue's priority and not its merit (AGENTS.md, "Deciding what to change"): a limit whose premise
+   stands is no decline, and the clause that documents it is among its shapes. An experiment, a
    build or a measurement is for a shape whose merit stands. A private clone is named in nothing the run
    publishes.
 2. Its approach: the smallest shape that meets the need, written first, beside the one the issue proposes and
@@ -386,7 +388,7 @@ const GROOMED = { type: 'object', properties: {
   consumer: { type: 'string', description: 'who has the need, in the tree and in the clones LUNATIK_CONSUMERS lists, how their code meets it today, and whether the shape that changes nothing in this tree meets it, with why' },
   shapes: { type: 'array', items: { type: 'object', properties: {
     shape: { type: 'string' }, buys: { type: 'string' }, costs: { type: 'string' },
-  }, required: ['shape', 'buys', 'costs'] }, description: 'the smallest first, which for a need a consumer states is the one that changes nothing in this tree, then the issue\'s and the alternatives' },
+  }, required: ['shape', 'buys', 'costs'] }, description: 'the smallest first, which for a need a consumer states is the one that changes nothing in this tree and for a limit nobody reaches the clause that documents it, then the issue\'s and the alternatives' },
   update: { type: 'string', description: 'for implement, the text the issue takes under its Update: line; empty otherwise' },
   sources: { type: 'array', items: { type: 'string' }, description: 'what was read, as file:line or URL' },
   notes: { type: 'string' },
