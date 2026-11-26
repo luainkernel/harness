@@ -125,7 +125,7 @@ and its build is the one run on the host, in an agent of its own, before the pul
 does a shape a review proposes, and `implement-guard.sh` refuses a commit of code in the session's
 own thread that is not a fixup. An
 agent's context is paid for on every turn it takes, so the work that only waits on the host, or only
-writes to GitHub, runs in the agents `.agents/agents/` defines, which load no CLAUDE.md and run on a
+writes to GitHub, runs in agents `.agents/agents/` defines that load no CLAUDE.md and run on a
 smaller model, and a pull request body is read in one that loads none so that it knows nothing of the
 change. The implementer's prompt names the rule a step needs and restates
 none: every agent loads this file, and a rule pasted into a prompt is a copy the next change here
