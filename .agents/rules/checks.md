@@ -362,7 +362,9 @@ maintainer chose the hand-off over a compaction at the boundary, whose summary i
 what the session corrected (luainkernel/harness#6, D175). A compaction's boundary stands for the
 request it replaced, with the context the compaction left, so the prompt after one is not read at the
 size before it. `.claude/hooks/on-start.sh`, run as a session starts or is cleared (`SessionStart`,
-matchers `startup` and `clear`), lists the hand-offs there, newest first, to the session that starts.
+matchers `startup` and `clear`), lists the hand-offs there, newest first, to the session that starts,
+and says that a first message of only "continue" continues the newest: the maintainer resumes a cleared
+session with that one word, "prefiro dizer apenas 'continue'".
 
 A check ships proved, the way a test does: run it against the mistake it is for, and against a case
 it must pass. A condition that cannot fire reads as protection and is none, and nothing downstream

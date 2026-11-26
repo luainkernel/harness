@@ -12,7 +12,7 @@ dir=${CLAUDE_PROJECT_DIR:-.}/scratch/handoff
 handoffs=$(ls -t "$dir" 2> /dev/null)
 [ -n "$handoffs" ] || exit 0
 
-echo "Hand-offs a session left in $dir before it was cleared, newest first; the one this session continues is read before anything else:"
+echo "Hand-offs a session left in $dir before it was cleared, newest first; the one this session continues is read before anything else, and a first message that says only \"continue\" continues the newest:"
 while read -r name; do
 	printf '%s  %s\n' "$(date -r "$dir/$name" '+%F %R')" "$dir/$name"
 done <<< "$handoffs"
