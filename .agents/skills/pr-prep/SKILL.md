@@ -3,9 +3,9 @@ name: pr-prep
 description: Prepare a branch for a pull request and draft its title and body. Use when a branch is ready for a PR or when asked for a PR title and description.
 ---
 
-Run AGENTS.md, "Before opening a pull request" (every item) and the pull request prose rule
-under "Patches and commits": the title is a subject, `<area>: <what changes for whoever uses it>`,
-the body says what and why, nothing the commits already say, no "Test plan" section, no em dashes.
+Run AGENTS.md, "Before opening a pull request" (every item), and write the pull request's title and
+body as this skill says: the title is a subject, `<area>: <what changes for whoever uses it>`, and the
+body says what and why, nothing the commits already say, with no "Test plan" section and no em dashes.
 On top of it:
 
 - A fix answers a finding a script using the API as documented reaches; one whose stimulus is a
@@ -41,14 +41,25 @@ On top of it:
   files>` fails a body that leaves one of them unnamed, which `pr-body-guard.sh` runs when the pull request
   opens. An example is named as `examples/<name>` or as `<name>` in backticks, "`dnsblock`,
   `dnsdoctor` ran", never as a bare word, which the check does not read.
-- The body is written as AGENTS.md, "Patches and commits", says: the need, what the change lets a
-  script or a user do with the code they write in a fenced block that reads on its own, what changes
-  from today and what it costs; four short paragraphs at most, an example counting as none;
-  `bash tools/checks/pr-body.sh <file> <changed files>` before posting it. It names a first sentence
-  longer than any a merged body opened on, a change that reaches what a script writes or calls, under
-  the paths the `api` key of the project's `.agents/harness.conf` names, with no fenced block and no sentence on why no script is
-  shown, "Nothing a script calls changes", and the commits' words, a cell, a stimulus, a plan line, a
-  fixup, a squash, "this push", in a change that is not the tests' or the harness's.
+- The body explains the change to a reviewer who has not read its issue, in four short paragraphs
+  at most: the failure or the need in one plain sentence, what a script can do today and what
+  breaks; what the change lets a script or a user do, shown, where it reaches one, by the code they
+  write, in a fenced block that reads on its own, every name in it defined there; what changes from
+  today, the hand-written stub it replaces or the refusal it lifts; and what it costs or needs, a
+  kernel, a build step, a path that pays more. An example counts as no paragraph. How the problem was
+  found, what was measured and what was tried belong in the commits, and so do the words of that work,
+  a test's cells and plan lines, a fixup, a squash, the push, and so does the mechanism: the
+  body says what a reader of the API meets, not how the code reaches it. #2202 opened on "the kfuncs
+  ... are reachable from hand-written C stubs alone" and a paragraph on how the call lowers into
+  the frame, and the maintainer could not tell what it was for until a program file handing UDP
+  frames to a kernel script showed it. #2527's opened on one sentence of 86 words over a driver its
+  change never reaches, showed no code, and spoke of the cell and the plan line its test kept, with
+  every check passing it. `bash tools/checks/pr-body.sh <file> <changed files>` runs before posting
+  it, and names a first sentence longer than any a merged body opened on, a change that reaches what a
+  script writes or calls, under the paths the `api` key of the project's `.agents/harness.conf` names,
+  with no fenced block and no sentence on why no script is shown, "Nothing a script calls changes",
+  and the commits' words, a cell, a stimulus, a plan line, a fixup, a squash, "this push", in a change
+  that is not the tests' or the harness's.
 - A body the session posts, opening a pull request or editing one, is read first by a reader with none
   of the change's history, the `lunatik-reader` agent, which `review.js` runs with neither phase:
 
