@@ -78,6 +78,21 @@ seconds apart, so a CI job outlasts a mirror or a download that stops answering 
 bash tools/retry.sh 5 90 sudo apt-get install -yq sparse
 ```
 
+## usage.sh
+
+Measures where the tokens go, from the transcripts and the run records Claude Code keeps for the
+sessions started in the directory it runs in: by kind of run, by role, model and effort, the first
+request of each agent type, the requests that wrote the cache again with what each waited on, and the
+pull requests the runs opened. It prints sums and counts, never a transcript's text. Given runs, it
+prints a line for each first, the one an implement-issue run's hand-back carries. Its baseline is
+its tables over 2026-10-28 to 2026-11-26, the window luainkernel/harness#6 measured, posted in
+https://github.com/luainkernel/harness/issues/6#issuecomment-7193630153.
+
+```sh
+bash tools/usage.sh --since 2026-11-27    # every run and session since that day
+bash tools/usage.sh wf_fe988b09-8b6       # a run, its line first
+```
+
 ## watchdog.sh
 
 Runs a Lunatik script and stops it if the host loses the connectivity it had before the run,
