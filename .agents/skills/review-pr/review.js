@@ -295,8 +295,11 @@ const READ_OUT = { type: 'object', properties: {
   problems: { type: 'array', items: { type: 'object', properties: {
     quote: { type: 'string' }, rule: { type: 'string' }, why: { type: 'string' },
   }, required: ['quote', 'rule', 'why'] } },
+  remarks: { type: 'array', description: 'what else you would rather not read, which fails nothing', items: { type: 'object', properties: {
+    quote: { type: 'string' }, why: { type: 'string' },
+  }, required: ['quote', 'why'] } },
   verdict: { type: 'string', enum: ['pass', 'fail'] },
-}, required: ['title', 'restated', 'problems', 'verdict'] }
+}, required: ['title', 'restated', 'problems', 'remarks', 'verdict'] }
 
 const LEFT = { type: 'array', items: { type: 'object', properties: {
   title: { type: 'string' }, body: { type: 'string' }, severity: { type: 'string', enum: ['high', 'medium', 'low'] },
