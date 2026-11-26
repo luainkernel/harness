@@ -341,6 +341,19 @@ one runs past four lines or the table past the terminal, prints every row as `He
 reply that answered "numa tabela" with a paragraph in each cell reached the maintainer as no table at
 all, in four sessions.
 
+`context.sh` reads a session's transcript, the hook input's `transcript_path`, for the context its last
+request carried, what it read from the cache, wrote to it and sent uncached, and `on-prompt.sh` tells a
+turn past 300k tokens to write a hand-off at the next boundary, a run returned or a pull request merged,
+to the project's `scratch/handoff/` under the session's id: the open decisions by their IDs, the runs in
+flight with their scratch directories and the pull requests that wait, and then to say the session can
+be cleared. Each request carries the whole thread again: from 2026-10-28 to 2026-11-25 the sessions' own
+thread weighed 33.8% of all the project's requests, 77% of its requests past 300k tokens, and the
+maintainer chose the hand-off over a compaction at the boundary, whose summary is all that survives of
+what the session corrected (luainkernel/harness#6, D175). A compaction's boundary stands for the
+request it replaced, with the context the compaction left, so the prompt after one is not read at the
+size before it. `.claude/hooks/on-start.sh`, run as a session starts or is cleared (`SessionStart`,
+matchers `startup` and `clear`), lists the hand-offs there, newest first, to the session that starts.
+
 A check ships proved, the way a test does: run it against the mistake it is for, and against a case
 it must pass. A condition that cannot fire reads as protection and is none, and nothing downstream
 catches it. A command guard whose verdict the command alone decides keeps those cases in
