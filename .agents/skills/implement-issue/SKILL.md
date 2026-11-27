@@ -96,7 +96,8 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   another branch. #1538's review did not run, its script not found under a worktree the session had removed.
 - The review is `review.js` of the review-pr skill, run nested over the branch before any pull request
   exists, so a review runs one way whoever launches it. Its build phase is the change's one run of the
-  suite and of the examples it touches, in the `lunatik-host` agent, after the reviewer's fixups; where
+  suite and of the examples it touches, in the `lunatik-host` agent or the one `agents.build.type`
+  names, after the reviewer's fixups; where
   `tools/checks/functional.sh` names no file of that tip against the branch's base it runs nothing, and
   the pull request opens on the checks, saying so of each example: a sentence of a guide page on #2231
   went through a whole suite. A failure
