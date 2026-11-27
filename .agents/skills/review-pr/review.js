@@ -71,6 +71,9 @@
 //               review; an absolute path to this tree's where that tree carries none
 //   build       what the build phase runs instead of the project's build and suite, for a tree that
 //               carries no harness, or false where nothing runs on the host
+//   ceiling     the tokens of context past which tools/checks/ceiling-guard.sh stops the reviewer: it closes
+//               the checkpoint and returns, and the same prompt is launched again for one that reads it
+//               first; default none
 //
 // It returns each phase's answer and findings_left, every finding a phase leaves as an issue,
 // with a title and a body that can be filed as they stand, and read, the reader's last answer, with the
@@ -103,6 +106,17 @@ const repo = a.repo || '$(git rev-parse --show-toplevel)'
 const api = (path) => a.gh === false
   ? `curl -sS -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/${path}?per_page=100"`
   : `gh api --paginate ${path}`
+const RELAUNCHES = 3
+// ceiling-guard.sh reads the ceiling and the checkpoint on this line of the prompt
+const CEILING = a.ceiling ? `
+CONTEXT CEILING: ${a.ceiling} tokens, checkpoint ${checkpoint}
+Past that context ${H}tools/checks/ceiling-guard.sh refuses every call but your answer, one that names the
+checkpoint and git: write in the checkpoint where you are, the worktree and what is left, commit and push the
+fixups made, and answer with ceiling true, ready false and the rest as far as it stands; a reviewer launched in
+your place reads the checkpoint first.
+` : ''
+// the answer of a reviewer the ceiling stopped, which a launch that names none never asks for
+const STOPPED = a.ceiling ? { ceiling: { type: 'boolean', description: 'true when the context ceiling stopped you before the review was done; the checkpoint says where' } } : {}
 
 // a push from an agent is refused on some machines, so the fixup stays a commit and its launcher pushes
 const FIXUP = a.push === false
@@ -367,6 +381,7 @@ const FINDINGS = {
     title: { type: 'string', description: 'the title the pull request opens with, when one was handed to correct' },
     findings_left: LEFT,
     notes: { type: 'string' },
+    ...STOPPED,
   },
   required: ['ready', 'findings', 'fixups', 'tip', 'coverage', 'requirements', 'smallest', 'findings_left', 'notes'],
 }
@@ -400,7 +415,16 @@ const BUILD_OUT = {
 let reviewer = null
 if (a.reviewer !== false) {
   phase('Review')
-  reviewer = await agent(a.reviewed ? REREAD : REVIEW, { label: `review:${a.pr || a.branch}`, phase: 'Review', agentType: 'lunatik-reviewer', effort, schema: FINDINGS, ...model })
+  const prompt = (a.reviewed ? REREAD : REVIEW) + CEILING
+  const options = { label: `review:${a.pr || a.branch}`, phase: 'Review', agentType: 'lunatik-reviewer', effort, schema: FINDINGS, ...model }
+  reviewer = await agent(prompt, options)
+  // a reviewer the ceiling stopped is launched again on its prompt, which reads the checkpoint first
+  for (let n = 1; reviewer?.ceiling && n <= RELAUNCHES; n++)
+    reviewer = await agent(prompt, { ...options, label: `${options.label}:${n + 1}` })
+  if (reviewer?.ceiling) {
+    log(`the reviewer stopped at the ceiling ${RELAUNCHES + 1} times; the session reads ${checkpoint}`)
+    reviewer = null
+  }
 }
 
 // the title and the body the run returns, the ones the reviewer corrected or, in a run of neither phase, the ones

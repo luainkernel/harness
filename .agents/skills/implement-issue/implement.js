@@ -42,6 +42,10 @@
 //               the filing are the session's
 //   build       what the host runs in place of the suite and the examples, review.js's own argument:
 //               a change whose done criteria are a run of its own tool spells that run here
+//   ceiling     the tokens of context past which tools/checks/ceiling-guard.sh stops the groomer, the
+//               implementer, a fix and the reviewer, review.js's own argument too: the agent closes its
+//               checkpoint and returns, and the same prompt is launched again for one that reads it
+//               first; default none, so a pilot run names it
 //
 // What a phase does of the project's own, its build, its suite, its kernel readings and its contract, it
 // does as the project's AGENTS.md asks, which the groomer, the implementer, the fix and the verifier load:
@@ -92,6 +96,25 @@ const PUSH = a.push === false
   ? 'Push nothing: the session that launched this workflow pushes the branch.'
   : 'Push each commit as a command of its own, as you make it.'
 const DRAFT = base === trunk ? '' : ' It opens as a draft (`-F draft=true`), which GitHub will not merge before its base.'
+const RELAUNCHES = 3
+// ceiling-guard.sh reads the ceiling and the checkpoint on this line of the prompt
+const CEILING = (file) => a.ceiling ? `
+CONTEXT CEILING: ${a.ceiling} tokens, checkpoint ${file}
+Past that context ${H}tools/checks/ceiling-guard.sh refuses every call but your answer, one that names the
+checkpoint and git: write in the checkpoint where you are, the worktree and what is left, commit what is done and
+push it as this prompt says, and answer with ceiling true and the rest as far as it stands; an agent launched in
+your place reads the checkpoint first.
+` : ''
+// an agent the ceiling stopped is launched again on its prompt, which reads the checkpoint first
+const ceiled = async (prompt, file, options) => {
+  let answer = await agent(prompt + CEILING(file), options)
+  for (let n = 1; answer?.ceiling && n <= RELAUNCHES; n++)
+    answer = await agent(prompt + CEILING(file), { ...options, label: `${options.label}:${n + 1}` })
+  if (!answer?.ceiling)
+    return answer
+  log(`${options.label} stopped at the ceiling ${RELAUNCHES + 1} times; the session reads ${file}`)
+  return null
+}
 
 const GROOM = `
 You groom issue #${a.issue} of ${a.github} before anyone implements it, in a worktree of your own under ${a.scratch}/
@@ -323,6 +346,9 @@ ENTRIES:
 ${JSON.stringify(entries.map((entry, index) => ({ index, ...entry })), null, 2)}
 `
 
+// the answer of an agent the ceiling stopped, which a launch that names none never asks for
+const STOPPED = a.ceiling ? { ceiling: { type: 'boolean', description: 'true when the context ceiling stopped you before the task was done; the checkpoint says where' } } : {}
+
 const LEFT = { type: 'array', items: { type: 'object', properties: {
   title: { type: 'string' }, body: { type: 'string' }, severity: { type: 'string', enum: ['high', 'medium', 'low'] },
   contract: { type: 'string', description: 'what the documentation promises for the stimulus, quoted with its file, or "undocumented"; the severity is read against it' },
@@ -363,6 +389,7 @@ const IMPLEMENTED = {
     smallest: SMALLEST,
     findings_left: LEFT,
     notes: { type: 'string' },
+    ...STOPPED,
   },
   required: ['branch', 'head', 'base', 'commits', 'examples', 'defects', 'cases', 'title', 'body', 'smallest', 'findings_left', 'notes'],
 }
@@ -372,6 +399,7 @@ const FIXED = { type: 'object', properties: {
   caused: { type: 'boolean', description: 'false when the failure is not the change\'s' },
   findings_left: LEFT,
   notes: { type: 'string' },
+  ...STOPPED,
 }, required: ['head', 'caused', 'findings_left', 'notes'] }
 
 const COMPOSED = { type: 'object', properties: {
@@ -393,6 +421,7 @@ const GROOMED = { type: 'object', properties: {
   update: { type: 'string', description: 'for implement, the text the issue takes under its Update: line; empty otherwise' },
   sources: { type: 'array', items: { type: 'string' }, description: 'what was read, as file:line or URL' },
   notes: { type: 'string' },
+  ...STOPPED,
 }, required: ['verdict', 'merit', 'consumer', 'shapes', 'update', 'sources', 'notes'] }
 
 const PREPARED = { type: 'object', properties: {
@@ -415,7 +444,7 @@ const VERIFIED = { type: 'object', properties: {
 const reviewArgs = (impl, extra) => ({
   pr: 0, branch: impl.branch, base: impl.base, scratch: a.scratch, validated: null, examples: impl.examples, defects: impl.defects,
   focus: a.focus || a.notes, smallest: impl.smallest, body: impl.body, title: impl.title, effort: reviewer.effort, model: reviewer.model, push: a.push,
-  issue: a.issue, update: groomed?.update || '', cases: impl.cases,
+  issue: a.issue, update: groomed?.update || '', cases: impl.cases, ceiling: a.ceiling,
   agents: { build: (a.agents || {}).build }, build: a.build, repo: a.repo, mount: a.mount, github: a.github, machine: a.machine, gh: a.gh, ...extra,
 })
 // a run a.build spells in place of the suite may print no suite totals, and then its clean is the verdict
@@ -439,7 +468,7 @@ const unrun = (impl, build) => build?.skipped ? [] : (impl.examples || []).filte
 let groomed = null
 if ((a.agents || {}).groom) {
   phase('Groom')
-  groomed = await agent(GROOM, { label: `groom:${a.issue}`, phase: 'Groom', agentType: 'lunatik-groomer', schema: GROOMED, ...role('groom') })
+  groomed = await ceiled(GROOM, groomCheckpoint, { label: `groom:${a.issue}`, phase: 'Groom', agentType: 'lunatik-groomer', schema: GROOMED, ...role('groom') })
   if (groomed?.verdict !== 'implement') {
     log(`#${a.issue} ${groomed ? `groomed: ${groomed.verdict}` : 'not groomed: the groomer died'}; the session reads the result`)
     return { issue: a.issue, groomed, pr: 0 }
@@ -447,7 +476,7 @@ if ((a.agents || {}).groom) {
 }
 
 phase('Implement')
-const implemented = await agent(IMPLEMENT + (groomed ? GROOMING(groomed) : ''), {
+const implemented = await ceiled(IMPLEMENT + (groomed ? GROOMING(groomed) : ''), checkpoint, {
   label: `implement:${a.issue}`, phase: 'Implement', agentType: 'lunatik-implementer', schema: IMPLEMENTED, ...implementer,
 })
 
@@ -465,7 +494,7 @@ if (implemented?.branch && a.push !== false) {
   head = build?.head || review?.reviewer?.tip || implemented.head
   while (review && !passed(build) && fixes.length < FIXES) {
     phase('Fix')
-    const fix = await agent(FIX({ totals: build?.totals, clean: build?.clean, notes: build?.notes }, head), {
+    const fix = await ceiled(FIX({ totals: build?.totals, clean: build?.clean, notes: build?.notes }, head), checkpoint, {
       label: `fix:${a.issue}:${fixes.length + 1}`, phase: 'Fix', agentType: 'lunatik-implementer', schema: FIXED, ...fixer,
     })
     fixes.push(fix)

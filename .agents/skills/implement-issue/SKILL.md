@@ -49,6 +49,13 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   harder issues: the table stands once the first ten runs under it are read with `tools/usage.sh`
   against those figures, beside the pull requests merged, the maintainer's comments on each and the
   review's fixups.
+- `ceiling` holds the groomer, the implementer, a fix and the reviewer to that many tokens of context:
+  past it `tools/checks/ceiling-guard.sh` leaves the agent only its answer and the calls that write its
+  checkpoint, commit and push, and the run launches the same prompt again, three times at most, for an
+  agent that reads the checkpoint first. A launch that names none runs as before. It binds one pilot
+  run first, launched with `ceiling: 250000`, the line past which the workflow agents of the week to
+  2026-11-26 sent 54% of their input (luainkernel/harness#6, D192): its `tools/usage.sh` lines, its
+  relaunches and what each successor read again are read against the baseline before it binds every run.
 - A groomer runs only when `agents.groom` names one. An issue is a request, and the groomer asks whether it
   should be done before anyone builds it: it weighs the issue's merit and its approach against the smallest
   shape and the kernel's own answer, and its verdict either settles the API in the issue under `Update:`

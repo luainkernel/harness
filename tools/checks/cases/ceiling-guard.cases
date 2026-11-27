@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
+# SPDX-License-Identifier: MIT OR GPL-2.0-only
+# run in the directory ceiling-guard.fixture.sh builds, whose session transcript holds three agents' beside it
+# transcript: s.jsonl
+# agent: past
+block	make -C /w
+block	git status; ls /w
+block	sed -i s/a/b/ /w/x.c && git commit -am x
+pass	git add x.c && git commit -m "x: y"
+pass	cd /w && git push origin HEAD:refs/heads/b
+pass	git push -q "https://x-access-token:$(cat /t/key)@github.com/o/r.git" HEAD:refs/heads/b
+block	git status; cat /w/x.c
+pass	git -C /w rebase -i --autosquash HEAD~2
+pass	cat >> /scratch/issue-h-6/IMPLEMENT.md <<'EOF'\n- ceiling: the worktree /w, step 4 left\nEOF
+# tool: Write
+pass	{"file_path": "/scratch/issue-h-6/IMPLEMENT.md", "content": "- ceiling"}
+block	{"file_path": "/w/x.c", "content": "int x;"}
+# tool: Read
+pass	{"file_path": "/scratch/issue-h-6/IMPLEMENT.md"}
+block	{"file_path": "/w/x.c"}
+# tool: StructuredOutput
+pass	{"branch": "b", "ceiling": true}
+# tool: Bash
+# agent: under
+pass	make -C /w
+# agent: unset
+pass	make -C /w
+# agent: gone
+pass	make -C /w
+# agent:
+pass	make -C /w

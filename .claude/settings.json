@@ -109,6 +109,15 @@
             "command": "bash \"$CLAUDE_PROJECT_DIR/tools/checks/send-guard.sh\""
           }
         ]
+      },
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/tools/checks/ceiling-guard.sh\""
+          }
+        ]
       }
     ],
     "PostToolUse": [
