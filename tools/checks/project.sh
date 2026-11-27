@@ -25,7 +25,10 @@
 #   budget     the ceiling in bytes of the project's AGENTS.md (context-budget.sh)
 #   replaces   the conventions of CONVENTIONS.md the project keeps its own in place of, by the check that
 #              holds each: title (title.sh), decision (decision.sh), merge (merge-guard.sh), and license
-#              and blank (the header and the trailing blank line pre-commit reads)
+#              and blank (the header and the trailing blank line pre-commit reads), or by the step the
+#              workflows take for it, which a launch passes this value for: smallest (a mechanism past
+#              the small shape kept only with a source), complexity (the label) and mechanism (a change
+#              split into two pull requests)
 # A key the project leaves out gives nothing: no path, no check, no repository.
 
 # the checkout of the harness this file is in, through any link to it

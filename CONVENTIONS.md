@@ -1,16 +1,29 @@
 # Conventions of Lunatik and luaebpf
 
-The conventions Lunatik, luaebpf and this repository keep beside the rules of `AGENTS.md`: how a
-decision reaches the maintainer, how a commit is titled, what a pull request carries, which pull
-requests the session merges, the header a file opens with and the blank line it ends with. A
-project that mounts the harness imports this file beside `AGENTS.md` or keeps conventions of its own
-in their place, and the `replaces` key of its `.agents/harness.conf` names those of this file it
-keeps its own in place of, whose checks the shared scripts skip there, `title`, `decision`, `merge`,
-`license` and `blank` (`tools/checks/project.sh`); one that names none, the harness's own checkout
-among them, keeps every one. Each passage sits under the section of `AGENTS.md` it belongs to, and an
-issue or a pull request named by its number alone, #N, is luainkernel/lunatik's, as there.
+The conventions Lunatik, luaebpf and this repository keep beside the rules of `AGENTS.md`: what
+keeps a mechanism past the small shape, how a decision reaches the maintainer, how a commit is
+titled, what a pull request carries, which pull requests the session merges, the header a file opens
+with and the blank line it ends with. A project that mounts the harness imports this file beside
+`AGENTS.md` or keeps conventions of its own in their place, and the `replaces` key of its
+`.agents/harness.conf` names those of this file it keeps its own in place of, whose checks the shared
+scripts skip there, `title`, `decision`, `merge`, `license` and `blank`, and whose steps the shared
+workflows drop, `smallest`, `complexity` and `mechanism`, which each launch passes as the key spells
+them (`tools/checks/project.sh`); one that names none, the harness's own checkout among them, keeps
+every one. Each passage sits under the section of `AGENTS.md` it belongs to, and an issue or a pull
+request named by its number alone, #N, is luainkernel/lunatik's, as there.
 
 ## Deciding what to change
+
+What a mechanism past the small shape buys, the shape `AGENTS.md` writes down first, keeps it only
+when it is one of two things, with its source: a defect the small shape leaves reachable, traced, or a
+need the issue or the maintainer stated, quoted. Fewer reads, more robust, the kernel spells it so:
+none of them is either, and the review removes such a mechanism by a fixup. A kernel idiom comes with
+the reason the kernel has for it, which the body names. #2083 copied a device's name into a local array
+before `lua_pushstring`, which copies it already, for "a read that never walks past the array", which
+no trace showed; its review kept the copy for one read per byte, and the maintainer's review took it
+out. What `AGENTS.md`, this file or `.agents/rules/` asks of the code, quoted, the helper a grown
+function's new step is or the predicate a condition of three tests names, is part of the small shape
+and not past it, so no review is asked to make and remove the same helper.
 
 * A decision brought to the maintainer, in a reply as in an issue, a review or a pull request, is one
   he takes in one read: `Decision:` and the question in a line, the options lettered `A)`, `B)`, each
@@ -45,6 +58,11 @@ issue or a pull request named by its number alone, #N, is luainkernel/lunatik's,
   the titles before it he said "os titulos tao ruins e incompreensiveis". `tools/checks/title.sh` holds
   a subject or a title to the length and the clauses. A body only when there is something the diff
   does not say: a new API, a behaviour change, a non obvious rationale. No bullet list of every detail.
+* A pull request carries the `complexity:` label `tools/complexity.sh` prints for it, `small`,
+  `medium` or `large` by the lines it adds: the maintainer picks what he reviews by that label, the
+  small first, and asked on 2026-11-05 that every pull request take it. An implement-issue run returns
+  it among its writes, one opened otherwise takes it as it opens, and one a push moves past its tier,
+  a review's fixups among them, takes the new one in place of the old.
 * A pull request is one mechanism, read in one screen of diff and one paragraph of body. A body that
   needs a section per mechanism describes several pull requests: stack them, each on the one below.
   A defect master carries that the change fixes on the way, because it reaches the code the defect

@@ -29,6 +29,12 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   A shape of the API the session settled after filing goes into the issue, under an `Update:` line, before the
   launch, and the notes never restate it: the implementer reads both, and where they differ the review
   hands the difference back as a decision.
+- `replaces` is the `replaces` key of the project's `.agents/harness.conf` as it spells it, which the
+  session copies from it, since the workflow reads no file: where it names `smallest` the review keeps a
+  mechanism past the smallest shape with no source, `complexity` the pull request takes no
+  `complexity:` label, and `mechanism` nothing keeps the harness apart from the code or splits a change
+  in two, as CONVENTIONS.md asks only of a project that keeps it. A project whose key names none, the
+  harness's own checkout among them, passes none and keeps every convention.
 - `effort` has no default: an agent that names none runs at the session's default (AGENTS.md, "Skills").
 - `agents` gives each agent its own model and effort, `{model, effort}` under `groom`, `implement`, `fix`,
   `review`, `build` and `github`. What it leaves out takes `model` and `effort`, the fix the implementer's,
@@ -127,7 +133,7 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
 - The pull request opens, in the `lunatik-github` agent, only on a head that passed with every example
   the change touches run, or loaded where the host cannot drive it, or none where the build ran nothing,
   and on a review that kept no mechanism
-  past the smallest shape without its source, and takes the `workflow-reviewed` label from the session. Its title and
+  past the smallest shape without its source where the project keeps that convention, and takes the `workflow-reviewed` label from the session. Its title and
   its body are the implementer's as the reviewer corrected them against the final diff and a reader with none of the
   change's history passed them, rewritten on its problems where it failed them, the body saying of what it claims of the
   examples and the host did not show, an example only loaded, a mode or a query not run, what the build
@@ -165,7 +171,8 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   `Update:` of #2234's, #2238's and #2240's runs. The run returns `writes`, which the session posts in
   order as soon as it returns, without asking (AGENTS.md, *Deciding what to change*), each read back
   from GitHub: `label`, the `workflow-reviewed` label on the
-  pull request, and the `complexity:` label `tools/complexity.sh` printed for it; `append`, a blank line and the text or the file after the issue's body as GitHub has it
+  pull request, and the `complexity:` label `tools/complexity.sh` printed for it where the project keeps
+  that convention; `append`, a blank line and the text or the file after the issue's body as GitHub has it
   then, and for an entry the higher of the issue's severity label and the entry's; `create`, an issue with
   the title, the file as its body and `severity: <severity>`; `comment`, the text as a comment on the pull
   request, each requirement the review held it to with its verdict, the matrix and the line each case of

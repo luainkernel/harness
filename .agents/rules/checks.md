@@ -288,7 +288,8 @@ own write three times on 2026-11-26, as "Undermining Oversight", in a session st
 It reads the pass where Claude Code keeps it, under its projects directory: the newest reviewer, the
 agent a workflow labels `review:<pr or branch>`, of a run whose record names the repository in
 `args.github`, on a tip whose tree is the commit's, whose transcript ran at `high` effort or above,
-and whose answer in the run's `journal.jsonl` is ready with no mechanism kept without a source. It reads the
+and whose answer in the run's `journal.jsonl` is ready with no mechanism kept without a source, unless
+the run's `replaces` names `smallest`. It reads the
 reviewer's answer and not the run's, which a reader that fails the body turns to not ready, since
 `pr-body-guard.sh` holds the body to its reader as it opens. A commit a rebase merge put on the trunk,
 whose tree a base that moved changes, passes on the head of the pull request that merged as it, or on

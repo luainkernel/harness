@@ -164,17 +164,6 @@ chain took a macro signature, two wrappers and an API newer than the tree's floo
 small shape down first, even when the larger one is chosen, so the choice is a comparison and not a
 default.
 
-What a mechanism past the small shape buys keeps it only when it is one of two things, with its
-source: a defect the small shape leaves reachable, traced, or a need the issue or the maintainer
-stated, quoted. Fewer reads, more robust, the kernel spells it so: none of them is either, and the
-review removes such a mechanism by a fixup. A kernel idiom comes with the reason the kernel has for it,
-which the body names. #2083 copied a device's name into a local array before `lua_pushstring`, which
-copies it already, for "a read that never walks past the array", which no trace showed; its review
-kept the copy for one read per byte, and the maintainer's review took it out. What a convention of
-this file or of `.agents/rules/` asks of the code, quoted, the helper a grown function's new step is
-or the predicate a condition of three tests names, is part of the small shape and not past it, so no
-review is asked to make and remove the same helper.
-
 An issue states the need, its contract and the API the maintainer settled, the types, names and calls
 a script sees, and leaves the code's inner structure to whoever implements it: a sentence that
 prescribes a helper, a loop or a step two functions share is read as the spec, and weighed by no one.
@@ -310,11 +299,6 @@ named, not one discovered at that consumer's build.
   the replacement closes #N in the same breath: one left open is a claim about the queue nobody made.
   `tools/pr-status.sh` marks an open pull request a merged body names that way as superseded and
   keeps it out of `--ready`.
-* A pull request carries the `complexity:` label `tools/complexity.sh` prints for it, `small`,
-  `medium` or `large` by the lines it adds: the maintainer picks what he reviews by that label, the
-  small first, and asked on 2026-11-05 that every pull request take it. An implement-issue run returns
-  it among its writes, one opened otherwise takes it as it opens, and one a push moves past its tier,
-  a review's fixups among them, takes the new one in place of the old.
 * A mechanism of the harness that rests on a command an agent runs, a guard's record among them, is
   exercised under the auto mode the sessions run in before it merges: the classifier can refuse such
   a command, as it refused the reader's `body-read.sh --pass` on #2541's corrected body, and the guard
