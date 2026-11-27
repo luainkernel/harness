@@ -32,6 +32,8 @@ pr=$(gh api -X GET "repos/$repo/pulls" -f head="${repo%%/*}:$branch" -f state=cl
 		.head.repo.full_name == $repo and .head.ref == $branch and .head.sha == $tip) | .number)') || exit 1
 [ -n "$pr" ] || { echo "delete-branch: no merged pull request of $repo has $branch at $tip as its head" >&2; exit 1; }
 
-gh api -X DELETE "repos/$repo/git/refs/heads/$branch" || exit 1
+# the lease has GitHub refuse the delete once the branch moved past the tip the checks above read
+git -C "$(dirname "$(readlink -f "$0")")" -c credential.helper= -c 'credential.helper=!gh auth git-credential' \
+	push -q --force-with-lease="refs/heads/$branch:$tip" "https://github.com/$repo.git" ":refs/heads/$branch" || exit 1
 echo "delete-branch: $repo $branch deleted at $tip, the head #$pr merged with"
 

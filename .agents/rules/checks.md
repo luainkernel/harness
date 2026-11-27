@@ -305,11 +305,11 @@ the one its HEAD pins checked out there, decides the merge with no classifier, a
 `tools/delete-branch.sh` is how the session deletes a merged branch: the classifier refuses its
 `git push --delete` of a branch no autoMode rule names, and the deletes went to the maintainer as
 scripts under `/tmp` until he answered, on 2026-11-27, "vc continua me pedindo para rodar esse script
-para apagar branches, vc ja deveria ter resolvido isso! isso nao eh aceitavel". It deletes through
-GitHub's API a branch whose tip is the head a merged pull request of the repository has, so no commit
-pushed after the merge goes, and GitHub refuses the default branch; a branch already gone passes. It
-runs under a rule of the same kind as `tools/merge.sh`, its arguments held to a repository's name and a
-branch's, and reads the token from the file it is handed.
+para apagar branches, vc ja deveria ter resolvido isso! isso nao eh aceitavel". It deletes a
+branch whose tip is the head a merged pull request of the repository has, by a push whose lease is
+that tip, so no commit pushed after the merge goes, and GitHub refuses the default branch; a branch
+already gone passes. It runs under a rule of the same kind as `tools/merge.sh`, its arguments held to a
+repository's name and a branch's, and reads the token from the file it is handed.
 
 `fixup-guard.sh`, wired before a shell call, refuses opening a pull request whose head, compared on GitHub
 with its base, carries a `fixup!`, `amend!` or `squash!` commit: a pull request reaches the maintainer's first
