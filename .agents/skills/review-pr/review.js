@@ -400,7 +400,7 @@ const BUILD_OUT = {
 let reviewer = null
 if (a.reviewer !== false) {
   phase('Review')
-  reviewer = await agent(a.reviewed ? REREAD : REVIEW, { label: `review:${a.pr || a.branch}`, phase: 'Review', effort, schema: FINDINGS, ...model })
+  reviewer = await agent(a.reviewed ? REREAD : REVIEW, { label: `review:${a.pr || a.branch}`, phase: 'Review', agentType: 'lunatik-reviewer', effort, schema: FINDINGS, ...model })
 }
 
 // the title and the body the run returns, the ones the reviewer corrected or, in a run of neither phase, the ones

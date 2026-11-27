@@ -86,8 +86,8 @@ const MACHINE = a.machine ? `THIS MACHINE: ${a.machine}\n` : ''
 const FIXES = 2
 // where gh is absent curl reads GitHub and writes nothing to it, since no guard reads a write through curl
 const github = a.gh === false
-  ? 'curl against https://api.github.com with `Authorization: Bearer $GH_TOKEN`, as the review-pr skill spells it, to read only'
-  : '`gh api`, as the review-pr skill spells it'
+  ? `curl against https://api.github.com with \`Authorization: Bearer $GH_TOKEN\`, as \`${a.repo}/${H}.agents/skills/review-pr/SKILL.md\` spells it, to read only`
+  : `\`gh api\`, as \`${a.repo}/${H}.agents/skills/review-pr/SKILL.md\` spells it`
 const PUSH = a.push === false
   ? 'Push nothing: the session that launched this workflow pushes the branch.'
   : 'Push each commit as a command of its own, as you make it.'
@@ -439,7 +439,7 @@ const unrun = (impl, build) => build?.skipped ? [] : (impl.examples || []).filte
 let groomed = null
 if ((a.agents || {}).groom) {
   phase('Groom')
-  groomed = await agent(GROOM, { label: `groom:${a.issue}`, phase: 'Groom', schema: GROOMED, ...role('groom') })
+  groomed = await agent(GROOM, { label: `groom:${a.issue}`, phase: 'Groom', agentType: 'lunatik-groomer', schema: GROOMED, ...role('groom') })
   if (groomed?.verdict !== 'implement') {
     log(`#${a.issue} ${groomed ? `groomed: ${groomed.verdict}` : 'not groomed: the groomer died'}; the session reads the result`)
     return { issue: a.issue, groomed, pr: 0 }
@@ -448,7 +448,7 @@ if ((a.agents || {}).groom) {
 
 phase('Implement')
 const implemented = await agent(IMPLEMENT + (groomed ? GROOMING(groomed) : ''), {
-  label: `implement:${a.issue}`, phase: 'Implement', schema: IMPLEMENTED, ...implementer,
+  label: `implement:${a.issue}`, phase: 'Implement', agentType: 'lunatik-implementer', schema: IMPLEMENTED, ...implementer,
 })
 
 let review = null, build = null, pr = 0, complexity = null, head = implemented?.head || implemented?.base
@@ -466,7 +466,7 @@ if (implemented?.branch && a.push !== false) {
   while (review && !passed(build) && fixes.length < FIXES) {
     phase('Fix')
     const fix = await agent(FIX({ totals: build?.totals, clean: build?.clean, notes: build?.notes }, head), {
-      label: `fix:${a.issue}:${fixes.length + 1}`, phase: 'Fix', schema: FIXED, ...fixer,
+      label: `fix:${a.issue}:${fixes.length + 1}`, phase: 'Fix', agentType: 'lunatik-implementer', schema: FIXED, ...fixer,
     })
     fixes.push(fix)
     if (!fix) break
@@ -521,7 +521,7 @@ let refuted = []
 if (findings_left.length) {
   phase('Verify')
   const verified = await agent(VERIFY(findings_left, head, implemented.base), {
-    label: `verify:${a.issue}`, phase: 'Verify', schema: VERIFIED, model: 'opus', effort: 'high',
+    label: `verify:${a.issue}`, phase: 'Verify', agentType: 'lunatik-reviewer', schema: VERIFIED, model: 'opus', effort: 'high',
   })
   const refutation = index => (verified?.verdicts || []).find(v => v.index === index && v.verdict === 'refuted')
   refuted = findings_left.flatMap((f, index) => refutation(index) ? [{ ...f, trace: refutation(index).trace }] : [])
