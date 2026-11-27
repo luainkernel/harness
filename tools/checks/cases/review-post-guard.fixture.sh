@@ -7,8 +7,8 @@
 # review-post-guard.cases posts: a comment and a review
 # that open with the note, one with the note at its end, as an issue filed elsewhere carries it, one with
 # the line the note replaced, a review whose inline comment lacks the note, and under sub/, read only
-# after a cd into it, the comment that opens with the note; beside them a gh on stub/ that answers, only
-# with the token in key, that the posting account opened #871; under vault/, a clone of a private
+# after a cd into it, the comment that opens with the note; beside them a gh on stub/ that answers
+# nothing; under vault/, a clone of a private
 # repository, acme/vault, and a comment that opens with the note and names it, there and beside it.
 #
 # Usage: bash tools/checks/cases/review-post-guard.fixture.sh <dir>
@@ -34,15 +34,7 @@ jq -n --arg body "$review" \
 	'{event: "COMMENT", body: $body, comments: [{path: "a.c", line: 1, side: "RIGHT", body: "The callback returns."}]}' \
 	> bare.json
 
-printf cases > key
 mkdir -p stub
-cat > stub/gh <<'STUB'
-#!/bin/sh
-[ "$GH_TOKEN" = cases ] || exit 1
-case "$*" in
-	*/issues/871\ *|api\ user\ *) echo cases ;;
-	*) exit 1 ;;
-esac
-STUB
+printf '#!/bin/sh\nexit 1\n' > stub/gh
 chmod +x stub/gh
 

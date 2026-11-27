@@ -4,19 +4,12 @@
 # SPDX-License-Identifier: MIT OR GPL-2.0-only
 #
 # PreToolUse (Bash) hook: a GitHub review, a review body, or a comment on a pull
-# request or an issue the posting account did not open is posted only after its exact
-# text was shown to the maintainer and approved, and a fixup it references is a
-# full commit URL, since a backtick'd SHA renders as code and does not link. This
-# blocks (exit 2) a gh write to reviews/comments that lacks the REVIEW_POST_OK
-# marker, set by hand once the text has an OK, or that carries a backtick'd SHA;
-# silent (exit 0) on everything else. The marker forces the show-then-post step;
-# it cannot check that the text was shown, only that it was set on purpose. A
-# pull request or an issue the posting account opened is the maintainer's own, the
-# issues a workflow files under his account among them, and a post on it needs
-# no marker: the author is asked of GitHub with the token in GH_TOKEN or
-# the one the command reads with GH_TOKEN=$(cat <file>) or through a variable
-# so assigned (gh_token in commands.sh), and when neither
-# answers the marker is required as before.
+# request or an issue references a fixup by its full commit URL, since a backtick'd
+# SHA renders as code and does not link. This blocks (exit 2) a gh write to
+# reviews/comments that carries a backtick'd SHA or whose text fails the checks
+# below; silent (exit 0) on everything else. The session posts the text without
+# the maintainer's OK on it (AGENTS.md, *Deciding what to change*), so no marker
+# stands for one.
 # Reads the command field of the raw hook input through commands.sh: the
 # description beside it and the commands chained with the post are not the post.
 #
@@ -28,10 +21,7 @@
 # maintainer's. The raw input is not scanned: it carries the working directory
 # on every command, so a scan of it would fire on every post. Text the guard
 # cannot read, passed inline or on stdin, is refused rather than skipped, and so
-# is a comment given to gh's close or reopen, which no file carries. A post held
-# for the marker is recorded for its session, by its issue and the issue's
-# repository (gh_held in commands.sh), where pr-body-guard refuses carrying it into
-# the body of the same issue instead.
+# is a comment given to gh's close or reopen, which no file carries.
 
 input=$(cat)
 
@@ -56,7 +46,6 @@ posts=$(gh_writes "$cmds" 'pr (review|comment)|issue comment' \
 files=
 # a private repository's name is a leak wherever a text is published but to that repository
 private=
-self=$(gh_self "$input")
 while IFS= read -r post; do
 	[ -z "$(gh_private "$post" "$input")" ] || private=$LUNATIK_CONSUMERS
 	body=$(gh_body "$post")
@@ -118,31 +107,5 @@ if printf '%s' "$posts" | grep -Eq '`[0-9a-f]{7,40}'; then
 	exit 2
 fi
 
-case "$(command_text "$input")" in
-	*REVIEW_POST_OK=1*) exit 0 ;;
-esac
-
-# the maintainer's own pull request or issue, one the posting account opened, takes its post without
-# the show-then-post round; GitHub is asked with the credential the command itself carries
-isown() {
-	local target token
-	target=$(printf '%s' "$posts" | grep -oE 'repos/[^/[:space:]"]+/[^/[:space:]"]+/(pulls|issues)/[0-9]+/(reviews|comments)' | head -n 1)
-	[ -n "$target" ] || return 1
-	token=$(gh_token "$input")
-	local repo number author login
-	repo=$(printf '%s' "$target" | cut -d/ -f2-3)
-	number=$(printf '%s' "$target" | cut -d/ -f5)
-	# a failed call prints GitHub's error body, the same for both, so only a call that succeeded counts
-	author=$(GH_TOKEN=$token gh api "repos/$repo/issues/$number" --jq .user.login 2>/dev/null) || return 1
-	login=$(GH_TOKEN=$token gh api user --jq .login 2>/dev/null) || return 1
-	[ -n "$author" ] && [ "$author" = "$login" ]
-}
-isown && exit 0
-
-# what is held here waits for the OK, and pr-body-guard refuses carrying it into a body in the meantime
-held=$(gh_held "$input")
-mkdir -p "$(dirname "$held")" && while IFS= read -r post; do gh_heldkey "$post" "$self"; done <<< "$posts" >> "$held"
-
-echo "review-post-guard: on a pull request or an issue the posting account did not open, show the exact text, get the maintainer's OK, then re-run with REVIEW_POST_OK=1 as a command prefix." >&2
-exit 2
+exit 0
 

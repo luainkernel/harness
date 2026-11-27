@@ -1,7 +1,7 @@
 # Reviewing a pull request
 
 A review produces two things: the comments, and a branch showing what the comments ask for. Neither
-is posted before the maintainer has seen both, and the checklist below is the reviewer's own — a
+is posted without the other, and the checklist below is the reviewer's own — a
 review that fails it is not ready, whatever the code looks like.
 
 The checklist runs whole on every pull request, whoever wrote it: the maintainer's own, another
@@ -172,15 +172,10 @@ is how a mutex in softirq and a crash reachable from Lua were passed.
 
 # Comments and the verdict
 
-* Draft the comments and hand them over. The repository's public voice is the maintainer's; a reviewer
-  writes, the maintainer posts. Do not comment on a pull request or an issue unless asked, and having
-  offered earlier is not authorization. Being told to post is not a license to post words the
-  maintainer has not read: show the exact text, get the go-ahead on it, then post — the approval is of
-  the wording, and "post it" or "where is it?" asks for the draft, not for it to already be public.
-  The exact text goes in the message that asks, whole and every round, never as a path to a file or
-  as "unchanged from the last one": what is not in front of the maintainer was not shown. The
-  round is for another author's pull request: on one the maintainer's account opened, his or an
-  agent's under it, a review he asked for is posted as written, since the words land on his own work.
+* Comment on a pull request or an issue when asked, and having offered earlier is not the ask. The
+  account is the maintainer's, and the text goes up as written, with no round that shows it to him
+  first, on another author's pull request as on one his account opened: a post waits for no OK of his
+  (AGENTS.md, *Deciding what to change*). The reply that reports a post links it.
 * A code finding is posted inline, anchored on the line it addresses; the review body carries the
   verdict and addresses the author by handle. A finding in the body, away from its line, makes the
   reader hunt for where it applies — and a submitted review cannot be deleted, only dismissed, so the

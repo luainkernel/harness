@@ -171,11 +171,8 @@ requests here, and GitHub answers 422 to `APPROVE` or `REQUEST_CHANGES` on one's
 text an agent posts under it, the body and each inline comment, opens with GitHub's note,
 `> [!NOTE]` and `> This review was written by an LLM, not a human.` (`comment` in an inline comment
 or a reply), then a blank line, so a reader knows who wrote the words.
-`tools/checks/review-post-guard.sh` refuses a post whose body or inline comment lacks that note, and,
-on a pull request the posting account did not open, one that lacks `REVIEW_POST_OK=1`: there, show
-the exact text, get the OK, then prefix the marker to the command. On a pull request the account
-opened, the maintainer's own, the review he asked for is posted as written; the guard reads the
-author from GitHub with the credential the command carries.
+`tools/checks/review-post-guard.sh` refuses a post whose body or inline comment lacks that note. The
+review he asked for is posted as written, on any author's pull request.
 
 - Review with inline comments in one shot:
   `gh api -X POST repos/.../pulls/<N>/reviews -f commit_id=<head sha> -f event=COMMENT -F body=@<verdict>` with a JSON `comments` array (`path`, `line`, `side: "RIGHT"`, `body`) — build the payload with `--input file.json`.

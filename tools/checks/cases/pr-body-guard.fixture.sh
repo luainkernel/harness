@@ -27,16 +27,13 @@
 # sub/, read only after a cd into it, the body that names the example and a GraphQL mutation that
 # carries no text. For an issue edit, a gh on
 # stub/ that answers the body GitHub has for luainkernel/lunatik#5 and for luainkernel/lua#5, each
-# carrying a line untraced.sh fails, the bodies that repeat each, one that adds a line, and the held
-# lists review-post-guard writes, through that gh, for the session none: under ours/ for a comment on
-# this repository's #5, under placeholder/ for one on {owner}/{repo}'s #5, and under other/ for one on
-# luainkernel/lua#5; a gh on keyed/ answers as stub/'s only with the token in key. For a title, one
+# carrying a line untraced.sh fails, the bodies that repeat each and one that adds a line; a gh on
+# keyed/ answers as stub/'s only with the token in key. For a title, one
 # title.sh passes and one it names, each in a file and in the JSON gh api sends. Under vault/, a clone of a
 # private repository, acme/vault, and beside it a body that names it.
 #
 # Usage: bash tools/checks/cases/pr-body-guard.fixture.sh <dir>
 
-guard=$(cd "$(dirname "$0")/.." && pwd)/review-post-guard.sh
 cd "$1" || exit 1
 export GIT_AUTHOR_NAME=cases GIT_AUTHOR_EMAIL=cases@example.invalid
 export GIT_COMMITTER_NAME=cases GIT_COMMITTER_EMAIL=cases@example.invalid
@@ -102,13 +99,6 @@ case "\$*" in
 esac
 STUB
 chmod +x stub/gh
-printf '> [!NOTE]\n> This comment was written by an LLM, not a human.\n\nThe callback returns the queue.\n' > note.md
-for held in "ours gh issue comment 5 --body-file note.md" \
-	"placeholder gh api -X POST repos/{owner}/{repo}/issues/5/comments -F body=@note.md" \
-	"other gh api -X POST repos/luainkernel/lua/issues/5/comments -F body=@note.md"; do
-	jq -n --arg command "${held#* }" --arg cwd "$PWD" '{tool_name: "Bash", tool_input: {command: $command}, cwd: $cwd}' |
-		PATH=$PWD/stub:$PATH LUNATIK_GUARD_DIR=${held%% *} bash "$guard"
-done
 mkdir -p sub
 cp named.md sub/body.md
 # a checkout of the same repository whose tools/checks carries an examples-named.sh of its own, which

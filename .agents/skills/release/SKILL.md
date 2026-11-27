@@ -4,7 +4,7 @@ description: Cut a release: confirm its milestone, the suite and the CI on the c
 ---
 
 AGENTS.md is the authority, *Patches and commits* for a summary derived from commits and *Comments
-and the verdict* for text shown before it goes public; this card orders the steps Lunatik's v5.0 cut
+and the verdict* for text that goes public; this card orders the steps Lunatik's v5.0 cut
 ran, and the project's AGENTS.md names what is its own, where its tree declares the release, the name a
 release takes, the suite and the site. `<owner>/<repo>` is the repository the checkout's origin names. The
 cut is the commit the maintainer names, or master's tip when he names none, recorded by its full SHA:

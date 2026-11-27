@@ -6,11 +6,11 @@
 # A step only the maintainer can take reaches him as a script the session wrote under /tmp and the
 # one short line that runs it, "! bash /tmp/<name>.sh" in Claude Code: a command spelled out in the
 # reply is one he copies by hand, and the terminal wraps it where the copy breaks. A write to GitHub
-# is not such a step: the auto mode classifier lets it through once his go is in the conversation,
-# and tools/delete-branch.sh deletes a merged branch under a rule of its own. Takes text files, a
-# reply; when one hands him a command, a line opening with "! ", longer than 60 characters or
-# continued on the next, or a script under /tmp that deletes a branch, or that writes to GitHub with
-# gh and runs nothing as root, prints it and exits 1.
+# is not such a step: the session posts it with no OK of his on the text (AGENTS.md, *Deciding what
+# to change*), and tools/delete-branch.sh deletes a merged branch under a rule of its own. Takes text
+# files, a reply; when one hands him a command, a line opening with "! ", longer than 60 characters
+# or continued on the next, or a script under /tmp that deletes a branch, or that writes to GitHub
+# with gh and runs nothing as root, prints it and exits 1.
 #
 # Usage: bash tools/checks/handoff.sh <file>...
 
@@ -32,7 +32,7 @@ for file in "$@"; do
 		if grep -qE 'push([[:space:]].*)?[[:space:]](--delete|-d|:[^[:space:]])|DELETE[[:space:]].*git/refs/heads/' "$script"; then
 			why="deletes a branch; a merged branch's delete is the session's, through tools/delete-branch.sh"
 		elif grep -qE '(^|[[:space:];&|(])gh[[:space:]]' "$script" && ! grep -qE '(^|[[:space:];&|(])sudo[[:space:]]' "$script"; then
-			why="writes to GitHub; that write is the session's once he says to post: show the text, ask for his go and post it"
+			why="writes to GitHub; that write is the session's: post it, and report one the auto mode classifier refuses with the file that holds it"
 		else
 			continue
 		fi
