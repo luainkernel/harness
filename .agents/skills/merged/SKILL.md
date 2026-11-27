@@ -113,6 +113,12 @@ Its commits are on master under new SHAs, and GitHub keeps the old head as `refs
 delete the session's permissions refuse goes to the maintainer as a script under `/tmp` and the line
 that runs it (AGENTS.md, *Deciding what to change*).
 
+A repository whose `delete_branch_on_merge` is set, as luainkernel/harness and luainkernel/luaebpf
+are, deletes the branch itself at the merge, and GitHub moves the pull requests based on it to the
+base (https://github.blog/changelog/2020-05-19-pull-request-retargeting), which section 2's query
+shows. There the remote delete is a check, `git ls-remote <url> refs/heads/<head.ref>` printing
+nothing, and the checkout's branch still goes.
+
 # 5. The bumps a harness merge opens
 
 A pull request of the harness's own repository reaches a project only through the commit its mount
