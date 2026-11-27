@@ -106,18 +106,20 @@ report says the body was edited. #2119 and #2129 kept their "stacks on #N" after
 Once no open pull request is based on it, the merged branch goes, from this repository and from the
 checkout, unless a worktree holds it checked out:
 
-    git push <url> --delete <head.ref>
+    bash <checkout>/<mount>/tools/delete-branch.sh <owner>/<repo> <head.ref> <file that holds the token>
     git branch -D <head.ref>
 
-Its commits are on master under new SHAs, and GitHub keeps the old head as `refs/pull/<N>/head`. A
-delete the session's permissions refuse goes to the maintainer as a script under `/tmp` and the line
-that runs it (AGENTS.md, *Deciding what to change*).
+`tools/delete-branch.sh` deletes the branch on GitHub only where its tip is the head the pull request
+merged with, and runs as `tools/merge.sh` does, a command of its own by its absolute path in the
+checkout sessions start in, under the `permissions.allow` rule that spells it: the auto mode
+classifier refuses the session's own `git push --delete` of a branch no autoMode rule names, and the
+delete is the session's, never a script handed to the maintainer. Its commits are on master under new
+SHAs, and GitHub keeps the old head as `refs/pull/<N>/head`.
 
 A repository whose `delete_branch_on_merge` is set, as luainkernel/harness and luainkernel/luaebpf
 are, deletes the branch itself at the merge, and GitHub moves the pull requests based on it to the
 base (https://github.blog/changelog/2020-05-19-pull-request-retargeting), which section 2's query
-shows. There the remote delete is a check, `git ls-remote <url> refs/heads/<head.ref>` printing
-nothing, and the checkout's branch still goes.
+shows. There the script reports the branch gone, and the checkout's branch still goes.
 
 # 5. The bumps a harness merge opens
 
