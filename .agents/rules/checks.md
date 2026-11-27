@@ -14,7 +14,8 @@ paths:
 `tools/checks/` holds the mechanical checks the harness shares, and a project keeps its own in its
 own `tools/checks/`, which its rules describe: the comment rules of `.agents/rules/comments.md` read
 over C, Lua and shell, the history, a release named with what changed in it or above a table, the
-counterfactual, the multi-line note inside code, the trailing comment past the width, a comment on a
+counterfactual, the multi-line note inside code, the trailing comment and the comment line past the
+width, two comments on one statement, a comment on a
 signature line or above an internal `static inline` or function-like macro and one naming the file or
 function that reads a value (`comment-style.sh`), a comment a change adds to one definition of a block
 whose others carry none (`comment-siblings.sh`), the branches, argument tables, inline functions,
@@ -86,6 +87,15 @@ the maintainer asked that both be modularized and that the harness stop the flaw
 growing it is not named. The check annotates: a lock
 retaken after a wait is a shape the reader decides on, and the review answers each line it prints with
 the function's jobs listed and the fixup that splits them or the reason they are one.
+
+`comment-style.sh` reads a comment line inside a function past the width as it reads a trailing one, and a C or
+a Lua file for one statement that carries two comments, a line above it and one on its line, a braceless
+`if` and the line under it being one statement. #2729 carried both in `lunatik_defer`, where the
+maintainer found the comments "ruins", and its review passed them; Lunatik's tree held two other
+lines of them. A comment on a condition that says what it tests is a predicate not named yet
+(`.agents/rules/comments.md`), which no read of the line tells from one that gives the branch its
+reason: 20 of the 31 comments on a condition in Lunatik's core and bindings give it, #2729's among them,
+so the review reads each.
 
 `comment-siblings.sh` reads the lines a change adds, against `CHECK_BASE`, for a comment on one
 definition of a block whose other definitions carry none: a run of `#define` lines, the members of a

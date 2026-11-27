@@ -14,7 +14,9 @@
 # an internal function-like macro, a predicate among them, is named too: the rule
 # allows the one reason its name and expansion cannot give. #1502's walked through
 # what each arm of lunatik_isclosing reads, which its commit body already said, and
-# #2095's told what luasocket_addr's _Generic does. The file
+# #2095's told what luasocket_addr's _Generic does. In C and Lua, one statement
+# carries one comment, above it or on its line: #2729 put two on one call in
+# lunatik_defer, one of them past the width. The file
 # header, LDoc blocks and doc-only comments are outside the rules; so are the
 # unindented notes between Lua functions, and a shell script's narrative, which
 # the Tests rules ask for.
@@ -104,6 +106,19 @@ for file in "$@"; do
 				flag(NR, "names who reads it; the reader is the code, and the list rots with the next one")
 			if (!whole(line) && length(line) > width)
 				flag(NR, "trailing comment past " width " columns; one reason, and if it still does not fit, on its own line above the code, not cut until it fits")
+			else if (whole(line) && (lang == "c" ? depth > 0 : line ~ /^[[:space:]]/) && length(line) > width)
+				flag(NR, "a comment line past " width " columns inside code; one reason, in words that fit the line")
+		}
+
+		# one comment per statement
+		if (lang == "c" || lang == "lua") {
+			trailing = t != "" && !whole(line)
+			# a braceless if and the line under it are one statement
+			if (trailing && (lone == NR - 1 || braceless == NR - 1) && incode())
+				flag(NR, "two comments on one statement, above it and on its line; one reason, at the site that needs it")
+			cond = "^[[:space:]]*(\\}[[:space:]]*)?(else[[:space:]]+)?(if|while)[[:space:]]*\\("
+			braceless = lang == "c" && line ~ cond && line !~ /[{;][[:space:]]*$/ && lone == NR - 1 ? NR : 0
+			lone = whole(line) && t != "" && (lang == "lua" || line ~ /\*\/[[:space:]]*$/) && line !~ /\*\*/ ? NR : 0
 		}
 
 		# a release named above the opening of a table belongs above the entry it applies to
