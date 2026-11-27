@@ -80,7 +80,10 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
 - Each phase does what the project's AGENTS.md asks of its step, the build, the suite, the kernel
   readings and the contract: its prompt says so in a clause and restates none of it, since the groomer,
   the implementer, the fix, the reviewer and the verifier load that file, and the review's build, whose
-  agent loads no CLAUDE.md, reads it in its worktree.
+  agent loads no CLAUDE.md, reads it in its worktree. The groomer runs as `lunatik-groomer`, the
+  implementer and the fix as `lunatik-implementer`, and the reviewer and the verifier as
+  `lunatik-reviewer`, which `.agents/agents/` defines with the tools their roles use, the Skill tool not
+  among them, so a prompt names a skill by its file; each project links the three under `.claude/agents/`.
 - `repo` has no default either: the review is read from it when the implementer is done, and a relative
   path then resolves against the session's directory, which may be a worktree removed since or one on
   another branch. #1538's review did not run, its script not found under a worktree the session had removed.
