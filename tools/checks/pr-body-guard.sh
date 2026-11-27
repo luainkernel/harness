@@ -19,13 +19,11 @@
 # edit is read for the lines it adds to the body GitHub has in the repository the write
 # targets, asked with the credential the command carries: what the reporter posted, a
 # build log and its paths, is not the edit's to rewrite. The whole body is read when the
-# current one cannot be. An edit that adds text other than a task to an issue or pull
-# request review-post-guard held a post on in the same session waits for the same
-# REVIEW_POST_OK, as the held post by another route. A pull request body is read against the
+# current one cannot be. A pull request body is read against the
 # files its change carries, and one the session or its agents post to the checkout's repository, the
 # harness's or another the project names (gh_family) only once a reader
-# with none of the change's history passed its text (body-read.sh), or the maintainer approved that text in
-# his own words, which BODY_OK=1 says. A title a pull request of those
+# with none of the change's history passed its text (body-read.sh), or BODY_OK=1 says the session fixed
+# or answered each point a reader failed it on. A title a pull request of those
 # repositories is given, opened or edited, is posted only when title.sh passes on it, and a new issue there
 # carries its severity label. The examples a pull
 # request of the checkout's repository names and the stimulus of a new issue there are read by the
@@ -254,32 +252,6 @@ severity() {
 	done <<< "$1"
 }
 
-# a post review-post-guard held in this session for the maintainer's OK does not reach the same issue or pull
-# request as an edit of its body: #1407's decision went into the issue's body after its comment was held
-held() {
-	local list post body file key
-	list=$(gh_held "$input")
-	[ -f "$list" ] || return 0
-	while IFS= read -r post; do
-		[ -n "$post" ] || continue
-		body=$(gh_body "$post")
-		[ -n "$body" ] || continue
-		key=$(gh_heldkey "$post" "$self")
-		[ -n "$key" ] && grep -qx "$key" "$list" || continue
-		file=${body#* }
-		if [ "${body%% *}" = input ]; then
-			jq -r '.body // empty' "$file" > "$tmp/held" 2> /dev/null
-			file=$tmp/held
-		fi
-		# a task ticked or added is the body's own bookkeeping, not the held text
-		[ "$body" != inline ] && [ -f "$file" ] && ! added "$post" "$file" | grep -qvE '^[[:space:]]*(- \[[ xX]\] .*)?$' &&
-			continue
-		[[ $key == *#* ]] || key=#$key
-		echo "pr-body-guard: review-post-guard held a post ($key) in this session until the maintainer approves its text, and an edit of that body is the same post by another route: show the text, get the OK, and post it where it was held, with REVIEW_POST_OK=1." >&2
-		exit 2
-	done <<< "$1"
-}
-
 # a body the session or its agents post to a pull request was passed first by a reader with none of the change's
 # history in one of the session's workflow runs (body-read.sh)
 reader() {
@@ -307,7 +279,7 @@ reader() {
 			file=$tmp/read
 		fi
 		bash "$(dirname "$0")/body-read.sh" "$file" "$transcript" 2> /dev/null && continue
-		echo "pr-body-guard: no reader of this session's workflow runs passed this body. Run the reader over it as the pr-prep skill says, review.js with reviewer and build false, which reads it with none of the change's history, and post the file it leaves; a text changed after the read is read again. BODY_OK=1 posts a text the maintainer approved in his own words." >&2
+		echo "pr-body-guard: no reader of this session's workflow runs passed this body. Run the reader over it as the pr-prep skill says, review.js with reviewer and build false, which reads it with none of the change's history, and post the file it leaves; a text changed after the read is read again. BODY_OK=1 posts a text a reader failed once each point it failed on is fixed or answered." >&2
 		exit 2
 	done <<< "$1"
 }
@@ -365,10 +337,6 @@ ours() {
 cmds=$(gh_commands "$input")
 repo='^(https://api\.github\.com)?/?repos/[^/]+/[^/]+'
 environment "$(assignments "$input")" "$repo"
-case "$(command_text "$input")" in
-	*REVIEW_POST_OK=1*) ;;
-	*) held "$(gh_writes "$cmds" '(issue|pr) edit' "$repo/(issues|pulls)/[0-9]+\$")" ;;
-esac
 # a review or a comment is review-post-guard's, on an endpoint below the pull request's or the issue's
 check "$(gh_writes "$cmds" 'pr (create|new|edit)' "$repo/pulls(/[0-9]+)?\$")" "$(dirname "$0")/pr-body.sh"
 titles "$(ours "$(gh_writes "$(gh_commands "$input" words)" 'pr (create|new|edit)' "$repo/pulls(/[0-9]+)?\$")" "$family")"

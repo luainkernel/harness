@@ -57,13 +57,12 @@ block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --ba
 # transcript:
 block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file named.md
 # transcript: session.jsonl
-# BODY_OK=1 posts a text the maintainer approved past the reader, and past no other refusal
+# BODY_OK=1 posts a text a reader failed, past the reader and past no other refusal
 pass	BODY_OK=1 gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file read/failed.md
 block	BODY_OK=1 gh api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@long.md
 # an issue edit is read against the body its issue has in the repository the write targets, which the
-# gh on stub/ answers, with no post held
+# gh on stub/ answers
 # env: PATH=stub:/usr/local/bin:/usr/bin:/bin
-# env: LUNATIK_GUARD_DIR=none
 pass	gh issue edit 5 --body-file fifo.md
 pass	gh issue edit 5 -R luainkernel/lunatik --body-file fifo.md
 block	gh issue edit 5 -R luainkernel/lua --body-file fifo.md
@@ -72,25 +71,8 @@ pass	gh issue edit 5 -R luainkernel/lua --body-file table.md
 block	gh issue edit 5 --body-file table.md
 pass	gh api -X PATCH repos/luainkernel/lua/issues/5 -F body=@table.md
 block	gh api -X PATCH repos/luainkernel/lua/issues/5 -F body=@fifo.md
-# a comment held on this repository's #5 holds an edit of that issue alone, however -R spells the repository
-# env: LUNATIK_GUARD_DIR=ours
-block	gh issue edit 5 --body-file new.md
-block	gh api -X PATCH repos/luainkernel/lunatik/issues/5 -F body=@new.md
-block	gh issue edit 5 -R LuaInKernel/Lunatik --body-file new.md
-pass	gh issue edit 5 -R luainkernel/lua --body-file new.md
-pass	gh api -X PATCH repos/luainkernel/lua/issues/5 -F body=@new.md
-# a comment held on {owner}/{repo}'s #5, which gh fills with this repository, holds an edit of this one's
-# env: LUNATIK_GUARD_DIR=placeholder
-block	gh issue edit 5 --body-file new.md
-pass	gh issue edit 5 -R luainkernel/lua --body-file new.md
-# a comment held on luainkernel/lua#5 holds an edit of that issue alone, however -R spells the repository
-# env: LUNATIK_GUARD_DIR=other
-block	gh issue edit 5 -R luainkernel/lua --body-file new.md
-block	gh api -X PATCH repos/luainkernel/lua/issues/5 -F body=@new.md
-block	gh issue edit 5 -R LuaInKernel/Lua --body-file new.md
-block	gh issue edit 5 -R github.com/luainkernel/lua --body-file new.md
 pass	gh issue edit 5 --body-file new.md
-pass	gh issue edit 6 -R luainkernel/lua --body-file new.md
+pass	gh api -X PATCH repos/luainkernel/lunatik/issues/5 -F body=@new.md
 # an edit of a pull request's body is the session's post as its opening is, in either spelling; the gh on
 # stub/ answers for no pull request, so the body is read with no changed files, and another repository's
 # pull request waits for no reader
@@ -190,6 +172,5 @@ pass	cat > note.md <<'EOF'\nGH_REPO=luainkernel/lua gh pr merge 7 --rebase\nEOF\
 # a gh on keyed/ answers as stub/'s only with the token in key, which the command reads into GH_TOKEN
 # env: PATH=keyed:/usr/local/bin:/usr/bin:/bin
 # env: GH_TOKEN=
-# env: LUNATIK_GUARD_DIR=none
 pass	tok=$(cat key); GH_TOKEN=$tok gh issue edit 5 --body-file fifo.md
 block	GH_TOKEN=$tok gh issue edit 5 --body-file fifo.md

@@ -212,9 +212,11 @@ reader had passed. A subagent's post waits for the same pass: its hook input car
 opening posts the file its last reader left, the sentences its build adds read with the rest (#2543).
 A session a /clear started reads the runs of the one it ended too, which its transcript names in a
 `derived-from` line: #2757's opening ran after a clear its reader had run before, and the guard refused it.
-`BODY_OK=1` posts a body whose text the maintainer read and approved in his own words: on 2026-11-19 the
-reader failed five texts in a row of the pull request split out of #2630, each time on points the last
-one had not raised, and the maintainer approved the sixth. The reader's verdict fails on a closed list,
+`BODY_OK=1` posts a body a reader failed once the session fixed or answered each point the failure
+names, with no OK of the maintainer's: on 2026-11-19 the reader failed five texts in a row of the pull
+request split out of #2630, each time on points the last one had not raised, and the maintainer
+approved the sixth, and on 2026-11-27, asked to approve a body the reader had failed three times, he
+ordered every post made without asking him. The reader's verdict fails on a closed list,
 a title or a body it cannot restate without guessing and a rule the pr-prep skill states of either,
 quoted from the skill, and what else it would rather not read comes back as remarks that fail nothing:
 in eight days it had passed 20 of 94 bodies on the first read (luainkernel/harness#6). It is proved as a
@@ -574,26 +576,18 @@ What a release still lacks is read from the same report, the epic's task list in
 
 `review-post-guard.sh` reads the tool command on stdin instead of a file, for an assistant wired
 to run it before a shell call (`PreToolUse`): it blocks a `gh` write to reviews or comments on a
-pull request or an issue the posting account did not open unless the command carries the `REVIEW_POST_OK`
-marker, set once the exact text has been shown to the maintainer and approved, or when the text
-gives a fixup reference as a backtick'd SHA, which renders as code and does not link. The marker
-forces the show-then-post step; it cannot check that the text was shown, only that it was set on
-purpose. A pull request or an issue the posting account opened is the maintainer's own, the issues
-the implement-issue workflow files under his account among them, and a post on it needs no marker:
-the guard asks GitHub who opened it, with the credential the command carries, and asks for the
-marker whenever it cannot tell. On 2026-10-20 two comments the maintainer approved, closing issues a
-workflow had filed, were held for the marker as if those issues were a stranger's, and the auto mode
-classifier read the marker as a guard bypassed and refused them. The text goes through `machine-leak.sh` before
-the marker is read, since the marker approves the wording and not what the wording carries, and text
-the guard cannot read, passed inline or on stdin, is refused rather than skipped. Every text it lets
-through opens with GitHub's note that an LLM wrote it, `> [!NOTE]` and, on the next line,
-`> This review was written by an LLM, not a human.`, `This comment` in an inline comment or a reply,
-the review body and each inline comment alike, since the account is the maintainer's and an inline
-comment stands alone in the conversation. A case of it that carries the marker asks GitHub nothing, and one that does not asks a gh its fixture writes. A post it holds for
-the marker is recorded for the session, and `pr-body-guard.sh` refuses an edit that adds text other
-than a task to the body of the same issue or pull request until the marker is set, so the approval is not skipped by another route. A
-comment given to gh's `close` or `reopen` is refused as text no file carries, since that route has no
-file to read.
+pull request or an issue whose text gives a fixup reference as a backtick'd SHA, which renders as code
+and does not link. It asks for no OK of the maintainer's, on any author's pull request: a post on one
+the posting account did not open waited for a marker he set once he had read the exact text, until he
+ordered on 2026-11-27 every post made without asking him (AGENTS.md, *Deciding what to change*). The
+text goes through `machine-leak.sh`, and text the guard cannot read, passed inline or on stdin, is
+refused rather than skipped. Every text it lets through opens with GitHub's note that an LLM wrote
+it, `> [!NOTE]` and, on the next line, `> This review was written by an LLM, not a human.`,
+`This comment` in an inline comment or a reply, the review body and each inline comment alike, since
+the account is the maintainer's and an inline comment stands alone in the conversation. Its cases run
+beside a gh its fixture writes that answers nothing, since the guard asks GitHub nothing. A comment
+given to gh's `close` or `reopen` is refused as text no file carries, since that route has no file to
+read.
 
 `untraced.sh` reads a text about to be published, a review, a comment, a pull request body, for the
 word that names a failure nobody read: a failure that comes and goes is read in the journal around the
@@ -634,8 +628,7 @@ the one line that runs it (AGENTS.md, *Deciding what to change*); on 2026-10-11 
 delete of the 21 branches a merge left as one line of 600 characters. A command handed without the
 prefix is not read. It also opens the script a `! bash /tmp/<name>.sh` line names, and names one that
 deletes a branch, which is the session's through `tools/delete-branch.sh`, and one that writes to
-GitHub with `gh` and runs nothing under `sudo`: a post is the session's once the maintainer says to
-post, since the auto mode classifier reads his go in the conversation.
+GitHub with `gh` and runs nothing under `sudo`: a post is the session's, with no OK of his on the text.
 
 `citation.sh`, `tldr.sh` and `settled.sh` read the same reply in the same hook. `citation.sh` names a
 line that says what AGENTS.md, a rule or a skill asks without the passage in double quotes, or with
@@ -644,8 +637,9 @@ AGENTS asks" for it, of a rule nobody had written. `tldr.sh` names a reply of mo
 does not open with a TL;DR of five lines at most, since the maintainer asked for one after a plan of
 20 and a report of 21. `settled.sh` names a decision line that asks whether to file a finding, which
 the conventions settle: the finding is filed and the reply says its number. It names one that asks
-whether to post the label, the `Update:` or an issue an implement-issue run returned too, which the
-maintainer ordered posted always.
+whether to post too, a verb of posting before its object or the question mark, since the noun and
+`-X POST` ask nothing, or whether to record the label or the `Update:` an implement-issue run
+returned: the maintainer ordered those posted always, and every post on 2026-11-27.
 
 `clear-notice.sh` reads the same reply in the same hook, with the session's hand-off, the path
 `on-prompt.sh` names for its process and its session, and its transcript: a reply that says the
