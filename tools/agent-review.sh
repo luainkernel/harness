@@ -43,8 +43,9 @@ reviewers() {
 	local journal run meta stamp checkout
 	grep -l '"label":"review:' "$projects"/*/*/subagents/workflows/*/journal.jsonl 2> /dev/null | while IFS= read -r journal; do
 		run=$(dirname "$journal")
+		# a run a /clear crossed has its journal in the session that launched it, its record in the next
 		meta=$(jq -er --arg repo "$repo" 'select((.args.github? // "" | ascii_downcase) == ($repo | ascii_downcase)) |
-			[.timestamp, .args.repo // ""] | @tsv' "${run%/subagents/workflows/*}/workflows/${run##*/}.json" 2> /dev/null) || continue
+			[.timestamp, .args.repo // ""] | @tsv' "${run%/*/subagents/workflows/*}"/*/workflows/"${run##*/}".json 2> /dev/null) || continue
 		read -r stamp checkout <<< "$meta"
 		jq -rs --arg stamp "$stamp" --arg run "$run" --arg checkout "$checkout" '
 			[.[] | select(.type == "started" and (.label // "" | startswith("review:"))) | .agentId] as $reviewers
