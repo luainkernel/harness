@@ -591,8 +591,9 @@ characters or continued on the next. A step only he can take reaches him as a sc
 the one line that runs it (AGENTS.md, *Deciding what to change*); on 2026-10-11 a reply handed him the
 delete of the 21 branches a merge left as one line of 600 characters. A command handed without the
 prefix is not read. It also opens the script a `! bash /tmp/<name>.sh` line names, and names one that
-writes to GitHub with `gh` and runs nothing under `sudo`: a post is the session's once the maintainer
-says to post, since the auto mode classifier reads his go in the conversation.
+deletes a branch, which is the session's through `tools/delete-branch.sh`, and one that writes to
+GitHub with `gh` and runs nothing under `sudo`: a post is the session's once the maintainer says to
+post, since the auto mode classifier reads his go in the conversation.
 
 `citation.sh`, `tldr.sh` and `settled.sh` read the same reply in the same hook. `citation.sh` names a
 line that says what AGENTS.md, a rule or a skill asks without the passage in double quotes, or with
