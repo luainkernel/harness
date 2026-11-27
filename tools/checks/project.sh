@@ -22,6 +22,7 @@
 #   range      the rev-range checks of its own review-packet.sh runs over a change
 #   repos      the other repositories that mount the harness, owner/name, whose pull requests and issues
 #              the post guards read as the checkout's (gh_family in commands.sh)
+#   budget     the ceiling in bytes of the project's AGENTS.md (context-budget.sh)
 # A key the project leaves out gives nothing: no path, no check, no repository.
 
 # the checkout of the harness this file is in, through any link to it
