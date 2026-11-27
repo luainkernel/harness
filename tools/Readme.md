@@ -23,6 +23,16 @@ Prints the `complexity:` label each pull request carries, by the lines it adds: 
 GH_TOKEN=... bash tools/complexity.sh 2340    # complexity: medium
 ```
 
+## delete-branch.sh
+
+Deletes a merged branch on GitHub, and only where its tip is the head the pull request merged with (the
+merged skill, section 4).
+
+```sh
+bash tools/delete-branch.sh luainkernel/lunatik checks-held-edit-repo <token file>
+# delete-branch: luainkernel/lunatik checks-held-edit-repo deleted at <tip>, the head #2440 merged with
+```
+
 ## issues.sh
 
 Reports the issues an epic tracks as GitHub has them: the epic and each issue whose body says it
