@@ -277,6 +277,21 @@ the proof it merged on. A narrow `permissions.allow` rule, which auto mode keeps
 `Bash(*)`, runs it with no classifier, and a `GH_TOKEN=` before the command is past what a rule
 matches, so the script reads the token from the file it is handed.
 
+`tools/merge.sh` is how the session merges what `merge-guard.sh` admits: the classifier refused the
+merge of luainkernel/lunatik#2744, small, its CI passed and its proof posted, as "Destructive or
+Unwanted Actions" in a session started by `/clear` and `continue`, and passed the same command once the
+maintainer's words were in the conversation (luainkernel/harness#45). It hands the guard, as a hook
+input, the rebase merge it runs, the head named, and runs it only where the guard exits 0, so its own
+rule lets through no merge the guard refuses; the command it builds never carries `MERGE_OK=1`, which
+the guard reads in the command alone, and its arguments are held to a repository's name, a number and
+a full SHA. It reads the token from the file it is handed, as `tools/agent-review.sh` does, under a rule
+of the same kind. Each rule names its script by the absolute path of the checkout sessions start in,
+which follows master: `merge.sh` runs the `merge-guard.sh` beside it, so a copy in a worktree, where an
+edit to the guard or to either script would decide, matches no rule and goes to the classifier. The rule
+runs that checkout's tree as it stands, as its hooks do: an edit under its mount, or a commit other than
+the one its HEAD pins checked out there, decides the merge with no classifier, and nothing but
+`checkout-behind.sh`, which names the second as a session starts, reads either.
+
 `fixup-guard.sh`, wired before a shell call, refuses opening a pull request whose head, compared on GitHub
 with its base, carries a `fixup!`, `amend!` or `squash!` commit: a pull request reaches the maintainer's first
 review squashed, and a fixup is how he reads what changed after it. `FIXUPS_OK=1` opens one that is not the

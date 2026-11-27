@@ -14,21 +14,29 @@ ready, its fixups folded and pushed, and the CI passed on the head that carries 
 pass goes on that head as a commit status, and the merge names the head, so a push after either is
 refused, by `merge-guard.sh` and by GitHub:
 
-    bash tools/agent-review.sh <owner>/<repo> <head> <file that holds the token>
-    gh api -X PUT repos/<owner>/<repo>/pulls/<N>/merge -f merge_method=rebase -f sha=<head>
+    bash <checkout>/<mount>/tools/agent-review.sh <owner>/<repo> <head> <file that holds the token>
+    bash <checkout>/<mount>/tools/merge.sh <owner>/<repo> <N> <head> <file that holds the token>
 
 `tools/agent-review.sh` sets the status only on the review's own record, the newest reviewer at `high`
 effort or above of a tip whose tree is the head's, when it returned ready, so a fold, which moves the
-head and not the tree, keeps it, and a later review that returns it not ready withdraws it. It runs as a command of its own, spelled as the `permissions.allow` rule that
-allows it spells it, with no `GH_TOKEN=` before it, which no rule matches past:
-the auto mode classifier refuses the session's own write of the status where the conversation holds
-no order of the maintainer's, as after a `/clear`. One that
+head and not the tree, keeps it, and a later review that returns it not ready withdraws it.
+`tools/merge.sh` hands `merge-guard.sh` the merge it runs,
+`gh api -X PUT repos/<owner>/<repo>/pulls/<N>/merge -f merge_method=rebase -f sha=<head>`, and runs it
+only where the guard passes it, never with `MERGE_OK=1`, and prints GitHub's answer, whose `sha` is the
+commit the merge put on the trunk. Each runs as a command of its own, spelled as the `permissions.allow` rule that
+allows it spells it, by its absolute path in the checkout sessions start in, with no `GH_TOKEN=` before
+it, which no rule matches past: the auto mode classifier refuses the session's own write of the status,
+and its merge of a pull request small on a proof, where the conversation holds no order of the
+maintainer's, as after a `/clear`. That checkout follows master, and `tools/merge.sh` runs the
+`merge-guard.sh` beside it, so a copy in a worktree, where an edit to the guard or to either script
+decides, matches no rule and goes to the classifier. One that
 `tools/complexity.sh <N> <owner>/<repo>` calls small merges on a proof in place of the review: a
 comment on it, opened by GitHub's note that an LLM wrote it, naming its head beside the command that
 shows the defect before, its result after and the case still refused, or, for text no command reads,
 the passage it replaces beside the new one, and the merge names that head. What the review left as
 issues is filed before the merge, as implement-issue's last stage files it. A pull request the
-maintainer orders merged in his own words takes `MERGE_OK=1`. The steps below follow either merge,
+maintainer orders merged in his own words takes `MERGE_OK=1` on the `gh api` merge, run without
+`tools/merge.sh`, which never carries it. The steps below follow either merge,
 and the report reaches him as it does for his own.
 
 A pull request the maintainer approved in his own words merges the same way, `MERGE_OK=1` on the
@@ -109,12 +117,12 @@ that runs it (AGENTS.md, *Deciding what to change*).
 
 A pull request of the harness's own repository reaches a project only through the commit its mount
 points at. Once one merges, its `agent-review` status goes on the commit the merge put on the harness's
-trunk, the `sha` the merge answered: the rebase gave the reviewed head a new SHA, and a bump is read on
+trunk, the `sha` the merge answered, which `tools/merge.sh` prints: the rebase gave the reviewed head a new SHA, and a bump is read on
 that one. A small one merged on its proof takes the status too, its description naming the proof.
 `tools/agent-review.sh` reads which of the two the merged pull request was, through the record of the
 review of its head or the comment that proves it, and refuses a commit that merged on neither:
 
-    bash tools/agent-review.sh <owner>/<harness> <merged commit> <file that holds the token>
+    bash <checkout>/<mount>/tools/agent-review.sh <owner>/<harness> <merged commit> <file that holds the token>
 
 Each project that mounts the harness then takes a pull request of its own that moves the mount to the
 merged commit, its trunk's tip, and nothing else, a harness pull request of that project:
@@ -122,7 +130,7 @@ merged commit, its trunk's tip, and nothing else, a harness pull request of that
     git -C <project checkout>/<mount> fetch origin && git -C <project checkout>/<mount> checkout <merged commit>
     git -C <project checkout> add <mount>
 
-The bump merges as section 0 merges a harness pull request, on the project's CI, which runs the shared
+The bump merges as section 0 merges a harness pull request, through `tools/merge.sh`, on the project's CI, which runs the shared
 checks from the new mount over it, and on the review and the CI of the commit it pins (luainkernel/lunatik#2598,
 D102 B): `merge-guard.sh` reads that commit on the harness's trunk, carrying the `agent-review` status and
 passing the check runs its push to the trunk started, and asks no status of the bump's own head.
