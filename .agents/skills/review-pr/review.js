@@ -141,9 +141,15 @@ and the maintainer's first review reads it squashed; push it with \`git push ori
 --force-with-lease=refs/heads/${a.branch}:<the head you started from>\` (where \`origin\` is not writable from
 this machine, CLAUDE.local.md says how it pushes), and your answer's tip is the head after the fold.`
 
+// a SHA handed by hand can name no commit, and the branch's tip, which an agent then reaches for, is not the one meant
+const NAMED = (shas, answer) => `Resolve ${[...new Set(shas.filter(Boolean))].map(s => `\`${s}\``).join(', ')} once
+\`${a.branch}\` is fetched, each with \`git -C ${repo} rev-parse --verify <sha>^{commit}\`; where one names no commit,
+${answer}, with the error, and put no other commit in its place, the branch's tip included.`
+
 const COMMON = `
 You are reviewing ${a.pr ? `pull request #${a.pr}` : `the branch \`${a.branch}\`, which has no pull request yet,`} of
 ${github}, in the checkout at \`${repo}\`: branch \`${a.branch}\`, head \`${a.head}\`, base \`${a.base}\`.
+${NAMED([a.head, a.base, a.reviewed], 'review nothing: answer ready false')}
 
 CHECKPOINT, before anything else: the file ${checkpoint} is the review's memory across phases and across
 a phase that dies. If it exists, read it and continue from it; do not redo what it records. Append every
@@ -273,6 +279,7 @@ const asks = typeof a.build !== 'string' && (!a.validated || !unrun.length)
 const BUILD = (tip, body) => `
 PHASE: BUILD of ${a.pr ? `pull request #${a.pr}` : `the branch \`${a.branch}\``} of ${github}, in the checkout at \`${repo}\`.
 ${a.machine ? 'THIS MACHINE: ' + a.machine : 'Root commands run as `sudo <cmd>`; confirm that works without a prompt (`sudo -n true`) and, where it does not, skip the build and say so.'}
+${NAMED([tip, asks && since], 'build nothing: answer clean false')}
 
 In a worktree of your own under ${a.scratch}/ at \`${tip}\`, the tip of \`${a.branch}\` with every fixup
 (\`git -C ${repo} worktree add --detach <abs path> ${tip}\`, then \`git submodule update --init\`): ${typeof a.build === 'string' ? `${a.build}
