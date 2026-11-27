@@ -42,10 +42,19 @@ of bytes, and `pre-commit` runs it, so it fails the commit and the `Checks` run 
 the mount's gate: each session and each workflow agent that loads CLAUDE.md loads harness/AGENTS.md and
 the project's AGENTS.md before its first turn, and from 2026-10-09 to 2026-11-22 the one file they
 replaced grew from 42268 bytes to the 66014 the two weigh (luainkernel/harness#6, D172 D). The
-harness's ceiling is a line of the check, and a project's the `budget` key of its
+harness's ceilings, its AGENTS.md's and that of the CONVENTIONS.md a project imports beside it, are a
+line of the check, and a project's the `budget` key of its
 `.agents/harness.conf`; a project that names none is not read. A lesson that needs room moves an older
 passage to the check, the skill or the path rule that holds its subject, and a pull request that moves
 a ceiling says why.
+
+`title.sh`, `decision.sh`, `merge-guard.sh` and the header and trailing blank line checks of
+`pre-commit` hold conventions of CONVENTIONS.md, which a project imports beside AGENTS.md or keeps its
+own in place of, so each passes silent, its callers with it, where the `replaces` key of the project's
+`.agents/harness.conf` names it, `title`, `decision`, `merge`, `license` or `blank` (`project_keeps`,
+`project.sh`), and runs everywhere else: a project whose mount moved here without the key keeps the
+checks it had. A project whose subjects open with a type, `feat(scope):`, and whose sources carry no
+license line fails every subject and every file otherwise.
 
 `advisory.sh` runs the heuristic checks over a change, the file checks over the files it adds or
 modifies and the commit checks over its commits, the harness's and the project's own its
@@ -211,7 +220,7 @@ definition run from a session started for them in a worktree of the project whos
 the checkout the sessions start in follows master, and its mount moved to the change would hand every
 session opened on it a reader no review passed.
 
-`title.sh` holds a pull request title or a commit subject to the shape AGENTS.md, *Patches and
+`title.sh` holds a pull request title or a commit subject to the shape CONVENTIONS.md, *Patches and
 commits*, gives a subject, `<area>: <what changes for whoever uses it>` in one plain clause, which the
 maintainer asked for after #2541: "precisamos alem dessa melhoria no corpo, melhoria no titulo tb.. os
 titulos tao ruins e incompreensiveis.. o corpo melhorou". It names a title with no area before its
@@ -262,7 +271,7 @@ every file the harness as `harness-mixed.sh --outside` reads it, the mount a bum
 any file of the harness's own repository, and a head that carries the
 `agent-review` status, which `tools/agent-review.sh` sets once `review.js` returned that head ready, or, on a
 pull request `complexity.sh` calls small, a comment of the posting account that names that head, the
-proof a mechanical change merges on (AGENTS.md, *Patches and commits*), and
+proof a mechanical change merges on (CONVENTIONS.md, *Patches and commits*), and
 passed every check run, and commits none of which is a `fixup!`, `amend!` or `squash!`, which the
 `Checks` run warns of without failing. A bump of the mount, a pull request whose one file is the
 submodule, carries no status of its own: the commit it pins does, on the harness's trunk, where the
@@ -577,14 +586,14 @@ mechanism or carries a hypothesis with what was not captured. `pr-body.sh`, `rev
 and, on an issue body, `pr-body-guard.sh` run it.
 
 `decision.sh` reads the same texts, where the same three run it, for a decision handed to the
-maintainer without the question, two options and a recommendation (AGENTS.md, *Deciding what to change*): it
+maintainer without the question, two options and a recommendation (CONVENTIONS.md, *Deciding what to change*): it
 keys on the phrase that hands one over, "the maintainer's call", "é decisão sua", "levo isso a
 você", and asks the text around it for the three. A reply in the session is where the maintainer
 read "é decisão sua", so `.claude/hooks/on-stop.sh`, the Stop hook, runs it over the reply a turn
 ends on and sends one that fails back once, passing the stop after it (`stop_hook_active`). A decision reported as taken, "foi decisão sua", "por decisão sua", or said to be none, "não pede decisão sua", "nenhuma decisão sua", hands nothing over and passes.
 It also reads every recommendation, from the line that opens with one, `Recommendation:`, `Recomendação:`
 or `Recomendo`, to the end of its paragraph, for a reason that rests on keeping an API, "the existing contract", "não
-muda a API": that is a cost the other options pay, not what the recommended one buys (AGENTS.md,
+muda a API": that is a cost the other options pay, not what the recommended one buys (CONVENTIONS.md,
 *Deciding what to change*), and #1965's recommendation of a positional read rested on it. One that
 spells the break as the cost of the option that makes it, "B breaks `bpf.map`'s API, which one test
 uses", passes. It also names a recommendation that names no option it beats, by its letter in a

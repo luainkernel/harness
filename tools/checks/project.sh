@@ -23,6 +23,9 @@
 #   repos      the other repositories that mount the harness, owner/name, whose pull requests and issues
 #              the post guards read as the checkout's (gh_family in commands.sh)
 #   budget     the ceiling in bytes of the project's AGENTS.md (context-budget.sh)
+#   replaces   the conventions of CONVENTIONS.md the project keeps its own in place of, by the check that
+#              holds each: title (title.sh), decision (decision.sh), merge (merge-guard.sh), and license
+#              and blank (the header and the trailing blank line pre-commit reads)
 # A key the project leaves out gives nothing: no path, no check, no repository.
 
 # the checkout of the harness this file is in, through any link to it
@@ -62,6 +65,12 @@ project_conf() {
 	conf=$top/.agents/harness.conf
 	[ -n "$top" ] && [ -f "$conf" ] || conf=$(project_root)/.agents/harness.conf
 	sed -n "s/^$1=//p" "$conf" 2> /dev/null | tail -n 1
+}
+
+# whether the project of the checkout <dir> keeps the convention <name> of CONVENTIONS.md, which it does
+# unless its replaces key names it
+project_keeps() {
+	! project_conf replaces "$2" | tr ' ' '\n' | grep -qxF "$1"
 }
 
 # the repository on GitHub the checkout <dir> pushes to, owner/name from its origin, as gh takes the

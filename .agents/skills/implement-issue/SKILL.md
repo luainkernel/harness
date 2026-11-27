@@ -74,7 +74,7 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
   changes nothing in this tree whenever the groomer weighed one. #2442's groomer measured the VM for three
   hours, the session brought two decisions on how to build the bound, and the maintainer asked twice what
   the core bought before the issue closed for the embedding's own Lua to do.
-- A change AGENTS.md, *Patches and commits*, splits into two pull requests runs twice on its issue: the
+- A change CONVENTIONS.md, *Patches and commits*, splits into two pull requests runs twice on its issue: the
   groomer's `Update:` says so, the first run's implementer commits the first part alone under `#N, which it
   does not close`, and the session launches the second with `base` the first's branch and `notes` naming
   the second part, which the first's notes give; the first review's `differs` on that part is the second
