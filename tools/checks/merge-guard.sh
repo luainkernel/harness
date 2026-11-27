@@ -7,7 +7,10 @@
 # posting account opened it on the repository's default branch, it changes the harness alone, its head carries the
 # agent-review status, or the pull request is small by complexity.sh and a comment of the posting account
 # on it names the head, and passed every check run, and none of its commits waits for a squash, which
-# the Checks run warns of without failing (CONVENTIONS.md, "Patches and commits"). A bump of the mount, whose
+# the Checks run warns of without failing (CONVENTIONS.md, "Patches and commits"). A repository whose CI
+# runs no job, which a line "<owner>/<name> <ERE>" of $HARNESS_LOCAL_GATES names in the machine's
+# environment, passes where its head has no check run on a comment of the posting account that names
+# the head and holds a line the ERE matches, the one its local gate prints on a pass. A bump of the mount, whose
 # one file is the submodule, carries the agent-review status of the harness commit it pins instead, a
 # commit on the harness's trunk that passed every check run of its own (the merged skill, section 5).
 # A pull request of the harness's own repository, by the name its checkout's origin gives, is the
@@ -53,11 +56,24 @@ reviewed() {
 	[ "$(github "repos/$1/commits/$2/status" --jq '.statuses[] | select(.context == "agent-review") | .state')" = success ]
 }
 
-# whether the commit <sha> of the repository <repo> has check runs and passed every one
+# whether the commit <sha> of the repository <repo> has check runs and passed every one, exiting 2 where
+# it has none
 passed() {
 	local checks
-	checks=$(github "repos/$1/commits/$2/check-runs?per_page=100" --jq '.check_runs[] | .conclusion // "pending"')
-	[ -n "$checks" ] && ! printf '%s\n' "$checks" | grep -vqxE 'success|skipped|neutral'
+	checks=$(github "repos/$1/commits/$2/check-runs?per_page=100" --jq '.check_runs[] | .conclusion // "pending"') || return 1
+	[ -n "$checks" ] || return 2
+	! printf '%s\n' "$checks" | grep -vqxE 'success|skipped|neutral'
+}
+
+# whether a comment of the account <login> on the pull request <number> of the repository <repo> names
+# the head <sha> and holds a line that the ERE after <repo> on a line of $HARNESS_LOCAL_GATES matches
+gated() {
+	local gate
+	gate=$(printf '%s\n' "$HARNESS_LOCAL_GATES" | awk -v repo="$1" '
+		NF > 1 && tolower($1) == tolower(repo) { sub(/^[^ \t]+[ \t]+/, ""); print; exit }')
+	[ -n "$gate" ] && github "repos/$1/issues/$2/comments?per_page=100" --paginate \
+		--jq ".[] | select(.user.login == \"$3\") | .body | select(contains(\"${4:0:9}\"))" |
+		grep -qE -- "$gate"
 }
 
 # the repository and the commit, "<owner>/<name> <sha>", the pull request of the repository <repo> whose head
@@ -118,7 +134,8 @@ while IFS= read -r merge; do
 		reviewed "$repo" "$head" || GH_TOKEN=$token gh_proved "$repo" "$number" "$login" "$head" ||
 			refuse "the head of #$number, ${head:0:9}, carries no agent-review status, nor a proof that names it"
 	fi
-	passed "$repo" "$head" || refuse "the CI of ${head:0:9} has not passed"
+	passed "$repo" "$head" || { [ $? -eq 2 ] && gated "$repo" "$number" "$login" "$head"; } ||
+		refuse "the CI of ${head:0:9} has not passed, nor a local gate HARNESS_LOCAL_GATES names for $repo in a comment that names that head"
 	subjects=$(github "repos/$repo/pulls/$number/commits?per_page=100" --paginate --jq '.[].commit.message | split("\n")[0]')
 	[ -n "$subjects" ] || refuse "GitHub did not answer for the commits of #$number"
 	! printf '%s\n' "$subjects" | grep -qE '^(fixup|amend|squash)! ' ||

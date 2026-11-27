@@ -39,6 +39,17 @@ block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pull
 # env: GH_TOKEN=cases
 pass	gh api -X PUT repos/luainkernel/lunatik/pulls/7/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567
 block	gh api -X PUT repos/luainkernel/lunatik/pulls/8/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567
+# a repository whose CI runs no job merges on the line of its local gate the machine's environment names,
+# in a comment of the posting account that names the head
+block	gh api -X PUT repos/example/tools/pulls/17/merge -f merge_method=rebase -f sha=1717171717171717171717171717171717171717
+# env: HARNESS_LOCAL_GATES=example/other gates: pass:[0-9]+ fail:0
+block	gh api -X PUT repos/example/tools/pulls/17/merge -f merge_method=rebase -f sha=1717171717171717171717171717171717171717
+# env: HARNESS_LOCAL_GATES=Example/Tools gates: pass:[0-9]+ fail:0
+pass	gh api -X PUT repos/example/tools/pulls/17/merge -f merge_method=rebase -f sha=1717171717171717171717171717171717171717
+block	gh api -X PUT repos/example/tools/pulls/18/merge -f merge_method=rebase -f sha=1818181818181818181818181818181818181818
+block	gh api -X PUT repos/example/tools/pulls/19/merge -f merge_method=rebase -f sha=1919191919191919191919191919191919191919
+pass	gh api -X PUT repos/example/tools/pulls/20/merge -f merge_method=rebase -f sha=3030303030303030303030303030303030303030
+block	gh api -X PUT repos/example/tools/pulls/21/merge -f merge_method=rebase -f sha=3131313131313131313131313131313131313131
 # a project that replaces the merge convention answers to a guard of its own
 # cwd: replaced
 pass	gh pr merge 7 --squash

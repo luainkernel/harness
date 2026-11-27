@@ -33,7 +33,10 @@ decides, matches no rule and goes to the classifier. One that
 `tools/complexity.sh <N> <owner>/<repo>` calls small merges on a proof in place of the review: a
 comment on it, opened by GitHub's note that an LLM wrote it, naming its head beside the command that
 shows the defect before, its result after and the case still refused, or, for text no command reads,
-the passage it replaces beside the new one, and the merge names that head. What the review left as
+the passage it replaces beside the new one, and the merge names that head. A repository whose CI runs
+no job, which `HARNESS_LOCAL_GATES` names beside the line its local gate prints on a pass, merges in
+place of that CI on a comment that names the head beside the line, its gate run at that head first
+(`.agents/rules/checks.md`, of `merge-guard.sh`). What the review left as
 issues is filed before the merge, as implement-issue's last stage files it. A pull request the
 maintainer orders merged in his own words takes `MERGE_OK=1` on the `gh api` merge, run without
 `tools/merge.sh`, which never carries it. The steps below follow either merge,

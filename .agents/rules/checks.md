@@ -287,7 +287,13 @@ any file of the harness's own repository, and a head that carries the
 pull request `complexity.sh` calls small, a comment of the posting account that names that head, the
 proof a mechanical change merges on (CONVENTIONS.md, *Patches and commits*), and
 passed every check run, and commits none of which is a `fixup!`, `amend!` or `squash!`, which the
-`Checks` run warns of without failing. A bump of the mount, a pull request whose one file is the
+`Checks` run warns of without failing. A repository whose CI runs no job, its workflows suspended,
+passes on its local gate where its head has no check run, and a line `<owner>/<name> <ERE>` of
+`HARNESS_LOCAL_GATES` in the machine's environment names it: a comment of the posting account that
+names the head holds a line the ERE matches, the one the gate prints on a pass. Such a repository's
+harness pull requests failed the check runs every time, and went to the maintainer as scripts once
+the classifier refused the session's `MERGE_OK=1` merge after his "ok" (2026-11-27); the names are the
+machine's, as those `LUNATIK_CONSUMERS` lists are. A bump of the mount, a pull request whose one file is the
 submodule, carries no status of its own: the commit it pins does, on the harness's trunk, where the
 merged skill sets it after the merge, with the check runs the push to that trunk started, all passed.
 It refuses a merge other than by rebase too, the way the maintainer's merges land and the merged skill
