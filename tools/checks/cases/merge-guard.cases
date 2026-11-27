@@ -35,3 +35,7 @@ pass	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/harness/pulls
 pass	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/14/merge -f merge_method=rebase
 block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/15/merge -f merge_method=rebase
 block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pulls/16/merge -f merge_method=rebase
+# the merge tools/merge.sh hands the guard, the head named and the token in GH_TOKEN, as the script exports it
+# env: GH_TOKEN=cases
+pass	gh api -X PUT repos/luainkernel/lunatik/pulls/7/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567
+block	gh api -X PUT repos/luainkernel/lunatik/pulls/8/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567

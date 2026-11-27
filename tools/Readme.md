@@ -45,6 +45,17 @@ implement-issue skill runs it before each launch; the commits are read, not obey
 GH_TOKEN=... bash tools/issue-since.sh 2131    # names 097d27e13, which added the case the issue asks for
 ```
 
+## merge.sh
+
+Merges a pull request by rebase, its head named, only where `checks/merge-guard.sh` passes the merge,
+and prints GitHub's answer, whose `sha` is the commit the merge put on the trunk (the merged skill,
+sections 0 and 5).
+
+```sh
+bash tools/merge.sh luainkernel/harness 35 d743e120753d332e8be73475bd1119fb9f077f8a <token file>
+# {"sha":"81daee218441d11a3140c796004901311f52985e","merged":true,"message":"Pull Request successfully merged"}
+```
+
 ## oops.sh
 
 Captures the last kernel oops before a reboot takes it away: the `dmesg` block, the instructions
