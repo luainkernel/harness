@@ -50,6 +50,10 @@ block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --ba
 # transcript: elsewhere.jsonl
 pass	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file read/elsewhere.md
 block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file named.md
+# a session a /clear started reads the readers of the one it ended, and still no other session's
+# transcript: cleared.jsonl
+pass	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file named.md
+block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file read/elsewhere.md
 # transcript:
 block	gh pr create --title 'fifo: a megabyte buffer loads' --head fifo-test --base master --body-file named.md
 # transcript: session.jsonl

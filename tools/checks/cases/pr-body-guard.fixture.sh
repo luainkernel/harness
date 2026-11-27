@@ -21,6 +21,7 @@
 # passed, where a reader of the session in session.jsonl passed every other, its transcript where Claude
 # Code keeps it; under read/, one such a reader failed, one another agent drafted, one a reader wrote
 # before the one it left, which it passed, and one a reader of the session in elsewhere.jsonl passed;
+# cleared.jsonl, the transcript of the session a /clear started after the one in session.jsonl;
 # under review5/, the body a reader of #5 passed and a copy edited after it; under project/, a checkout
 # of the repository whose tools/checks carries an examples-named.sh of its own; under
 # sub/, read only after a cd into it, the body that names the example and a GraphQL mutation that
@@ -169,6 +170,7 @@ agent session.jsonl failed lunatik-reader fail read/failed.md
 agent session.jsonl drafted workflow-subagent pass read/drafted.md
 agent session.jsonl redraft lunatik-reader pass read/draft.md read/redraft.md
 agent elsewhere.jsonl elsewhere lunatik-reader pass read/elsewhere.md
+jq -nc '{type: "derived-from", v: 1, sessionId: "cleared", sessions: [{type: "claude_code_session", id: "session", via: "clear"}]}' > cleared.jsonl
 # the body review.js hands a reader of #5, which passed it, and a copy edited after the read
 printf 'A fifo of a megabyte fails to load on a fragmented host.\n\nNothing a script calls changes.\n' > review5/body.md
 sed 's/fragmented/busy/' review5/body.md > review5/edited.md
