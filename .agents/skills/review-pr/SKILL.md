@@ -133,6 +133,9 @@ card is the workflow that follows them (`Workflow({scriptPath: '.agents/skills/r
   file in its worktree. A pull request of a repository that carries no harness is reviewed the
   same way, with `args.packet` this tree's `tools/review-packet.sh` by its absolute path, and
   `args.build` what its host run is, or false where nothing runs on the host.
+- The reviewer's answer carries `fit`, the rule of the module the change makes hold and what holds each
+  path of the defect's family (`process.md`, on a fix read against its module), and the run turns not
+  ready while it says no one shape holds the rule, nor does `tools/agent-review.sh` set the status on it.
 - `args.replaces` is the `replaces` key of the project's `.agents/harness.conf` as it spells it, which
   the session copies from it, since the workflow reads no file; where it names `smallest` the review
   removes no mechanism past the smallest shape for having no source, and turns not ready on none kept

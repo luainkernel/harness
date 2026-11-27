@@ -10,11 +10,12 @@ AGENTS.md is the authority; `implement.js` beside this card is the workflow that
                      repo: '<checkout>', mount: '<mount>', notes: '<the session's words>',
                      machine: '<how this machine gets root and gh>'}})
 
-- The implementer traces the issue, writes the smallest shape down before any other, commits and
+- The implementer traces the issue, writes the fit and then the smallest shape down before any other, commits and
   pushes what builds as it goes, and drafts the pull request's title and body; it runs nothing on the
   host. Its answer's `smallest`, the shape beside the size of the diff and what each
-  mechanism past it buys, goes to the review, and the hand-back of the pull request carries it with
-  the reviewer's own reading. Its prompt names the rule each step needs and restates none, since every
+  mechanism past it buys, goes to the review, and the hand-back of the pull request carries it and its
+  `fit`, the rule of the module the change makes hold and what holds each path of the defect's family, with
+  the reviewer's own reading, which is not ready while no one shape holds the rule. Its prompt names the rule each step needs and restates none, since every
   agent loads AGENTS.md and the machine's CLAUDE.local.md; what belongs to the machine, a credential or how
   it gets root, stays in the latter, and `machine-leak.sh` keeps it out of the tree.
 - Before a launch the session runs `tools/issue-since.sh <N>`, which lists the commits master took since the

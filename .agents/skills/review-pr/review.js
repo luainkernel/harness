@@ -195,6 +195,13 @@ that reads no dmesg line a sleep prints proves nothing of a requirement that not
 Every line under "# Checks" is answered in the checkpoint: a fixup, or why the code stays; a line of
 function-shape.sh with the function's jobs listed. Where a check complains about something master already does, say so with the evidence.
 
+Read the fit before any mechanism alone, as ${H}.agents/skills/review-pr/process.md says of a fix: the module the
+change lands in, whole, the rule of it the change makes hold, and each path of the defect's family with the
+mechanism of the diff that holds it, or none. Mechanisms added one per path, each kept for a defect of its own, or
+a path left to a later change, are a finding: the smallest shape that holds the rule on every path, shipped as the fixups
+that replace what it subsumes, or the offer refused where no such shape exists. Your answer's fit is that reading of
+the final diff, your fixups included.
+
 Look for the smallest shape first: for every mechanism the diff adds (a registration path, a new API argument,
 a helper, a name), write the smaller change that would leave the same defect unreachable and why it was not
 taken${keeps('smallest') ? `; where correctness is equal and the shape is smaller, that is a finding, shipped as the fixup that
@@ -249,7 +256,7 @@ branch and the base's new commits touch,
 \`comm -12 <(git diff --name-only <old> ${a.base} | sort) <(git diff --name-only ${a.base} ${a.head} | sort)\`.
 Read the hunks range-diff marks changed and, in each of
 those files, where the branch's hunks meet the base's new code, \`git diff ${a.base} ${a.head} -- <file>\`, and
-nothing else: no packet, no thread, no issue. Your answer's smallest, coverage and requirements answer what
+nothing else: no packet, no thread, no issue. Your answer's fit, smallest, coverage and requirements answer what
 those show alone, and its findings what they show wrong, a conflict resolved into other code, a commit that no
 longer stands alone, a message the move made untrue. A commit range-diff marks \`<\` and pairs with none left
 the branch: the new base carries it when a pull request below merged, as \`git log --oneline <old>..${a.base}\`
@@ -367,6 +374,15 @@ const SMALLEST = { type: 'object', properties: {
   }, required: ['mechanism', 'buys', 'source', 'verdict'] } },
 }, required: ['shape', 'lines', 'diff', 'beyond'] }
 
+const FIT = { type: 'object', properties: {
+  rule: { type: 'string', description: 'the rule of the module the change makes hold, one invariant in a line' },
+  paths: { type: 'array', items: { type: 'object', properties: {
+    path: { type: 'string', description: 'a path of the defect\'s family the module has' },
+    held: { type: 'string', description: 'the mechanism of the diff that holds it, where the change refuses it, or none' },
+  }, required: ['path', 'held'] } },
+  whole: { type: 'boolean', description: 'true when one shape holds the rule on every path, the refused ones refused where they are registered' },
+}, required: ['rule', 'paths', 'whole'] }
+
 const FINDINGS = {
   type: 'object',
   properties: {
@@ -383,6 +399,7 @@ const FINDINGS = {
       case: { type: 'string', description: 'the case that fails when the diff does not meet it, as the test prints it, or why none can' },
       verdict: { type: 'string', enum: ['met', 'differs'], description: 'differs when the diff meets it otherwise than its words, or in part' },
     }, required: ['requirement', 'how', 'case', 'verdict'] }, description: 'empty when the change answers no issue' },
+    fit: FIT,
     smallest: SMALLEST,
     body: { type: 'string', description: 'the body the pull request opens with, when one was handed to correct' },
     title: { type: 'string', description: 'the title the pull request opens with, when one was handed to correct' },
@@ -390,7 +407,7 @@ const FINDINGS = {
     notes: { type: 'string' },
     ...STOPPED,
   },
-  required: ['ready', 'findings', 'fixups', 'tip', 'coverage', 'requirements', 'smallest', 'findings_left', 'notes'],
+  required: ['ready', 'findings', 'fixups', 'tip', 'coverage', 'requirements', 'fit', 'smallest', 'findings_left', 'notes'],
 }
 
 const BUILD_OUT = {
@@ -482,6 +499,10 @@ const unsourced = !keeps('smallest') ? [] : (reviewer?.smallest?.beyond || []).f
 if (unsourced.length) {
   reviewer.ready = false
   log(`not ready: kept without a source: ${unsourced.map(b => b.mechanism).join('; ')}`)
+}
+if (reviewer?.fit && !reviewer.fit.whole) {
+  reviewer.ready = false
+  log(`not ready: no one shape holds ${reviewer.fit.rule}`)
 }
 
 const findings_left = [reviewer, build].flatMap(p => p?.findings_left || [])

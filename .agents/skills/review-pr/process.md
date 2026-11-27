@@ -111,6 +111,16 @@ is how a mutex in softirq and a crash reachable from Lua were passed.
   diff adds or rewrites is read as a stranger would, with the code around it and nothing else, a fixup
   included: a word that names nothing in that code, or a reason that does not say what runs and what it
   would break, is a finding (`.agents/rules/comments.md`).
+* A fix is read against the module it lands in before its mechanisms are read one by one: the rule of
+  the module the change makes hold, one invariant in a line, and every path of the defect's family the
+  module has, each with what holds it. A mechanism per path, each kept for a defect of its own, passes a
+  reading of each alone and holds no rule, and a path of the family the body or a later issue leaves
+  open is the guarantee that holds on some paths AGENTS.md, *Deciding what to change*, refuses: the
+  finding is the smallest shape that holds the rule on every path, which a structural one is not by
+  being structural (#797), shipped as the fixups that replace what it subsumes, or the offer refused
+  where no such shape exists. #2729 tested `cpu_online` in `lunatik_defer`, added a hotplug state for
+  a CPU that dies and a `queue_work` at exit for one that comes up, and left the window of a CPU coming up to #2725; its review passed each, and the maintainer
+  read the whole as "um remendo mal feito em vez de se pensar como isso se encaixaria no modulo de fato".
 * A review holds new code to the conventions AGENTS.md, the `CONVENTIONS.md` the project keeps and `.agents/rules/` record; it does not impose preferences beyond
   them. Where the tree itself is inconsistent and a style seems worth settling, that is an exclusive
   pull request that fixes the whole tree and records the convention here — never a finding on someone's
