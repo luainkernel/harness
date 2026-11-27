@@ -437,6 +437,23 @@ runs: the maintainer resumes a cleared session with that one word, "prefiro dize
 and on 2026-11-26 two sessions cleared within a minute of each other both continued the newest, one of
 them the other's.
 
+`ceiling-guard.sh`, wired before every tool call, holds a workflow agent to the context ceiling its
+prompt sets, a line `CONTEXT CEILING: <tokens> tokens, checkpoint <path>` that `implement.js` and
+`review.js` write into the groomer's, the implementer's, a fix's and the reviewer's prompts when a
+launch names `ceiling`. Over the week to 2026-11-26 the requests of workflow agents at 250k tokens of
+context or more were 29% of their requests and 54% of their input, 737M of 1356M tokens, and the
+Workflow tool's `agent()` takes no limit of turns or of context (luainkernel/harness#6, D192). A
+subagent's call carries its `agent_id` beside the session's `transcript_path`, and the agent's own
+transcript sits under the session's, `subagents/workflows/<run>/agent-<agent_id>.jsonl`, read as
+`context.sh` reads a session's. Past the ceiling the guard refuses every call but the agent's answer,
+one whose input names the checkpoint and a shell call of git and cd alone, but for the `$(cat <file>)`
+a push's URL reads its token with, so the agent writes where it is, commits and pushes what is done
+and answers with `ceiling` true, and the workflow launches the same prompt again, three times at
+most, for an agent that reads the checkpoint first. A call of a
+session's own thread, of an agent whose prompt sets no ceiling and below it passes. It binds the run
+a launch names it for, a pilot, before it binds every run. Its cases run over a fixture of three
+agents' transcripts, past the ceiling, under it and with none.
+
 A check ships proved, the way a test does: run it against the mistake it is for, and against a case
 it must pass. A condition that cannot fire reads as protection and is none, and nothing downstream
 catches it. A command guard whose verdict the command alone decides keeps those cases in
