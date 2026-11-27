@@ -141,7 +141,10 @@ An issue is a request, not a decision to implement it. Judge it before you shape
    stands is no decline, and the clause that documents it is among its shapes. An experiment, a
    build or a measurement is for a shape whose merit stands. A private clone is named in nothing the run
    publishes.
-2. Its approach: the smallest shape that meets the need, written first, beside the one the issue proposes and
+2. Its approach: the rule of the module the issue lands in that a fix makes hold, and the paths of the
+   defect's family the module has, so that no shape holds one path and leaves the rest to another issue
+   (${H}.agents/skills/review-pr/process.md, on a fix read against its module); then the smallest shape that
+   meets the need, written first, beside the one the issue proposes and
    the alternatives, each with what it buys and what it costs, the comparison starting where the project's
    AGENTS.md, "Deciding what to change", starts it. Read what the issue asks to be researched, in the
    sources it names and on the web, and name what you read.${keeps('mechanism') ? ` A shape CONVENTIONS.md, "Patches and commits", splits into two
@@ -180,7 +183,13 @@ You read the kernel, build, test and hold the change to its contract as the proj
    is written down (AGENTS.md, "Verify, do not assume"), and the comparison is read where the project's
    AGENTS.md, "Deciding what to change", asks it. An issue whose stimulus is out of the contract the
    project's AGENTS.md states closes as not a defect, with no pull request.
-2. Write the smallest shape that makes the defect unreachable, or meets the need, in the checkpoint
+2. Read the module the change lands in whole and write its fit in the checkpoint before any shape: the rule
+   of it the change makes hold, one invariant in a line, and each path of the defect's family with what will
+   hold it. A mechanism per path, or a path left to a later issue, holds no rule: the shape is the smallest that
+   holds it on every path, or the offer refused where no such shape exists
+   (${H}.agents/skills/review-pr/process.md, on a fix read against its module). Your answer's fit is that
+   reading of your diff. Then write the smallest shape that makes the defect unreachable, or meets the
+   need, in the checkpoint
    before any other, and take a larger one, a helper or a loop the issue prescribes included, which is a
    shape to weigh and not the spec, only where ${keeps('smallest') ? 'CONVENTIONS.md, "Deciding what to change",' : 'the project\'s AGENTS.md'} keeps one. Your
    answer's smallest carries that shape beside the diff, and names what each mechanism past it buys${keeps('smallest') ? ` with
@@ -361,6 +370,15 @@ const LEFT = { type: 'array', items: { type: 'object', properties: {
   home: { type: 'integer', description: 'the open issue this finding belongs to' },
 }, required: ['title', 'body', 'severity', 'contract'] } }
 
+const FIT = { type: 'object', properties: {
+  rule: { type: 'string', description: 'the rule of the module the change makes hold, one invariant in a line' },
+  paths: { type: 'array', items: { type: 'object', properties: {
+    path: { type: 'string', description: 'a path of the defect\'s family the module has' },
+    held: { type: 'string', description: 'the mechanism of the diff that holds it, where the change refuses it, or none' },
+  }, required: ['path', 'held'] } },
+  whole: { type: 'boolean', description: 'true when one shape holds the rule on every path, the refused ones refused where they are registered' },
+}, required: ['rule', 'paths', 'whole'] }
+
 const SMALLEST = { type: 'object', properties: {
   shape: { type: 'string', description: 'the smallest change that makes the defect unreachable, or meets the need' },
   lines: { type: 'integer', description: 'the lines that change adds and removes' },
@@ -392,12 +410,13 @@ const IMPLEMENTED = {
     }, required: ['suite', 'case'] } },
     title: { type: 'string', description: 'the pull request title, which title.sh passes' },
     body: { type: 'string', description: 'the pull request body, which pr-body.sh passes' },
+    fit: FIT,
     smallest: SMALLEST,
     findings_left: LEFT,
     notes: { type: 'string' },
     ...STOPPED,
   },
-  required: ['branch', 'head', 'base', 'commits', 'examples', 'defects', 'cases', 'title', 'body', 'smallest', 'findings_left', 'notes'],
+  required: ['branch', 'head', 'base', 'commits', 'examples', 'defects', 'cases', 'title', 'body', 'fit', 'smallest', 'findings_left', 'notes'],
 }
 
 const FIXED = { type: 'object', properties: {

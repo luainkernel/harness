@@ -7,7 +7,8 @@
 # <owner>/<repo>, and only on the record of an agent's review that passed it. A head passes when the
 # newest reviewer at high effort or above, the agent a workflow labels review:<pr or branch> as review.js
 # labels its Review phase, alone or nested in implement-issue, of a tip whose tree is the head's returned
-# ready, with no mechanism kept without a source unless its run's replaces names smallest (review.js).
+# ready, with one shape holding the rule its fit names and no mechanism kept without a source unless
+# its run's replaces names smallest (review.js).
 # Its answer is read in its run's journal, before a reader of the body sets the run's ready to false,
 # since the body is held to its reader as it opens, and its effort in its transcript, both under Claude
 # Code's projects directory. The commit a rebase merge put
@@ -38,8 +39,8 @@ tree() {
 }
 
 # each reviewer of the repository's runs, newest first, a line each: when its run ended, whether it
-# returned ready with no mechanism kept without a source, its tip, its transcript and the checkout its run
-# worked in
+# returned ready with one shape for its fit and no mechanism kept without a source, its tip, its
+# transcript and the checkout its run worked in
 reviewers() {
 	local journal run meta stamp replaced checkout
 	grep -l '"label":"review:' "$projects"/*/*/subagents/workflows/*/journal.jsonl 2> /dev/null | while IFS= read -r journal; do
@@ -52,7 +53,7 @@ reviewers() {
 		jq -rs --arg stamp "$stamp" --arg run "$run" --arg checkout "$checkout" --arg replaced "$replaced" '
 			[.[] | select(.type == "started" and (.label // "" | startswith("review:"))) | .agentId] as $reviewers
 			| [.[] | select(.type == "result" and (.agentId as $id | $reviewers | any(. == $id)) and (.result.tip // "") != "")] | reverse[]
-			| (.result.ready == true and ($replaced == "true" or
+			| (.result.ready == true and .result.fit.whole != false and ($replaced == "true" or
 				([.result.smallest.beyond[]? | select(.verdict == "kept" and ((.source // "") | test("^\\s*$")))] | length == 0))) as $ready
 			| [$stamp, (if $ready then "ready" else "not" end), .result.tip, "\($run)/agent-\(.agentId).jsonl", $checkout]
 			| @tsv' "$journal" 2> /dev/null
