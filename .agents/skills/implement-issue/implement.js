@@ -29,7 +29,8 @@
 //               verifier's aside, which runs on opus at high; default the session's
 //   agents      {model, effort} per agent, under groom, implement, fix, review, build and github, over
 //               model and effort; fix defaults to implement's, and build and github to their agents'
-//               definitions, sonnet. groom runs a groomer before the implementer, only when named
+//               definitions, sonnet; build's type, review.js's own, is the agent the build runs in.
+//               groom runs a groomer before the implementer, only when named
 //   push        false where a push from an agent is refused on this machine: the implementer leaves
 //               its commits on the branch, and no review runs
 //   repo        the checkout's absolute path, where review.js is read and its phases work; required, since

@@ -102,7 +102,8 @@ card is the workflow that follows them (`Workflow({scriptPath: '.agents/skills/r
   agent, which loads AGENTS.md and has no Skill tool, reads first what
   `tools/review-packet.sh` gathers, the commits, the files, every check's lines over the change and the
   diff with each function it touches whole, and answers each check's line; the build runs in the
-  `lunatik-host` agent, which loads no CLAUDE.md, so `args.machine` says how this machine gets root.
+  `lunatik-host` agent, or the one `args.agents.build.type` names, which loads no CLAUDE.md, so
+  `args.machine` says how this machine gets root.
   Between them the `lunatik-reader` agent reads the title and the body the run returns, with none of
   the change's history, and the run is ready only on the ones it passed. Those it fails go with its
   problems to a writer that reads the branch's commits and the files of its diff, and the reader reads

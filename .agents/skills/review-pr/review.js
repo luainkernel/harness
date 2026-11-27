@@ -54,7 +54,9 @@
 //   effort      the reviewer's reasoning effort, default "high"
 //   model       the model the reviewer runs on, default the session's
 //   agents      {model, effort} for each phase's agent, under review and build: review's over effort
-//               and model, build's over its agent's definition, sonnet at medium effort
+//               and model, build's over its agent's definition, sonnet at medium effort; build's type
+//               is the agent the build runs in, default lunatik-host, whose definition runs Lunatik's
+//               cycle, so a project built another way names its own
 //   push        false where a push from an agent is refused on this machine, so a fixup stays a
 //               commit on review-<name>-<pr>-fixups and the session that launched the review pushes it
 //   repo        the checkout the phases work in, default the repository they start in
@@ -464,7 +466,7 @@ if (a.build === false)
   log('build skipped: nothing runs on the host for this tree')
 else if (!a.validated || changed || unrun.length) {
   phase('Build')
-  build = await agent(BUILD(tip, !a.pr && (read?.body || reviewer?.body || a.body)), { label: `build:${a.pr || a.branch}`, phase: 'Build', agentType: 'lunatik-host', schema: BUILD_OUT, ...builder })
+  build = await agent(BUILD(tip, !a.pr && (read?.body || reviewer?.body || a.body)), { label: `build:${a.pr || a.branch}`, phase: 'Build', agentType: agents.build?.type || 'lunatik-host', schema: BUILD_OUT, ...builder })
   if (build?.skipped)
     log(`build skipped: the branch moved past ${a.validated ? `${a.head}, validated,` : `its base ${a.base}`} only in what the build does not read`)
 } else {
