@@ -13,8 +13,13 @@
 # #12's carrying it and not on its trunk. #13 is a pull request of luainkernel/harness that changes its
 # README and a license with a check. #14, #15 and #16 change a check, their heads carrying no
 # agent-review status: #14 adds 12 lines and a comment of the posting account names its head, #15 adds
-# 12 and no comment names it, #16 adds 90 and a comment names it. Under replaced/, a checkout whose
-# .agents/harness.conf replaces the merge convention.
+# 12 and no comment names it, #16 adds 90 and a comment names it. #17 to #20 change a check and their
+# heads have no check run: #17's head carries the agent-review status and a comment names it beside a
+# passing gate's line, #18's carries it and the comment that names it holds a failing gate's line,
+# #19's carries it and the passing line is in a comment of another account or of another head, and
+# #20 adds 12, its head carrying no status, and one comment names it beside the passing line; #21 is #17
+# with a failing check run on its head. A filter handed to --jq runs over their comments. Under replaced/, a checkout whose .agents/harness.conf
+# replaces the merge convention.
 #
 # Usage: bash tools/checks/cases/merge-guard.fixture.sh <dir>
 
@@ -25,7 +30,30 @@ mkdir -p stub
 cat > stub/gh <<'STUB'
 #!/bin/sh
 [ "$GH_TOKEN" = cases ] || exit 1
+# the comments on stdin through the filter the command hands --jq, as gh prints them
+comments() {
+	filter="" prev=""
+	for arg; do [ "$prev" = --jq ] && filter=$arg; prev=$arg; done
+	jq -r "$filter"
+}
 case "$*" in
+	*/issues/17/comments*) printf '%s\n' '[{"user": {"login": "cases"}, "body": "On 171717171:\n\n    gates: pass:2 fail:0"}]' | comments "$@" ;;
+	*/issues/18/comments*) printf '%s\n' '[{"user": {"login": "cases"}, "body": "On 181818181:\n\n    gates: pass:1 fail:1"}]' | comments "$@" ;;
+	*/issues/19/comments*) printf '%s\n' '[{"user": {"login": "other"}, "body": "On 191919191:\n\n    gates: pass:2 fail:0"},
+		{"user": {"login": "cases"}, "body": "On 012345678:\n\n    gates: pass:2 fail:0"},
+		{"user": {"login": "cases"}, "body": "On 191919191, the gate to come"}]' | comments "$@" ;;
+	*/issues/20/comments*) printf '%s\n' '[{"user": {"login": "cases"}, "body": "The defect before and the case after, on 303030303:\n\n    gates: pass:2 fail:0"}]' | comments "$@" ;;
+	*/issues/21/comments*) printf '%s\n' '[{"user": {"login": "cases"}, "body": "On 313131313:\n\n    gates: pass:2 fail:0"}]' | comments "$@" ;;
+	*/pulls/17\ *) printf 'open\tmaster\tcases\t1717171717171717171717171717171717171717\n' ;;
+	*/pulls/18\ *) printf 'open\tmaster\tcases\t1818181818181818181818181818181818181818\n' ;;
+	*/pulls/19\ *) printf 'open\tmaster\tcases\t1919191919191919191919191919191919191919\n' ;;
+	*/pulls/20\ -q\ .additions) echo 12 ;;
+	*/pulls/20\ *) printf 'open\tmaster\tcases\t3030303030303030303030303030303030303030\n' ;;
+	*/pulls/21\ *) printf 'open\tmaster\tcases\t3131313131313131313131313131313131313131\n' ;;
+	*/pulls/1[789]/files*|*/pulls/2[01]/files*) echo tools/checks/cases.sh ;;
+	*/pulls/1[789]/commits*|*/pulls/2[01]/commits*) echo 'checks: name a case' ;;
+	*/commits/3131*/check-runs*) echo failure ;;
+	*/commits/1[789]1[789]*/check-runs*|*/commits/3030*/check-runs*|*/commits/3030*/status\ *) ;;
 	*/pulls/1[45]\ -q\ .additions) echo 12 ;;
 	*/pulls/16\ -q\ .additions) echo 90 ;;
 	*/pulls/14\ *) printf 'open\tmaster\tcases\t1414141414141414141414141414141414141414\n' ;;
