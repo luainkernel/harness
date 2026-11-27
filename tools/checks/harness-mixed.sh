@@ -6,7 +6,7 @@
 # The harness is the rules, the checks, the workflows and the skills. A commit that
 # carries one of those together with code or tests hides it: the reviewer reads the
 # feature, the rule lands unread, and a maintainer who wants one without the other
-# has nothing to pick. AGENTS.md sanctions harness artifacts travelling together in
+# has nothing to pick. CONVENTIONS.md sanctions harness artifacts travelling together in
 # one pull request; it does not sanction them riding inside an implementation.
 #
 # Reads commits, not files, since the mixing is a property of a commit: takes commits

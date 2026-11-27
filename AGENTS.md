@@ -1,11 +1,12 @@
-# Working on Lunatik and luaebpf
+# Working on a project that mounts the harness
 
-Conventions Lunatik and luaebpf share, for contributors and for AI coding assistants working on
-either. Each project mounts this repository and carries its own AGENTS.md beside it, which points
-here: this file holds what binds both, the project's what speaks of that project alone, its layout,
-its build and its kernel rules. An issue or a pull request named by its number alone, #N, is
-luainkernel/lunatik's, where the history of these conventions up to this repository's first commit
-stays.
+The rules every project that mounts this repository keeps, Lunatik and luaebpf among them, for
+contributors and for AI coding assistants working on one. Each project carries its own AGENTS.md
+beside this file, which points here: this file holds what binds them all, `CONVENTIONS.md` the
+conventions Lunatik and luaebpf share beyond it, which a project imports or keeps its own in place
+of, and the project's file what speaks of that project alone, its layout, its build and its kernel
+rules. An issue or a pull request named by its number alone, #N, is luainkernel/lunatik's, where the
+history of these conventions up to this repository's first commit stays.
 
 Lunatik runs Lua inside the Linux kernel, and luaebpf compiles Lua to eBPF for it, on a host other
 sessions share. A mistake in the kernel does not raise an exception, it panics the machine. One rule
@@ -28,8 +29,9 @@ and the scripts name under `tools/`, `.agents/` and `.claude/` is the harness's,
 the project keeps its own checks, rules and skills at the same paths of its own tree. What a shared
 script reads of the project it reads from the checkout, its `origin`, the branch `origin`'s HEAD
 names and where the mount sits, or from the project's `.agents/harness.conf`: the paths its tree
-reads as code, as what a script calls, as its own tools and as what the host never reads, and the
-checks of its own the shared adapters run beside theirs. `tools/checks/project.sh` reads both and
+reads as code, as what a script calls, as its own tools and as what the host never reads, the
+checks of its own the shared adapters run beside theirs, and the conventions of `CONVENTIONS.md` it
+replaces. `tools/checks/project.sh` reads both and
 says what each key is for. What the shared workflows do of the project's own, its build, its suite,
 its kernel readings and its contract, they do as the project's AGENTS.md asks: a prompt says so in a
 clause and restates none of it, as *Skills* says of a prompt, and the host's agent, which loads no
@@ -90,7 +92,8 @@ issue implemented through agents, a merge, a release — as agent skills in the 
 defers to this file as the authority and orders the steps; none replaces reading it. A project's own,
 its build cycle among them, live in its tree.
 
-For Claude Code, a project's `CLAUDE.md` imports this file and its own AGENTS.md, its
+For Claude Code, a project's `CLAUDE.md` imports this file, `CONVENTIONS.md` where it keeps the
+harness's conventions, and its own AGENTS.md, its
 `.claude/settings.json` runs the command guards and the file checks as hooks, the shared ones from
 the mount, and its `.claude/skills/` links to the skills of both; nothing there holds logic of its
 own. Claude Code's settings include no other file, so this repository's `.claude/settings.json` is the
@@ -227,29 +230,6 @@ named, not one discovered at that consumer's build.
   the change that removes it finds the refusal and lifts it.
 * A decision taken with the maintainer is not reversed alone. When the investigation that follows points
   the other way, that is a question to bring back, not a conclusion to announce. Bring the finding, say what it would change, and wait.
-* A decision brought to the maintainer, in a reply as in an issue, a review or a pull request, is one
-  he takes in one read: `Decision:` and the question in a line, the options lettered `A)`, `B)`, each
-  with what it changes, and `Recommendation:` with the option and its reason; "the maintainer's call"
-  names who decides and not what. The options include the smallest change that makes the defect
-  unreachable, or, for a need a consumer states, the one that changes nothing in this tree, or, for a
-  limit nobody reaches, the clause that documents it, its issue kept open, and each larger one says
-  what it buys over it. Each decision carries an ID, `D1`, `D2`,
-  kept until it is answered, so the answer is `D3 B`; a text that brings two or more opens with a table
-  of them, the ID, the question, the options and the recommendation in a few words each, and gives below
-  each ID what its options change. `tools/checks/decision.sh` names a decision without its ID, and two
-  without the table.
-* A recommendation's reason is what the option buys. That an option leaves an API as it stands is
-  not one: the break is a cost of the option that makes it, weighed with the API's users counted, in
-  the tree and in the known consumers, against what that option buys. A reason that holds for every
-  option, "nothing uses it yet", decides between none. #1965 recommended reading a map's struct value
-  by position because the kernel's array was "the existing contract", where a read by name holds when
-  a field moves and one test was all the array had; `tools/checks/decision.sh` names a recommendation
-  that rests on keeping an API. The reason is what the option buys over the one it beats, named by
-  its letter, `B, because over A it ...`: a list of what the option does leaves the maintainer to ask
-  what it buys over the others. D19 on #2202 recommended one function under two names,
-  `xdp.runtime` and `tc.runtime`, for keeping the names #878's Update had settled, and the
-  maintainer asked what that bought over one `bpf.runtime`: a line of `require`; `decision.sh` names a
-  recommendation that names no other option.
 * A step the session can take it takes. One only the maintainer can, a command the session's
   permissions refuse or his own terminal must run, reaches him as a script the session writes under
   `/tmp` and the one short line that runs it, `! bash /tmp/<name>.sh` in Claude Code: a command spelled
@@ -325,13 +305,6 @@ named, not one discovered at that consumer's build.
 * No cosmetic changes inside a feature or fix commit, not even a blank line.
 * Never remove an existing comment unless the change made it factually wrong.
 * Restoring something that was removed puts it back exactly where and how it was.
-* A subject line is `<area>: <what changes for whoever uses it>`, one plain clause of about 60
-  characters at most, with no subordinate clause, "where", "so", "whose", "as ...": the why goes in the
-  body. #2484 reached the maintainer as `skb: data() views a copy of a tc callback's non-linear skb,
-  where it raised`, he took `skb: data() reads a non-linear skb in a tc callback` in its place, and of
-  the titles before it he said "os titulos tao ruins e incompreensiveis". `tools/checks/title.sh` holds
-  a subject or a title to the length and the clauses. A body only when there is something the diff
-  does not say: a new API, a behaviour change, a non obvious rationale. No bullet list of every detail.
 * A pull request's title and body are written as the pr-prep skill says.
 * A pull request that replaces another says so in the body, `Alternative to #N`, and the merge of
   the replacement closes #N in the same breath: one left open is a claim about the queue nobody made.
@@ -342,38 +315,10 @@ named, not one discovered at that consumer's build.
   small first, and asked on 2026-11-05 that every pull request take it. An implement-issue run returns
   it among its writes, one opened otherwise takes it as it opens, and one a push moves past its tier,
   a review's fixups among them, takes the new one in place of the old.
-* A pull request is one mechanism, read in one screen of diff and one paragraph of body. A body that
-  needs a section per mechanism describes several pull requests: stack them, each on the one below.
-  A defect master carries that the change fixes on the way, because it reaches the code the defect
-  sits in, is one of those, opened on master rather than stacked: the change's branch carries its
-  commit first, so either merge lands the fix and neither waits on the other's review.
-  The harness is the exception: the checks, rules and skill steps one incident produces travel in one
-  pull request, because they carry one reason and the CI line that runs them is one push. They travel with
-  each other, never inside an implementation: a rule that rides in a feature's commit lands unread,
-  and a maintainer who wants the fix and not the rule has nothing to pick.
-  `tools/checks/harness-mixed.sh` names a commit that mixes them.
-* A harness pull request the session opened, one whose every file `harness-mixed.sh` reads as the
-  harness, merges without waiting for the maintainer once `review.js` ran over its head at `high`
-  and returned it ready and its CI passed: what a correction teaches binds the next session that
-  day, and the maintainer reads it on master, in the report the merged skill hands him. One that
-  `tools/complexity.sh` calls small merges on its CI and a proof instead, a comment of the session on
-  it that names its head beside the command that shows the defect before, its result after and the
-  case still refused, or, for text no command reads, the passage it replaces beside the new one: a
-  mechanical change spends no agent on a review, as the maintainer asked on
-  2026-11-22, "devemos atualizar o harness tb para contemplar mudancas mecanicas como essa sem
-  queimar token".
-  `tools/checks/merge-guard.sh` refuses any other merge the session runs; `MERGE_OK=1` merges one he
-  ordered merged in his own words.
 * A mechanism of the harness that rests on a command an agent runs, a guard's record among them, is
   exercised under the auto mode the sessions run in before it merges: the classifier can refuse such
   a command, as it refused the reader's `body-read.sh --pass` on #2541's corrected body, and the guard
   then refused the session's post of a body its reader had passed.
-* A pull request the maintainer approves in his own words, `2214 aprovado`, is the session's to
-  take to master: its fixups fold into the commits they correct, the tree the one he read and the
-  messages re-read against it, and it merges by rebase, the head named, with `MERGE_OK=1`,
-  waiting for no CI and running no suite, and the merged skill runs. A pull request of his own
-  account carries no GitHub approval, so his word is the approval: "o que eu aprovar, vc pode mergear
-  vc mesmo", and on 2026-11-15 "o que aprovar, pode seguir sem CI e sem suite".
 * No session links or assistant footers in a commit or a pull request beyond the `Co-Authored-By`
   trailer. The project settings turn the link off; one that slipped in is removed with a reword.
 * A root cause named in a commit body or a pull request rests on a captured stack or a source-traced
@@ -430,16 +375,10 @@ named, not one discovered at that consumer's build.
   to find out whether `master` was rewritten has already been alarmed for nothing. Say which branch
   took the push; the base is a different clause.
 * Do not commit directly to `master`.
-* Copyright years: a new file carries the current year; a modified file extends its range to include
-  it; and a file that factors code out of another carries that file's first year, found with
-  `git log -S` on the moved lines. `common/class.lua` took the `:new` that `lib/socket/inet.lua` had
-  carried since 2023. Every source file opens with `SPDX-FileCopyrightText` and
-  `SPDX-License-Identifier`, the holder being who created it, and a file that cannot carry a header,
-  Markdown, data or a font, is declared in `REUSE.toml`; `pre-commit` refuses a source file staged without one.
 
 ## Reviewing your own change
 
-The conventions in this document and in `.agents/rules/` are a checklist to run against your own diff before showing it, not
+The conventions in this document, in the `CONVENTIONS.md` a project keeps and in `.agents/rules/` are a checklist to run against your own diff before showing it, not
 reference to reach for after a reviewer objects. Code shown without that pass makes the reader the
 reviewer, and the deviations they then find — a prefix nothing else in the file uses, a comment on a
 body the file leaves bare, a handle closed by hand where the file uses `<close>` — were already rules

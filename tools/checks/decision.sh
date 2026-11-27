@@ -15,9 +15,13 @@
 # Takes text files, a review body, a comment, a pull request or issue body or a reply; when one
 # hands a decision over without the three, brings one without the ID its answer names or two without
 # their table, recommends an option for keeping an API, or recommends one without naming another it
-# beats, prints the lines that do and exits 1.
+# beats, prints the lines that do and exits 1; silent in a project that replaces the decision
+# convention (project.sh), whose decisions CONVENTIONS.md does not shape.
 #
 # Usage: bash tools/checks/decision.sh <file>...
+
+. "$(dirname "$(readlink -f "$0")")/project.sh"
+project_keeps decision || exit 0
 
 handoff='decis(a|ã)o (e |é )?(sua|dele|do maintainer)|fica (para|com) (voc(e|ê)|o maintainer)|a decis(a|ã)o fica (para|com) ele|voc(e|ê) decide|a escolha (e|é) (sua|dele)|cabe a (voc(e|ê)|ele)|levo (isso |isto )?(a|para) (voc(e|ê)|ele)|aguardo (a )?(sua )?decis|maintainer.s (call|decision)|is the maintainer.s|left to the maintainer|up to the maintainer|for the maintainer to (decide|choose|pick)|(your|his) (call|decision)[.,;:]|bring (it|this) (back )?to the maintainer'
 row='^\|[[:space:]]*(\*\*)?D[0-9]+'

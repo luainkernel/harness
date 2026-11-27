@@ -7,7 +7,7 @@
 # posting account opened it on the repository's default branch, it changes the harness alone, its head carries the
 # agent-review status, or the pull request is small by complexity.sh and a comment of the posting account
 # on it names the head, and passed every check run, and none of its commits waits for a squash, which
-# the Checks run warns of without failing (AGENTS.md, "Patches and commits"). A bump of the mount, whose
+# the Checks run warns of without failing (CONVENTIONS.md, "Patches and commits"). A bump of the mount, whose
 # one file is the submodule, carries the agent-review status of the harness commit it pins instead, a
 # commit on the harness's trunk that passed every check run of its own (the merged skill, section 5).
 # A pull request of the harness's own repository, by the name its checkout's origin gives, is the
@@ -15,8 +15,8 @@
 # (exit 2) a gh write that merges a pull request other than by rebase, or one that GitHub, asked with
 # the credential the command carries, does not answer is such a pull request, unless the command
 # carries MERGE_OK=1, set when the maintainer ordered that merge in his own words; silent (exit 0) on
-# everything else. Reads the command field of the raw hook input through commands.sh, as
-# stacked-guard.sh does.
+# everything else, and in a project that replaces the merge convention (project.sh). Reads the command
+# field of the raw hook input through commands.sh, as stacked-guard.sh does.
 
 input=$(cat)
 
@@ -27,6 +27,7 @@ case "$input" in
 esac
 
 . "$(dirname "$0")/commands.sh"
+project_keeps merge "$(input_cwd "$input")" || exit 0
 
 # the marker counts in the command, not in its description
 case "$(printf '%s' "$input" | jq -r '.tool_input.command // empty')" in
@@ -38,7 +39,7 @@ merges=$(gh_writes "$cmds" 'pr merge' '^(https://api\.github\.com)?/?repos/[^/]+
 [ -n "$merges" ] || exit 0
 
 refuse() {
-	echo "merge-guard: $1. The session merges only a harness pull request review.js passed (AGENTS.md, \"Patches and commits\"); one the maintainer ordered merged in his own words takes MERGE_OK=1." >&2
+	echo "merge-guard: $1. The session merges only a harness pull request review.js passed (CONVENTIONS.md, \"Patches and commits\"); one the maintainer ordered merged in his own words takes MERGE_OK=1." >&2
 	exit 2
 }
 

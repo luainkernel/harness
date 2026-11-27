@@ -3,12 +3,12 @@ name: merged
 description: After a pull request merges, the maintainer's or a harness one the session merged once an agent's review passed it, retarget the pull requests stacked on its branch to the default branch, restack them onto it, delete the merged branch, open the bump of each project's mount after a merge of the harness, retire the memory's notes the merge settled, and report the queue and the issues the merge closed. Use when told a pull request was merged, to merge a harness pull request review.js returned ready, or to merge one the maintainer approved in his own words.
 ---
 
-AGENTS.md, "Patches and commits", and the review-pr skill's process.md, "Comments and the verdict", are the authority; this card orders
+AGENTS.md and CONVENTIONS.md, "Patches and commits", and the review-pr skill's process.md, "Comments and the verdict", are the authority; this card orders
 the steps. A merge reported by the maintainer is taken as given.
 
 # 0. Merge a harness pull request
 
-A harness pull request the session opened merges without the maintainer (AGENTS.md, "Patches and
+A harness pull request the session opened merges without the maintainer (CONVENTIONS.md, "Patches and
 commits") once `review.js`, the review-pr skill's workflow, ran over it at `high` and returned it
 ready, its fixups folded and pushed, and the CI passed on the head that carries them. The review's
 pass goes on that head as a commit status, and the merge names the head, so a push after either is

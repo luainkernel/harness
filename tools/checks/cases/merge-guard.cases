@@ -39,3 +39,7 @@ block	tok=$(cat key); GH_TOKEN=$tok gh api -X PUT repos/luainkernel/lunatik/pull
 # env: GH_TOKEN=cases
 pass	gh api -X PUT repos/luainkernel/lunatik/pulls/7/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567
 block	gh api -X PUT repos/luainkernel/lunatik/pulls/8/merge -f merge_method=rebase -f sha=0123456789abcdef0123456789abcdef01234567
+# a project that replaces the merge convention answers to a guard of its own
+# cwd: replaced
+pass	gh pr merge 7 --squash
+# cwd:

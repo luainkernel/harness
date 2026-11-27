@@ -139,7 +139,7 @@ An issue is a request, not a decision to implement it. Judge it before you shape
 2. Its approach: the smallest shape that meets the need, written first, beside the one the issue proposes and
    the alternatives, each with what it buys and what it costs, the comparison starting where the project's
    AGENTS.md, "Deciding what to change", starts it. Read what the issue asks to be researched, in the
-   sources it names and on the web, and name what you read. A shape AGENTS.md, "Patches and commits", splits into two
+   sources it names and on the web, and name what you read. A shape CONVENTIONS.md, "Patches and commits", splits into two
    pull requests is two, the first in this run and the second in a run stacked on its branch, which the
    Update says.
 3. Your verdict. implement settles, as text the issue takes under an Update: line, the API, the contract and
@@ -181,7 +181,7 @@ You read the kernel, build, test and hold the change to its contract as the proj
    answer's smallest carries that shape beside the diff, and names what each mechanism past it buys with
    its source; the review keeps none without one.
 3. Commit as "Patches and commits" asks: one change per commit, the harness apart from the code, tests
-   wired and described, each doc where its reader looks. A change AGENTS.md, "Patches and commits", splits
+   wired and described, each doc where its reader looks. A change CONVENTIONS.md, "Patches and commits", splits
    into two pull requests commits the first alone on this branch, and your notes name the second's part,
    which the session launches as a run stacked on it. The project's build is clean on every commit.
    ${PUSH}

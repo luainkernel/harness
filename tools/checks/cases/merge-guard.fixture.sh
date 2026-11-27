@@ -13,12 +13,14 @@
 # #12's carrying it and not on its trunk. #13 is a pull request of luainkernel/harness that changes its
 # README and a license with a check. #14, #15 and #16 change a check, their heads carrying no
 # agent-review status: #14 adds 12 lines and a comment of the posting account names its head, #15 adds
-# 12 and no comment names it, #16 adds 90 and a comment names it.
+# 12 and no comment names it, #16 adds 90 and a comment names it. Under replaced/, a checkout whose
+# .agents/harness.conf replaces the merge convention.
 #
 # Usage: bash tools/checks/cases/merge-guard.fixture.sh <dir>
 
 cd "$1" || exit 1
 printf cases > key
+git init -q replaced && mkdir replaced/.agents && printf 'replaces=merge\n' > replaced/.agents/harness.conf || exit 1
 mkdir -p stub
 cat > stub/gh <<'STUB'
 #!/bin/sh
