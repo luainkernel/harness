@@ -47,6 +47,10 @@
 //               implementer, a fix and the reviewer, review.js's own argument too: the agent closes its
 //               checkpoint and returns, and the same prompt is launched again for one that reads it
 //               first; default none, so a pilot run names it
+//   replaces    the replaces key of the project's .agents/harness.conf as it spells it, review.js's own
+//               argument too; default none. Where it names smallest, a mechanism past the smallest shape
+//               needs no source to stay, complexity, the pull request takes no label, and mechanism,
+//               nothing keeps the harness apart from the code or splits a change in two
 //
 // What a phase does of the project's own, its build, its suite, its kernel readings and its contract, it
 // does as the project's AGENTS.md asks, which the groomer, the implementer, the fix and the verifier load:
@@ -98,6 +102,7 @@ const PUSH = a.push === false
   : 'Push each commit as a command of its own, as you make it.'
 const DRAFT = base === trunk ? '' : ' It opens as a draft (`-F draft=true`), which GitHub will not merge before its base.'
 const RELAUNCHES = 3
+const keeps = (name) => !(a.replaces || '').split(/\s+/).includes(name)
 // ceiling-guard.sh reads the ceiling and the checkpoint on this line of the prompt
 const CEILING = (file) => a.ceiling ? `
 CONTEXT CEILING: ${a.ceiling} tokens, checkpoint ${file}
@@ -139,9 +144,9 @@ An issue is a request, not a decision to implement it. Judge it before you shape
 2. Its approach: the smallest shape that meets the need, written first, beside the one the issue proposes and
    the alternatives, each with what it buys and what it costs, the comparison starting where the project's
    AGENTS.md, "Deciding what to change", starts it. Read what the issue asks to be researched, in the
-   sources it names and on the web, and name what you read. A shape CONVENTIONS.md, "Patches and commits", splits into two
+   sources it names and on the web, and name what you read.${keeps('mechanism') ? ` A shape CONVENTIONS.md, "Patches and commits", splits into two
    pull requests is two, the first in this run and the second in a run stacked on its branch, which the
-   Update says.
+   Update says.` : ''}
 3. Your verdict. implement settles, as text the issue takes under an Update: line, the API, the contract and
    whatever format the issue leaves open, and leaves helpers and loops to the implementer (AGENTS.md, on what
    an issue states). It meets every requirement the issue states, and the text says of each, quoted, how: a
@@ -177,13 +182,13 @@ You read the kernel, build, test and hold the change to its contract as the proj
    project's AGENTS.md states closes as not a defect, with no pull request.
 2. Write the smallest shape that makes the defect unreachable, or meets the need, in the checkpoint
    before any other, and take a larger one, a helper or a loop the issue prescribes included, which is a
-   shape to weigh and not the spec, only where AGENTS.md, "Deciding what to change", keeps one. Your
-   answer's smallest carries that shape beside the diff, and names what each mechanism past it buys with
-   its source; the review keeps none without one.
-3. Commit as "Patches and commits" asks: one change per commit, the harness apart from the code, tests
-   wired and described, each doc where its reader looks. A change CONVENTIONS.md, "Patches and commits", splits
+   shape to weigh and not the spec, only where ${keeps('smallest') ? 'CONVENTIONS.md, "Deciding what to change",' : 'the project\'s AGENTS.md'} keeps one. Your
+   answer's smallest carries that shape beside the diff, and names what each mechanism past it buys${keeps('smallest') ? ` with
+   its source; the review keeps none without one` : ''}.
+3. Commit as "Patches and commits" asks: one change per commit,${keeps('mechanism') ? ' the harness apart from the code,' : ''} tests
+   wired and described, each doc where its reader looks.${keeps('mechanism') ? ` A change CONVENTIONS.md, "Patches and commits", splits
    into two pull requests commits the first alone on this branch, and your notes name the second's part,
-   which the session launches as a run stacked on it. The project's build is clean on every commit.
+   which the session launches as a run stacked on it.` : ''} The project's build is clean on every commit.
    ${PUSH}
 4. For each test of the project's suite the change adds or changes, write the defect it is for, the mechanism it
    covers disabled, and for each requirement of the issue a test is to prove, the defect that breaks the
@@ -209,7 +214,7 @@ You read the kernel, build, test and hold the change to its contract as the proj
 6. Draft the pull request's title and body as pr-prep says, into your answer; ${H}tools/checks/title.sh
    passes the title and the subjects of your commits, ${H}tools/checks/pr-body.sh passes the body over the
    changed files, and the body carries \`Closes #${a.issue}\` on a line of its
-   own, or \`#${a.issue}, which it does not close\` where it is the first of a change split in two, and
+   own${keeps('mechanism') ? `, or \`#${a.issue}, which it does not close\` where it is the first of a change split in two,` : ','} and
    names each example as run:
    the pull request opens only on a head the host run passed, and says of an example the host only loaded,
    and of what the body claims of one and the host did not show, what the build said. Open nothing.
@@ -279,8 +284,8 @@ A pull request GitHub already has for the branch is that one, read with
 Its body is the file ${file}, which a reader with none of the change's history passed: change nothing in it, since
 pr-body-guard.sh refuses a text no reader passed, and pass that path spelled out in the command that opens the pull
 request (\`-F body=@${file}\`): the guards before a shell call read the file the command names, and refuse a path
-a shell variable holds. Label nothing: the session labels it, with the label \`bash ${H}tools/complexity.sh <number>\`
-prints, which your answer carries as complexity. Your answer is the pull request's number; a write refused goes in
+a shell variable holds. Label nothing${keeps('complexity') ? `: the session labels it, with the label \`bash ${H}tools/complexity.sh <number>\`
+prints, which your answer carries as complexity` : ''}. Your answer is the pull request's number; a write refused goes in
 notes, word for word.
 `
 
@@ -408,7 +413,8 @@ const COMPOSED = { type: 'object', properties: {
 }, required: ['body'] }
 
 const OPENED = { type: 'object', properties: {
-  pr: { type: 'integer' }, complexity: { type: 'string', enum: ['complexity: small', 'complexity: medium', 'complexity: large'] },
+  pr: { type: 'integer' },
+  ...(keeps('complexity') ? { complexity: { type: 'string', enum: ['complexity: small', 'complexity: medium', 'complexity: large'] } } : {}),
   notes: { type: 'string' },
 }, required: ['pr'] }
 
@@ -446,7 +452,8 @@ const reviewArgs = (impl, extra) => ({
   pr: 0, branch: impl.branch, base: impl.base, scratch: a.scratch, validated: null, examples: impl.examples, defects: impl.defects,
   focus: a.focus || a.notes, smallest: impl.smallest, body: impl.body, title: impl.title, effort: reviewer.effort, model: reviewer.model, push: a.push,
   issue: a.issue, update: groomed?.update || '', cases: impl.cases, ceiling: a.ceiling,
-  agents: { build: (a.agents || {}).build }, build: a.build, repo: a.repo, mount: a.mount, github: a.github, machine: a.machine, gh: a.gh, ...extra,
+  agents: { build: (a.agents || {}).build }, build: a.build, repo: a.repo, mount: a.mount, github: a.github, machine: a.machine, gh: a.gh,
+  replaces: a.replaces, ...extra,
 })
 // a run a.build spells in place of the suite may print no suite totals, and then its clean is the verdict
 const passed = (build) => build && build.clean && (build.skipped || /fail:0\b/.test(build.totals || '')

@@ -15,7 +15,7 @@
 . "$(dirname "$(readlink -f "$0")")/project.sh"
 
 if [ "$(git rev-parse --show-toplevel 2> /dev/null)" -ef "$(harness_root)" ]; then
-	ceilings="AGENTS.md=34943 CONVENTIONS.md=7025"
+	ceilings="AGENTS.md=33522 CONVENTIONS.md=8661"
 else
 	budget=$(project_conf budget)
 	ceilings=${budget:+AGENTS.md=$budget}

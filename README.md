@@ -20,7 +20,7 @@ A project mounts it as a git submodule, `git submodule add https://github.com/lu
   and its `.claude/skills/`, `.claude/agents/` and `.claude/rules/` link into `<mount>/.agents/`;
 - its `.agents/harness.conf` gives what the shared scripts read of it, the keys
   `tools/checks/project.sh` names, `replaces` among them, the conventions of `CONVENTIONS.md` it keeps
-  its own in place of, whose checks it skips;
+  its own in place of, whose checks it skips and whose steps the workflows it launches drop;
 - it carries a `lunatik-cycle` skill, its host cycle, which the shared `lunatik-host` agent loads by
   name;
 - its own checks, their cases and its own rules and skills live at the same paths of its tree, and

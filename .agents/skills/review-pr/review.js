@@ -76,6 +76,10 @@
 //   ceiling     the tokens of context past which tools/checks/ceiling-guard.sh stops the reviewer: it closes
 //               the checkpoint and returns, and the same prompt is launched again for one that reads it
 //               first; default none
+//   replaces    the replaces key of the project's .agents/harness.conf as it spells it, the conventions
+//               of CONVENTIONS.md it keeps its own in place of, since the runtime reads no file
+//               (tools/checks/project.sh); default none, as in the harness's own checkout. Where it
+//               names smallest, a mechanism past the smallest shape needs no source to stay
 //
 // It returns each phase's answer and findings_left, every finding a phase leaves as an issue,
 // with a title and a body that can be filed as they stand, and read, the reader's last answer, with the
@@ -109,6 +113,7 @@ const api = (path) => a.gh === false
   ? `curl -sS -H "Authorization: Bearer $GH_TOKEN" "https://api.github.com/${path}?per_page=100"`
   : `gh api --paginate ${path}`
 const RELAUNCHES = 3
+const keeps = (name) => !(a.replaces || '').split(/\s+/).includes(name)
 // ceiling-guard.sh reads the ceiling and the checkpoint on this line of the prompt
 const CEILING = a.ceiling ? `
 CONTEXT CEILING: ${a.ceiling} tokens, checkpoint ${checkpoint}
@@ -192,12 +197,12 @@ function-shape.sh with the function's jobs listed. Where a check complains about
 
 Look for the smallest shape first: for every mechanism the diff adds (a registration path, a new API argument,
 a helper, a name), write the smaller change that would leave the same defect unreachable and why it was not
-taken; where correctness is equal and the shape is smaller, that is a finding, shipped as the fixup that
-makes it. Your answer's smallest is that reading of the whole diff: the smallest shape, its size beside the
-diff's, and what each mechanism past it buys. Each one, the implementer's included, is kept or removed: it
+taken${keeps('smallest') ? `; where correctness is equal and the shape is smaller, that is a finding, shipped as the fixup that
+makes it` : ''}. Your answer's smallest is that reading of the whole diff: the smallest shape, its size beside the
+diff's, and what each mechanism past it buys. Each one, the implementer's included, is kept or removed${keeps('smallest') ? `: it
 stays only with a source, a defect the smallest shape leaves reachable, traced, or a need the issue or the
-maintainer stated, quoted (AGENTS.md, "Deciding what to change"), and one without is removed by a fixup and
-answered removed.${a.smallest ? `
+maintainer stated, quoted (CONVENTIONS.md, "Deciding what to change"), and one without is removed by a fixup and
+answered removed` : ` as the project's AGENTS.md weighs it, one removed by a fixup and answered removed`}.${a.smallest ? `
 The implementer's own reading, which yours is not bound by: ${JSON.stringify(a.smallest)}` : ''}${a.body && !a.pr ? `
 The pull request opens with this body once the build passes; read it with the commit bodies, and your answer's
 body is this text with what the final diff, your fixups included, makes untrue, or ${H}tools/checks/pr-body.sh names
@@ -358,7 +363,7 @@ const SMALLEST = { type: 'object', properties: {
   beyond: { type: 'array', items: { type: 'object', properties: {
     mechanism: { type: 'string' }, buys: { type: 'string', description: 'what it buys that the smallest shape does not' },
     source: { type: 'string', description: 'the defect the smallest shape leaves reachable, with its trace, or the need the issue or the maintainer stated, quoted with where; empty when it has neither' },
-    verdict: { type: 'string', enum: ['kept', 'removed'], description: 'removed by a fixup when it has no source' },
+    verdict: { type: 'string', enum: ['kept', 'removed'], description: keeps('smallest') ? 'removed by a fixup when it has no source' : 'removed by a fixup' },
   }, required: ['mechanism', 'buys', 'source', 'verdict'] } },
 }, required: ['shape', 'lines', 'diff', 'beyond'] }
 
@@ -473,7 +478,7 @@ else if (!a.validated || changed || unrun.length) {
   log(`build skipped: head ${a.head} already validated (${a.validated.suite}, core ${a.validated.core}, examples ${(a.validated.examples || []).join(' ') || 'none'}) and no fixup changed it`)
 }
 
-const unsourced = (reviewer?.smallest?.beyond || []).filter(b => b.verdict === 'kept' && !(b.source || '').trim())
+const unsourced = !keeps('smallest') ? [] : (reviewer?.smallest?.beyond || []).filter(b => b.verdict === 'kept' && !(b.source || '').trim())
 if (unsourced.length) {
   reviewer.ready = false
   log(`not ready: kept without a source: ${unsourced.map(b => b.mechanism).join('; ')}`)

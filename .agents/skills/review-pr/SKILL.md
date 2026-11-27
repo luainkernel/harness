@@ -133,6 +133,11 @@ card is the workflow that follows them (`Workflow({scriptPath: '.agents/skills/r
   file in its worktree. A pull request of a repository that carries no harness is reviewed the
   same way, with `args.packet` this tree's `tools/review-packet.sh` by its absolute path, and
   `args.build` what its host run is, or false where nothing runs on the host.
+- `args.replaces` is the `replaces` key of the project's `.agents/harness.conf` as it spells it, which
+  the session copies from it, since the workflow reads no file; where it names `smallest` the review
+  removes no mechanism past the smallest shape for having no source, and turns not ready on none kept
+  without. A project whose key names none, the harness's own checkout among them, passes none and
+  keeps every convention of CONVENTIONS.md.
 
 What a dead run left is read before it is launched again: `<transcriptDir>/journal.jsonl` carries a
 `result` line for every phase that finished, the checkpoints carry what each one wrote, and the fixup
@@ -184,9 +189,10 @@ author from GitHub with the credential the command carries.
   editing the body down to the verdict and re-posting each finding inline — rework, not repair.
 - Once the review is posted, label the pull request as read end to end:
   `gh api -X POST repos/.../issues/<N>/labels -f 'labels[]=workflow-reviewed'`; `tools/pr-status.sh`
-  reads that label as the sign that someone read it. One whose `complexity:` label is not the one
+  reads that label as the sign that someone read it. Where the project keeps the `complexity`
+  convention, one whose `complexity:` label is not the one
   `bash tools/complexity.sh <N>` prints, since the review's fixups moved it or since it carries none,
-  takes that one in the same call, and the old one is removed (AGENTS.md, *Patches and commits*).
+  takes that one in the same call, and the old one is removed (CONVENTIONS.md, *Patches and commits*).
 
 # After the merge
 

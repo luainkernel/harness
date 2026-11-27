@@ -7,9 +7,10 @@
 # <owner>/<repo>, and only on the record of an agent's review that passed it. A head passes when the
 # newest reviewer at high effort or above, the agent a workflow labels review:<pr or branch> as review.js
 # labels its Review phase, alone or nested in implement-issue, of a tip whose tree is the head's returned
-# ready, with no mechanism kept without a source. Its answer is read in its run's journal, before a reader of
-# the body sets the run's ready to false, since the body is held to its reader as it opens, and its
-# effort in its transcript, both under Claude Code's projects directory. The commit a rebase merge put
+# ready, with no mechanism kept without a source unless its run's replaces names smallest (review.js).
+# Its answer is read in its run's journal, before a reader of the body sets the run's ready to false,
+# since the body is held to its reader as it opens, and its effort in its transcript, both under Claude
+# Code's projects directory. The commit a rebase merge put
 # on the trunk passes when a reviewer so returned the head of the pull request it merged, or that pull
 # request merged on its proof (the merged skill, sections 0 and 5). The session runs it under a narrow
 # permissions.allow rule: the auto mode classifier refuses the session's own write of the status where
@@ -40,18 +41,19 @@ tree() {
 # returned ready with no mechanism kept without a source, its tip, its transcript and the checkout its run
 # worked in
 reviewers() {
-	local journal run meta stamp checkout
+	local journal run meta stamp replaced checkout
 	grep -l '"label":"review:' "$projects"/*/*/subagents/workflows/*/journal.jsonl 2> /dev/null | while IFS= read -r journal; do
 		run=$(dirname "$journal")
 		# a run a /clear crossed has its journal in the session that launched it, its record in the next
 		meta=$(jq -er --arg repo "$repo" 'select((.args.github? // "" | ascii_downcase) == ($repo | ascii_downcase)) |
-			[.timestamp, .args.repo // ""] | @tsv' "${run%/*/subagents/workflows/*}"/*/workflows/"${run##*/}".json 2> /dev/null) || continue
-		read -r stamp checkout <<< "$meta"
-		jq -rs --arg stamp "$stamp" --arg run "$run" --arg checkout "$checkout" '
+			[.timestamp, ([.args.replaces // "" | splits("\\s+")] | any(. == "smallest")), .args.repo // ""] | @tsv' \
+			"${run%/*/subagents/workflows/*}"/*/workflows/"${run##*/}".json 2> /dev/null) || continue
+		read -r stamp replaced checkout <<< "$meta"
+		jq -rs --arg stamp "$stamp" --arg run "$run" --arg checkout "$checkout" --arg replaced "$replaced" '
 			[.[] | select(.type == "started" and (.label // "" | startswith("review:"))) | .agentId] as $reviewers
 			| [.[] | select(.type == "result" and (.agentId as $id | $reviewers | any(. == $id)) and (.result.tip // "") != "")] | reverse[]
-			| (.result.ready == true and
-				([.result.smallest.beyond[]? | select(.verdict == "kept" and ((.source // "") | test("^\\s*$")))] | length == 0)) as $ready
+			| (.result.ready == true and ($replaced == "true" or
+				([.result.smallest.beyond[]? | select(.verdict == "kept" and ((.source // "") | test("^\\s*$")))] | length == 0))) as $ready
 			| [$stamp, (if $ready then "ready" else "not" end), .result.tip, "\($run)/agent-\(.agentId).jsonl", $checkout]
 			| @tsv' "$journal" 2> /dev/null
 	done | sort -s -r -t $'\t' -k 1,1
