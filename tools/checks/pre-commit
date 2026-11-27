@@ -5,8 +5,9 @@
 #
 # Pre-commit hook: reject staged text files (C, Lua, Makefile, shell scripts)
 # missing the trailing blank line the tree requires, any staged file that carries
-# the machine it was written on (machine-leak.sh), and a staged source file without
-# its copyright and license header. A project with a gate of its own runs this
+# the machine it was written on (machine-leak.sh), a staged source file without
+# its copyright and license header, and an AGENTS.md past its ceiling
+# (context-budget.sh). A project with a gate of its own runs this
 # from its hook, as its own pre-commit's first step.
 # Install with: ln -s ../../tools/checks/pre-commit .git/hooks/pre-commit
 
@@ -75,4 +76,6 @@ if [ -n "$unlicensed" ]; then
 	echo "Open them with SPDX-FileCopyrightText and SPDX-License-Identifier, as the tree's other files do."
 	exit 1
 fi
+
+bash "$(dirname "$(readlink -f "$0")")/context-budget.sh" || exit 1
 

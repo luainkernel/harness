@@ -37,6 +37,16 @@ gate with:
 
     ln -s ../../tools/checks/pre-commit .git/hooks/pre-commit
 
+`context-budget.sh` holds the AGENTS.md at the top of a checkout, as the index holds it, to a ceiling
+of bytes, and `pre-commit` runs it, so it fails the commit and the `Checks` run of every tree that runs
+the mount's gate: each session and each workflow agent that loads CLAUDE.md loads harness/AGENTS.md and
+the project's AGENTS.md before its first turn, and from 2026-10-09 to 2026-11-22 the one file they
+replaced grew from 42268 bytes to the 66014 the two weigh (luainkernel/harness#6, D172 D). The
+harness's ceiling is a line of the check, and a project's the `budget` key of its
+`.agents/harness.conf`; a project that names none is not read. A lesson that needs room moves an older
+passage to the check, the skill or the path rule that holds its subject, and a pull request that moves
+a ceiling says why.
+
 `advisory.sh` runs the heuristic checks over a change, the file checks over the files it adds or
 modifies and the commit checks over its commits, the harness's and the project's own its
 `.agents/harness.conf` names under `advisory` and `commit`: the list the `Checks` workflow annotates a pull request
