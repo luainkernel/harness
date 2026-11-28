@@ -14,15 +14,15 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*"git "*commit*) ;;
 	*) exit 0 ;;
 esac
 
 # a call inside a subagent carries agent_id, one of the main thread never does
 [ -n "$(printf '%s' "$input" | jq -r '.agent_id // empty' 2> /dev/null)" ] && exit 0
-
-. "$(dirname "$0")/commands.sh"
 
 case "$(command_text "$input")" in
 	*IMPLEMENT_OK=1*) exit 0 ;;

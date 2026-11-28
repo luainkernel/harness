@@ -14,7 +14,9 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*rm*scratch*) ;;
 	*) exit 0 ;;
 esac
@@ -23,8 +25,6 @@ esac
 case "$(printf '%s' "$input" | jq -r '.tool_input.command // empty')" in
 	*SCRATCH_OK=1*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 roots=$(printf '%s\n' "$(commands "$input")" | awk '
 	$1 ~ /(^|\/)rm$/ {

@@ -19,7 +19,10 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a Write or an Edit names the memory in its input, a shell call in its words
+case "$input$(command_words "$input")" in
 	*/memory*) ;;
 	*) exit 0 ;;
 esac
@@ -107,7 +110,6 @@ case "$(printf '%s' "$input" | jq -r '.tool_name')" in
 		grown=$(grown "$target")
 		;;
 	Bash)
-		. "$(dirname "$0")/commands.sh"
 		command=$(command_text "$input")
 		while IFS= read -r target; do
 			[ -n "$target" ] || continue

@@ -23,13 +23,13 @@
 
 input=$(cat)
 
-# a cheap bail on the raw input, which carries the description too; the command itself decides below
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a cheap bail on the command's words; the command itself decides below
+case "$(command_words "$input")" in
 	*"gh api"*merge*|*"gh pr "*|*"gh -"*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 project_keeps merge "$(input_cwd "$input")" || exit 0
 
 # the marker counts in the command, not in its description

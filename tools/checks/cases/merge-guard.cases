@@ -5,6 +5,12 @@ block	gh api -X PUT repos/luainkernel/lunatik/pulls/7/merge
 block	gh api -X PUT repos/luainkernel/lunatik/pulls/7/merge -f merge_method=squash
 block	cd /tmp && gh api --method PUT repos/luainkernel/lunatik/pulls/7/merge -f merge_method=merge
 block	gh pr merge 7 --squash
+# the words as the shell reads them: g''h joined, two spaces, a tab and a line continuation split
+block	gh  pr merge 7 --squash
+block	gh\tpr merge 7 --squash
+block	gh 'pr' merge 7 --squash
+block	gh \\npr merge 7 --squash
+block	g''h pr merge 7 --squash
 block	gh pr merge 7
 block	gh -R luainkernel/lunatik pr merge 7 --squash
 block	gh -Rluainkernel/lunatik pr merge 7 --squash

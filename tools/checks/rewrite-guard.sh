@@ -18,12 +18,12 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*push*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 cmds=$(commands "$input")
 printf '%s\n' "$cmds" | grep -Eq "$GIT_COMMAND push( |\$)" || exit 0

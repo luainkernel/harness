@@ -4,6 +4,8 @@
 # env: HOME=user
 block	cat >> ~/.claude/projects/p/memory/feedback_bare.md <<'EOF'\n- also after a reboot\nEOF
 block	echo '- also after a reboot' >> "$HOME/.claude/projects/p/memory/feedback_bare.md"
+# the words as the shell reads them: a quote joined
+block	echo '- also after a reboot' >> $HOME/.claude/projects/p/mem''ory/feedback_bare.md
 block	cd /srv && echo more >> ${HOME}/.claude/projects/p/memory/feedback_bare.md 2> /dev/null
 block	sed -i 's/twice/three times/' ~/.claude/projects/p/memory/feedback_bare.md
 block	sudo sed -Ei -e 's/twice/three times/' user/.claude/projects/p/memory/feedback_bare.md

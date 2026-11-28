@@ -24,6 +24,13 @@ command_text() {
 	}'
 }
 
+# the command field with its line continuations, quotes and backslashes dropped and each run of blanks
+# and newlines read as one space: the words joined as the shell joins g''h and g\<newline>h, and split
+# as it splits a tab or two spaces, for a guard's cheap match on a gh noun or a git verb
+command_words() {
+	command_text "$1" | sed -e ':a' -e '/\\$/N; s/\\\n//; ta' | tr -d '\\"'\' | tr -s '[:space:]' ' '
+}
+
 # the simple commands the command field runs, one a line, split into words as the shell splits them
 # and past the words that only lead into a command: an assignment, a keyword, sudo, env, timeout,
 # setsid, ip netns exec, tools/lunatik-host, a shell or a lua given a script. A shell's -c string,
