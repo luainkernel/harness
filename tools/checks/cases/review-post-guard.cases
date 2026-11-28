@@ -14,6 +14,9 @@ block	gh  issue comment 871 --body-file line.md
 block	gh\tissue comment 871 --body-file line.md
 block	gh 'issue' comment 871 --body-file line.md
 block	gh \\nissue comment 871 --body-file line.md
+# an option before the noun or the verb, which gh reads past, taking the word after it as its value
+block	gh --body-file line.md issue comment 871
+block	gh --comment done pr close 871
 block	g''h issue comment 871 --body-file line.md
 pass	gh -R luainkernel/lunatik issue comment 871 --body-file note.md
 block	gh -R luainkernel/lunatik issue comment 871 --body-file line.md

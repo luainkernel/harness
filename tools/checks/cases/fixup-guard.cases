@@ -13,6 +13,9 @@ block	gh  pr create --head folded --body-file b.md
 block	gh\tpr create --head folded --body-file b.md
 block	gh 'pr' create --head folded --body-file b.md
 block	gh \\npr create --head folded --body-file b.md
+# an option before the noun or the verb, which gh reads past, taking the word after it as its value
+block	gh --title t pr create --head folded --body-file b.md
+block	gh pr --title t create --head folded --body-file b.md
 block	g''h pr create --head folded --body-file b.md
 block	g\\nh pr create --head folded --body-file b.md
 pass	gh pr create --head clean --body-file b.md

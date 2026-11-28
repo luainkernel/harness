@@ -33,7 +33,8 @@ command_words() {
 
 # the simple commands the command field runs, one a line, split into words as the shell splits them
 # and past the words that only lead into a command: an assignment, a keyword, sudo, env, timeout,
-# setsid, ip netns exec, tools/lunatik-host, a shell or a lua given a script. A shell's -c string,
+# setsid, ip netns exec, tools/lunatik-host, a shell or a lua given a script; gh with its noun and
+# its verb next to it, as gh finds them past the options before them. A shell's -c string,
 # an eval, a substitution and a heredoc a shell reads are commands too; other quoted text is one
 # word, another heredoc data. With -v redirections=1, the files the redirections write instead; with
 # -v assignments=1, each command after the names of the variables it runs under, NAME=, its own and
@@ -63,6 +64,28 @@ COMMAND_PARSER='
 			else if (arg && W[i] ~ arg)
 				i++
 		return i
+	}
+	# gh, as cobra, takes the word after an option --x or -x that holds no = as its value, and reads the
+	# options anywhere: the noun and the verb move next to gh at i, where the guards read them
+	function gh_order(i,   j, k, m, M, T) {
+		for (j = i + 1; j <= n && m < 2; j++)
+			if (W[j] == "--")
+				break
+			else if (W[j] !~ /^-/)
+				M[++m] = j
+			else if (W[j] ~ /^(--.|-.$)/ && W[j] !~ /=/)
+				j++
+		if (m == 2 && W[M[1]] == "api") # the word after api is its endpoint, which stays
+			m = 1
+		if (!m || M[m] == i + m)
+			return
+		for (j = 1; j <= m; j++)
+			T[++k] = W[M[j]]
+		for (j = i + 1; j <= n; j++)
+			if (j != M[1] && (m == 1 || j != M[2]))
+				T[++k] = W[j]
+		for (j = 1; j <= k; j++)
+			W[i + j] = T[j]
 	}
 	function join(i,   line) {
 		for (line = i <= n ? W[i] : ""; ++i <= n; )
@@ -126,6 +149,8 @@ COMMAND_PARSER='
 			else
 				break
 		}
+		if (k == "gh" && i <= n)
+			gh_order(i)
 		if (words)
 			for (c = i; c <= n; c++)
 				gsub(/[ \n]/, "\037", W[c])
