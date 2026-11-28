@@ -11,6 +11,8 @@ block	gh  pr create --base b --head a --body-file b.md
 block	gh\tpr create --base b --head a --body-file b.md
 block	gh 'pr' create --base b --head a --body-file b.md
 block	gh \\npr create --base b --head a --body-file b.md
+# an option before the noun or the verb, which gh reads past, taking the word after it as its value
+block	gh --title t pr create --base b --head a --body-file b.md
 block	g''h pr create --base b --head a --body-file b.md
 block	gh pr new -B b --head a --body-file b.md
 block	gh -R luainkernel/lunatik pr create --base b --head a --body-file b.md

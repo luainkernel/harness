@@ -10,6 +10,9 @@ block	gh  pr merge 7 --squash
 block	gh\tpr merge 7 --squash
 block	gh 'pr' merge 7 --squash
 block	gh \\npr merge 7 --squash
+# an option before the noun or the verb, which gh reads past, taking the word after it as its value
+block	gh --subject s pr merge 7 --squash
+block	gh --method PUT api repos/luainkernel/lunatik/pulls/7/merge
 block	g''h pr merge 7 --squash
 block	gh pr merge 7
 block	gh -R luainkernel/lunatik pr merge 7 --squash
