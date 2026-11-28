@@ -25,6 +25,12 @@ pass	BODY_OK=1 gh api repos/luainkernel/lua/pulls -f head=fifo-test -f base=mast
 # cwd:
 # a body is read against the files its change carries, and the session's only once a reader passed its text
 block	gh api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
+# the words as the shell reads them: g''h joined, two spaces, a tab and a line continuation split
+block	gh  api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
+block	gh\tapi repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
+block	gh 'api' repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
+block	gh \\napi repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
+block	g''h api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@nocode.md
 pass	gh api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@fenced.md
 pass	gh api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=fifo -F draft=true -F body=@nocode.md
 block	gh api repos/luainkernel/lunatik/pulls -f head=fifo-test -f base=master -F body=@long.md

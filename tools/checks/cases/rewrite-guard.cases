@@ -6,6 +6,8 @@ pass	git push origin +restacked
 pass	git push https://example.invalid/r.git restacked.new:refs/heads/restacked --force-with-lease=refs/heads/restacked:restacked.old
 pass	git push "https://example.invalid/$(printf %s r).git" restacked.new:refs/heads/restacked --force-with-lease=refs/heads/restacked:restacked.old
 block	git push --force-with-lease origin kept
+# the words as the shell reads them: a quote joined
+block	git pu''sh --force-with-lease origin kept
 block	git push --force-with-lease=kept origin kept
 block	git -C on-kept push --force-with-lease origin HEAD
 block	git push -f origin kept:kept

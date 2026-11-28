@@ -12,12 +12,12 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*"gh api"*pulls*|*"gh pr "*|*"gh -"*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 # the marker counts in the command, not in its description
 case "$(printf '%s' "$input" | jq -r '.tool_input.command // empty')" in

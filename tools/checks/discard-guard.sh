@@ -12,12 +12,12 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*checkout*|*restore*|*reset*|*switch*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 cmds=$(commands "$input")
 cwd=$(printf '%s' "$input" | sed -n 's/.*"cwd"[[:space:]]*:[[:space:]]*"\([^"]*\)".*/\1/p' | head -1)

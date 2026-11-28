@@ -9,6 +9,12 @@ pass	gh api -X POST repos/luainkernel/lunatik/pulls/871/reviews --input review.j
 block	gh api -X POST repos/luainkernel/lunatik/pulls/871/reviews --input bare.json
 pass	gh issue comment 871 --body-file note.md
 block	gh issue comment 871 --body-file line.md
+# the words as the shell reads them: g''h joined, two spaces, a tab and a line continuation split
+block	gh  issue comment 871 --body-file line.md
+block	gh\tissue comment 871 --body-file line.md
+block	gh 'issue' comment 871 --body-file line.md
+block	gh \\nissue comment 871 --body-file line.md
+block	g''h issue comment 871 --body-file line.md
 pass	gh -R luainkernel/lunatik issue comment 871 --body-file note.md
 block	gh -R luainkernel/lunatik issue comment 871 --body-file line.md
 block	gh -Rluainkernel/lunatik pr comment 871 --body-file line.md

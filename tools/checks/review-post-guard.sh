@@ -25,13 +25,13 @@
 
 input=$(cat)
 
-# a cheap bail on the raw input, which carries the description too; the command itself decides below
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a cheap bail on the command's words; the command itself decides below
+case "$(command_words "$input")" in
 	*"gh api"*reviews*|*"gh api"*comments*|*"gh pr "*|*"gh issue "*|*"gh -"*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 cmds=$(gh_commands "$input")
 if gh_writes "$cmds" '(issue|pr) (close|reopen)' '^$' | grep -qE -- ' (-c|--comment)([ =]|$)'; then

@@ -4,6 +4,8 @@
 block	git checkout -q origin/master -- tools/checks/crash-guard.sh
 block	git checkout HEAD -- tools/checks/crash-guard.sh
 block	git checkout -- tools/checks/crash-guard.sh
+# the words as the shell reads them: a quote joined
+block	git check''out -- tools/checks/crash-guard.sh
 block	git checkout tools/checks/crash-guard.sh
 block	git checkout origin/master tools/checks
 block	git checkout .

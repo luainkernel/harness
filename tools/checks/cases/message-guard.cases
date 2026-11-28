@@ -4,6 +4,9 @@
 block	GIT_EDITOR="cp hash.msg" git commit -q --fixup=amend:HEAD
 block	cd . && GIT_EDITOR='cp hash.msg' git commit --fixup=amend:HEAD
 block	git commit -e -F hash.msg
+# the words as the shell reads them: g''it joined, a tab split
+block	g''it commit -e -F hash.msg
+block	git\tcommit -e -F hash.msg
 block	git commit --edit --file=hash.msg
 pass	GIT_EDITOR="cp plain.msg" git commit -q --fixup=amend:HEAD
 pass	GIT_EDITOR="cp hash.msg" git commit -q --cleanup=whitespace --fixup=amend:HEAD

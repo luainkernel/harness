@@ -18,13 +18,13 @@
 
 input=$(cat)
 
-# a cheap bail on the raw input, which carries the description too; the command itself decides below
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a cheap bail on the command's words; the command itself decides below
+case "$(command_words "$input")" in
 	*push*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 cmds=$(commands "$input")
 git=$GIT_COMMAND

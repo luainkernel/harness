@@ -6,6 +6,12 @@ block	gh api repos/luainkernel/lunatik/pulls -f head=a -f base=b -F body=@b.md
 block	gh api repos/luainkernel/lunatik/pulls -fhead=a -fbase=b -F body=@b.md
 block	gh api -f head=a -f base=b -F body=@b.md repos/luainkernel/lunatik/pulls
 block	gh pr create --base b --head a --body-file b.md
+# the words as the shell reads them: g''h joined, two spaces, a tab and a line continuation split
+block	gh  pr create --base b --head a --body-file b.md
+block	gh\tpr create --base b --head a --body-file b.md
+block	gh 'pr' create --base b --head a --body-file b.md
+block	gh \\npr create --base b --head a --body-file b.md
+block	g''h pr create --base b --head a --body-file b.md
 block	gh pr new -B b --head a --body-file b.md
 block	gh -R luainkernel/lunatik pr create --base b --head a --body-file b.md
 block	gh -Rluainkernel/lunatik pr create --base b --head a --body-file b.md

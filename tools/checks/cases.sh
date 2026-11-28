@@ -6,9 +6,9 @@
 # Runs the command guards over the cases each one was proved against, so a later change to a guard,
 # or to commands.sh beneath them, is read against them again: tools/checks/cases/<guard>.cases holds
 # one case a line, `block` or `pass`, a tab and the tool input the guard reads, a command, where `\n`
-# is a newline, unless a `# tool: Agent` or `# tool: Workflow` line names the subagent type or the
-# script instead, or a `# tool:` line that names any other tool, Write or Read, the whole input, as
-# JSON, until a `# tool: Bash` line, and a second
+# is a newline and `\t` a tab, unless a `# tool: Agent` or `# tool: Workflow` line names the subagent
+# type or the script instead, or a `# tool:` line that names any other tool, Write or Read, the whole
+# input, as JSON, until a `# tool: Bash` line, and a second
 # tab the description the call carries beside it, which a guard reads for no verdict; a
 # `# agent: <id>` line gives the cases after it the agent_id of a subagent's call, and `# agent:` takes
 # it away; a `# env: <name>=<value>` line sets that variable for the guard in the cases after it, as a
@@ -73,7 +73,7 @@ for cases in "$@"; do
 			Bash) field=command ;;
 			*) field= ;;
 		esac
-		[ -z "$field" ] || value=${value//\\n/$'\n'}
+		[ -z "$field" ] || { value=${value//\\n/$'\n'}; value=${value//\\t/$'\t'}; }
 		jq -nc --arg tool "$tool" --arg field "$field" --arg value "$value" --arg description "$description" --arg agent "$agent" --arg transcript "$transcript" --arg cwd "${casecwd:-$cwd}" \
 			'{tool_name: $tool, tool_input: ((if $field == "" then $value | fromjson else {($field): $value} end)
 			+ if $description == "" then {} else {description: $description} end)}

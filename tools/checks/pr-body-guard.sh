@@ -32,13 +32,13 @@
 
 input=$(cat)
 
-# a cheap bail on the raw input, which carries the description too; the command itself decides below
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a cheap bail on the command's words; the command itself decides below
+case "$(command_words "$input")" in
 	*"gh api"*|*"gh pr "*|*"gh issue "*|*"gh release "*|*"gh -"*|*curl*api.github.com*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT

@@ -13,7 +13,9 @@
 
 input=$(cat)
 
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+case "$(command_words "$input")" in
 	*"git "*commit*) ;;
 	*) exit 0 ;;
 esac
@@ -22,8 +24,6 @@ command=$(printf '%s' "$input" | jq -r '.tool_input.command // empty')
 case "$command" in
 	*MESSAGE_OK=1*|*--cleanup=whitespace*|*--cleanup=verbatim*|*--cleanup=scissors*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 # git past its global options, as push-guard.sh reads it
 git='^([^ ]*/)?git( -C [^ ]+| -c [^ =]+=([^ -][^ ]*( [^ -][^ ]*)*)?| -[^ ]+)*'

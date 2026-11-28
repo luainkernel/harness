@@ -1,6 +1,9 @@
 # SPDX-FileCopyrightText: (c) 2026 Ring Zero Desenvolvimento de Software LTDA
 # SPDX-License-Identifier: MIT OR GPL-2.0-only
 block	git commit -m "set: valued"
+# the words as the shell reads them: g''it joined, a tab split
+block	g''it commit -m "set: valued"
+block	git\tcommit -m "set: valued"
 block	git add lib/luaset.c && git commit -m "set: valued"
 block	bash -c 'git add lunatik_core.c && git commit -m "core: x"'
 block	git -C . commit -m "set: valued"

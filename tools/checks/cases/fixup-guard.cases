@@ -8,6 +8,13 @@ block	gh api repos/luainkernel/lunatik/pulls --input folded.json
 pass	gh api repos/luainkernel/lunatik/pulls --input clean.json
 block	cd sub && gh api repos/luainkernel/lunatik/pulls --input f.json
 block	gh pr create --head folded --body-file b.md
+# the words as the shell reads them: g''h and g\<newline>h joined, two spaces, a tab and a line continuation split
+block	gh  pr create --head folded --body-file b.md
+block	gh\tpr create --head folded --body-file b.md
+block	gh 'pr' create --head folded --body-file b.md
+block	gh \\npr create --head folded --body-file b.md
+block	g''h pr create --head folded --body-file b.md
+block	g\\nh pr create --head folded --body-file b.md
 pass	gh pr create --head clean --body-file b.md
 block	gh pr create --head luainkernel:folded --body-file b.md
 pass	gh pr create --body-file b.md

@@ -14,13 +14,13 @@
 
 input=$(cat)
 
-# a cheap bail on the raw input, which carries the description too; the command itself decides below
-case "$input" in
+. "$(dirname "$0")/commands.sh"
+
+# a cheap bail on the command's words; the command itself decides below
+case "$(command_words "$input")" in
 	*"gh api"*pulls*|*"gh pr "*|*"gh -"*) ;;
 	*) exit 0 ;;
 esac
-
-. "$(dirname "$0")/commands.sh"
 
 cmds=$(gh_commands "$input")
 creates=$(gh_writes "$cmds" 'pr (create|new)' '^(https://api\.github\.com)?/?repos/[^/]+/[^/]+/pulls$')
